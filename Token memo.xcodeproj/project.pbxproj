@@ -1,0 +1,588 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		58C4733C2A109F0D009D87BC /* Token_memoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C4733B2A109F0D009D87BC /* Token_memoApp.swift */; };
+		58C4733E2A109F0D009D87BC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C4733D2A109F0D009D87BC /* ContentView.swift */; };
+		58C473402A109F0E009D87BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58C4733F2A109F0E009D87BC /* Assets.xcassets */; };
+		58C473432A109F0E009D87BC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58C473422A109F0E009D87BC /* Preview Assets.xcassets */; };
+		58C4734D2A109F0E009D87BC /* Token_memoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C4734C2A109F0E009D87BC /* Token_memoTests.swift */; };
+		58C473572A109F0E009D87BC /* Token_memoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C473562A109F0E009D87BC /* Token_memoUITests.swift */; };
+		58C473592A109F0E009D87BC /* Token_memoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C473582A109F0E009D87BC /* Token_memoUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		58C473492A109F0E009D87BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 58C473302A109F0C009D87BC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 58C473372A109F0C009D87BC;
+			remoteInfo = "Token memo";
+		};
+		58C473532A109F0E009D87BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 58C473302A109F0C009D87BC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 58C473372A109F0C009D87BC;
+			remoteInfo = "Token memo";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		58C473382A109F0D009D87BC /* Token memo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Token memo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C4733B2A109F0D009D87BC /* Token_memoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token_memoApp.swift; sourceTree = "<group>"; };
+		58C4733D2A109F0D009D87BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		58C4733F2A109F0E009D87BC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		58C473422A109F0E009D87BC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		58C473482A109F0E009D87BC /* Token memoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Token memoTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C4734C2A109F0E009D87BC /* Token_memoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token_memoTests.swift; sourceTree = "<group>"; };
+		58C473522A109F0E009D87BC /* Token memoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Token memoUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C473562A109F0E009D87BC /* Token_memoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token_memoUITests.swift; sourceTree = "<group>"; };
+		58C473582A109F0E009D87BC /* Token_memoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token_memoUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		58C473352A109F0C009D87BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C473452A109F0E009D87BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C4734F2A109F0E009D87BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		58C4732F2A109F0C009D87BC = {
+			isa = PBXGroup;
+			children = (
+				58C4733A2A109F0D009D87BC /* Token memo */,
+				58C4734B2A109F0E009D87BC /* Token memoTests */,
+				58C473552A109F0E009D87BC /* Token memoUITests */,
+				58C473392A109F0D009D87BC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		58C473392A109F0D009D87BC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				58C473382A109F0D009D87BC /* Token memo.app */,
+				58C473482A109F0E009D87BC /* Token memoTests.xctest */,
+				58C473522A109F0E009D87BC /* Token memoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		58C4733A2A109F0D009D87BC /* Token memo */ = {
+			isa = PBXGroup;
+			children = (
+				58C4733B2A109F0D009D87BC /* Token_memoApp.swift */,
+				58C4733D2A109F0D009D87BC /* ContentView.swift */,
+				58C4733F2A109F0E009D87BC /* Assets.xcassets */,
+				58C473412A109F0E009D87BC /* Preview Content */,
+			);
+			path = "Token memo";
+			sourceTree = "<group>";
+		};
+		58C473412A109F0E009D87BC /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				58C473422A109F0E009D87BC /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		58C4734B2A109F0E009D87BC /* Token memoTests */ = {
+			isa = PBXGroup;
+			children = (
+				58C4734C2A109F0E009D87BC /* Token_memoTests.swift */,
+			);
+			path = "Token memoTests";
+			sourceTree = "<group>";
+		};
+		58C473552A109F0E009D87BC /* Token memoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				58C473562A109F0E009D87BC /* Token_memoUITests.swift */,
+				58C473582A109F0E009D87BC /* Token_memoUITestsLaunchTests.swift */,
+			);
+			path = "Token memoUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		58C473372A109F0C009D87BC /* Token memo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58C4735C2A109F0E009D87BC /* Build configuration list for PBXNativeTarget "Token memo" */;
+			buildPhases = (
+				58C473342A109F0C009D87BC /* Sources */,
+				58C473352A109F0C009D87BC /* Frameworks */,
+				58C473362A109F0C009D87BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Token memo";
+			productName = "Token memo";
+			productReference = 58C473382A109F0D009D87BC /* Token memo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		58C473472A109F0E009D87BC /* Token memoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58C4735F2A109F0E009D87BC /* Build configuration list for PBXNativeTarget "Token memoTests" */;
+			buildPhases = (
+				58C473442A109F0E009D87BC /* Sources */,
+				58C473452A109F0E009D87BC /* Frameworks */,
+				58C473462A109F0E009D87BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				58C4734A2A109F0E009D87BC /* PBXTargetDependency */,
+			);
+			name = "Token memoTests";
+			productName = "Token memoTests";
+			productReference = 58C473482A109F0E009D87BC /* Token memoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		58C473512A109F0E009D87BC /* Token memoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58C473622A109F0E009D87BC /* Build configuration list for PBXNativeTarget "Token memoUITests" */;
+			buildPhases = (
+				58C4734E2A109F0E009D87BC /* Sources */,
+				58C4734F2A109F0E009D87BC /* Frameworks */,
+				58C473502A109F0E009D87BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				58C473542A109F0E009D87BC /* PBXTargetDependency */,
+			);
+			name = "Token memoUITests";
+			productName = "Token memoUITests";
+			productReference = 58C473522A109F0E009D87BC /* Token memoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		58C473302A109F0C009D87BC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					58C473372A109F0C009D87BC = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					58C473472A109F0E009D87BC = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = 58C473372A109F0C009D87BC;
+					};
+					58C473512A109F0E009D87BC = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = 58C473372A109F0C009D87BC;
+					};
+				};
+			};
+			buildConfigurationList = 58C473332A109F0C009D87BC /* Build configuration list for PBXProject "Token memo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 58C4732F2A109F0C009D87BC;
+			productRefGroup = 58C473392A109F0D009D87BC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				58C473372A109F0C009D87BC /* Token memo */,
+				58C473472A109F0E009D87BC /* Token memoTests */,
+				58C473512A109F0E009D87BC /* Token memoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		58C473362A109F0C009D87BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C473432A109F0E009D87BC /* Preview Assets.xcassets in Resources */,
+				58C473402A109F0E009D87BC /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C473462A109F0E009D87BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C473502A109F0E009D87BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		58C473342A109F0C009D87BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C4733E2A109F0D009D87BC /* ContentView.swift in Sources */,
+				58C4733C2A109F0D009D87BC /* Token_memoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C473442A109F0E009D87BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C4734D2A109F0E009D87BC /* Token_memoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C4734E2A109F0E009D87BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C473592A109F0E009D87BC /* Token_memoUITestsLaunchTests.swift in Sources */,
+				58C473572A109F0E009D87BC /* Token_memoUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		58C4734A2A109F0E009D87BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 58C473372A109F0C009D87BC /* Token memo */;
+			targetProxy = 58C473492A109F0E009D87BC /* PBXContainerItemProxy */;
+		};
+		58C473542A109F0E009D87BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 58C473372A109F0C009D87BC /* Token memo */;
+			targetProxy = 58C473532A109F0E009D87BC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		58C4735A2A109F0E009D87BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		58C4735B2A109F0E009D87BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		58C4735D2A109F0E009D87BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Token memo/Preview Content\"";
+				DEVELOPMENT_TEAM = QGAQ3AY3R3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.leeo.Token-memo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		58C4735E2A109F0E009D87BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Token memo/Preview Content\"";
+				DEVELOPMENT_TEAM = QGAQ3AY3R3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.leeo.Token-memo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		58C473602A109F0E009D87BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QGAQ3AY3R3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.leeo.Token-memoTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Token memo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Token memo";
+			};
+			name = Debug;
+		};
+		58C473612A109F0E009D87BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QGAQ3AY3R3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.leeo.Token-memoTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Token memo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Token memo";
+			};
+			name = Release;
+		};
+		58C473632A109F0E009D87BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QGAQ3AY3R3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.leeo.Token-memoUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Token memo";
+			};
+			name = Debug;
+		};
+		58C473642A109F0E009D87BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QGAQ3AY3R3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.leeo.Token-memoUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Token memo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		58C473332A109F0C009D87BC /* Build configuration list for PBXProject "Token memo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C4735A2A109F0E009D87BC /* Debug */,
+				58C4735B2A109F0E009D87BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		58C4735C2A109F0E009D87BC /* Build configuration list for PBXNativeTarget "Token memo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C4735D2A109F0E009D87BC /* Debug */,
+				58C4735E2A109F0E009D87BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		58C4735F2A109F0E009D87BC /* Build configuration list for PBXNativeTarget "Token memoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C473602A109F0E009D87BC /* Debug */,
+				58C473612A109F0E009D87BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		58C473622A109F0E009D87BC /* Build configuration list for PBXNativeTarget "Token memoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C473632A109F0E009D87BC /* Debug */,
+				58C473642A109F0E009D87BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 58C473302A109F0C009D87BC /* Project object */;
+}
