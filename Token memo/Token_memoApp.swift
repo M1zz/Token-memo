@@ -11,7 +11,13 @@ import SwiftUI
 struct Token_memoApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // basic UI
+            // memo RC .. DU
+            // persistance
+            // toast
+            // clipboard
+            // half modal
+            TokenMemoList()
         }
     }
 }
