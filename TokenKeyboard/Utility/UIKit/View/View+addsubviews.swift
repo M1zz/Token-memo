@@ -1,8 +1,8 @@
-//
-//  View+addsubviews.swift
-//  TokenKeyboard
-//
-//  Created by Jihoonahn on 2023/05/23.
-//
+import UIKit
 
-import Foundation
+extension UIView {
+    /// Multiple Views can be added at once.
+    func addSubViews(_ subView: UIView...) {
+        subView.forEach(addSubview(_:))
+    }
+}
