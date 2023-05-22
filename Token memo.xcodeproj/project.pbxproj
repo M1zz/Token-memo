@@ -30,7 +30,6 @@
 		DCD33C472A1BC17A0019EF75 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD33C462A1BC17A0019EF75 /* Reusable.swift */; };
 		DCD33C4B2A1BC1900019EF75 /* UIView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD33C4A2A1BC1900019EF75 /* UIView+Layout.swift */; };
 		DCD33C4D2A1BC19D0019EF75 /* View+addsubviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD33C4C2A1BC19D0019EF75 /* View+addsubviews.swift */; };
-		DCD33C502A1BC1B10019EF75 /* Button+TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD33C4F2A1BC1B10019EF75 /* Button+TargetAction.swift */; };
 		DCD33C552A1BCCA80019EF75 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587BDC432A1B98A5001464E4 /* CollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -101,7 +100,6 @@
 		DCD33C462A1BC17A0019EF75 /* Reusable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
 		DCD33C4A2A1BC1900019EF75 /* UIView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layout.swift"; sourceTree = "<group>"; };
 		DCD33C4C2A1BC19D0019EF75 /* View+addsubviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+addsubviews.swift"; sourceTree = "<group>"; };
-		DCD33C4F2A1BC1B10019EF75 /* Button+TargetAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button+TargetAction.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,7 +306,6 @@
 		DCD33C482A1BC1810019EF75 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
-				DCD33C4E2A1BC1A90019EF75 /* Button */,
 				DCD33C492A1BC18A0019EF75 /* View */,
 			);
 			path = UIKit;
@@ -321,14 +318,6 @@
 				DCD33C4C2A1BC19D0019EF75 /* View+addsubviews.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		DCD33C4E2A1BC1A90019EF75 /* Button */ = {
-			isa = PBXGroup;
-			children = (
-				DCD33C4F2A1BC1B10019EF75 /* Button+TargetAction.swift */,
-			);
-			path = Button;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -502,7 +491,6 @@
 				587BDC342A1A7934001464E4 /* KeyboardViewController.swift in Sources */,
 				587BDC3D2A1A7D9E001464E4 /* MemoStore.swift in Sources */,
 				DCD33C422A1BC14D0019EF75 /* Builder.swift in Sources */,
-				DCD33C502A1BC1B10019EF75 /* Button+TargetAction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
