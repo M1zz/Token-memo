@@ -1,7 +1,7 @@
 import UIKit
 
 var keyboardData:[String:String] = ["계좌번호":"12341234", "집주소":"포항시"]
-class KeyboardViewController: BaseInputViewController {
+final class KeyboardViewController: BaseInputViewController {
     
     @IBOutlet var nextKeyboardButton: UIButton!
 
