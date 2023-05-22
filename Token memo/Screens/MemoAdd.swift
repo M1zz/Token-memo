@@ -24,7 +24,7 @@ struct MemoAdd: View {
                     .strokeBorder())
                 
             TextEditor(text: $value)
-                .frame(height: 300)
+                .frame(height: 150)
                 .padding(10)
                 .overlay {
                     RoundedRectangle(cornerRadius: 16)

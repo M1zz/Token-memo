@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "5526959F-DCC2-483B-9F45-58DA61CD417B"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "731B8695-65FB-4856-B60F-B64F4DD9B17C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Token memo/Service/MemoStore.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "load()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "731B8695-65FB-4856-B60F-B64F4DD9B17C - 7edb26640a0ac52e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TokenKeyboard.MemoStore.load() throws -&gt; Swift.Array&lt;TokenKeyboard.Memo&gt;"
+                  moduleName = "TokenKeyboard"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/MonthlyLeeo/Token%20memo/Token%20memo/Service/MemoStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "35"
+                  endingLineNumber = "35"
+                  offsetFromSymbolStart = "356">
+               </Location>
+               <Location
+                  uuid = "731B8695-65FB-4856-B60F-B64F4DD9B17C - 3b8e967fcad47e34"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Token_memo.MemoStore.load() throws -&gt; Swift.Array&lt;Token_memo.Memo&gt;"
+                  moduleName = "Token memo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/MonthlyLeeo/Token%20memo/Token%20memo/Service/MemoStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "172">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "206D216C-1475-4758-A8F5-B2E85094FDBE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Token memo/Service/MemoStore.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "load()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "206D216C-1475-4758-A8F5-B2E85094FDBE - 7edb26640a0ac5e0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TokenKeyboard.MemoStore.load() throws -&gt; Swift.Array&lt;TokenKeyboard.Memo&gt;"
+                  moduleName = "TokenKeyboard"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/MonthlyLeeo/Token%20memo/Token%20memo/Service/MemoStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "37"
+                  endingLineNumber = "37"
+                  offsetFromSymbolStart = "692">
+               </Location>
+               <Location
+                  uuid = "206D216C-1475-4758-A8F5-B2E85094FDBE - 3b8e967fcad47eb8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Token_memo.MemoStore.load() throws -&gt; Swift.Array&lt;Token_memo.Memo&gt;"
+                  moduleName = "Token memo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/MonthlyLeeo/Token%20memo/Token%20memo/Service/MemoStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "37"
+                  endingLineNumber = "37"
+                  offsetFromSymbolStart = "356">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2CA86C85-DDF2-4A57-B0D3-7C922FAA20C6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Token memo/Service/MemoStore.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
+            landmarkName = "load()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2CA86C85-DDF2-4A57-B0D3-7C922FAA20C6 - 7edb26640a0ac52e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TokenKeyboard.MemoStore.load() throws -&gt; Swift.Array&lt;TokenKeyboard.Memo&gt;"
+                  moduleName = "TokenKeyboard"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/MonthlyLeeo/Token%20memo/Token%20memo/Service/MemoStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "35"
+                  endingLineNumber = "35"
+                  offsetFromSymbolStart = "356">
+               </Location>
+               <Location
+                  uuid = "2CA86C85-DDF2-4A57-B0D3-7C922FAA20C6 - 3b8e967fcad47e57"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Token_memo.MemoStore.load() throws -&gt; Swift.Array&lt;Token_memo.Memo&gt;"
+                  moduleName = "Token memo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/MonthlyLeeo/Token%20memo/Token%20memo/Service/MemoStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "34"
+                  endingLineNumber = "34"
+                  offsetFromSymbolStart = "592">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
