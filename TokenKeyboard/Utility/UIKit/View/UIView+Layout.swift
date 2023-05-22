@@ -40,18 +40,21 @@ extension UIView {
     }
     
     func centerX(inView view: UIView) {
-        translatesAutoresizingMaskIntoConstraints = false
         centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
 
     func centerY(inView view: UIView, leadingAnchor: NSLayoutXAxisAnchor? = nil,
                  paddingLeading: CGFloat = 0, constant: CGFloat = 0) {
-
-        translatesAutoresizingMaskIntoConstraints = false
         centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: constant).isActive = true
 
         if let leading = leadingAnchor {
             anchor(leading: leading, paddingLeading: paddingLeading)
         }
+    }
+
+    func center(inView view: UIView) {
+        translatesAutoresizingMaskIntoConstraints = false
+        centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
 }
