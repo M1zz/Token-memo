@@ -17,6 +17,7 @@ struct Token_memoApp: App {
             // toast
             // clipboard
             // half modal
+            
             TokenMemoList()
         }
     }

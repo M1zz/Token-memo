@@ -8,7 +8,7 @@
 import Foundation
 
 struct Memo: Identifiable, Codable {
-    let id = UUID()
+    var id = UUID()
     let title: String
     let value: String
     var isChecked: Bool = false

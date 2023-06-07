@@ -13,23 +13,25 @@ struct MemoAdd: View {
     @State private var value: String = ""
     @State private var showAlert: Bool = false
     @State private var showSucessAlert: Bool = false
+    var insertedValue: String = ""
     
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack {
-            TextField("키워드를 입력해주세요", text: $keyword)
+            TextField("Insert keyword", text: $keyword)
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 16)
                     .strokeBorder())
-                
+            
             TextEditor(text: $value)
-                .frame(height: 300)
+                .frame(height: 130)
                 .padding(10)
                 .overlay {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke()
                 }
+            
             HStack {
                 Spacer()
                 Button {
@@ -51,10 +53,10 @@ struct MemoAdd: View {
                     // success
                     // save
                     do {
-                        var tempMemos:[Memo] = []
-                        tempMemos = try MemoStore.shared.load()
-                        tempMemos.append(Memo(title: keyword, value: value))
-                        try MemoStore.shared.save(memos: tempMemos)
+                        var loadedMemos:[Memo] = []
+                        loadedMemos = try MemoStore.shared.load(type: .tokenMemo)
+                        loadedMemos.append(Memo(title: keyword, value: value))
+                        try MemoStore.shared.save(memos: loadedMemos, type: .tokenMemo)
                     } catch {
                         fatalError(error.localizedDescription)
                     }
@@ -69,12 +71,17 @@ struct MemoAdd: View {
 
         }
         .padding()
-        .alert("내용을 채워주세요", isPresented: $showAlert) {
+        .alert("Insert contents", isPresented: $showAlert) {
             
         }
-        .alert("작성을 완료했습니다", isPresented: $showSucessAlert) {
-            Button("확인", role: .cancel) {
+        .alert("Completed!", isPresented: $showSucessAlert) {
+            Button("Ok", role: .cancel) {
                 dismiss()
+            }
+        }
+        .onAppear {
+            if !insertedValue.isEmpty {
+                value = insertedValue
             }
         }
     }
