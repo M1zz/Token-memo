@@ -78,26 +78,6 @@ struct TokenMemoList: View {
                             }
                             .buttonStyle(.borderless)
                         }
-                        ZStack {
-                            NavigationLink {
-                                MemoAdd()
-                            } label: {
-                                Text("")
-                            }
-                            .opacity(0.0)
-                            .buttonStyle(PlainButtonStyle())
-                            
-                            HStack {
-                                Spacer()
-                                Image(systemName: "plus.circle")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 25)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                            }
-                            .padding(.all, 8)
-                        }
                     }
                     .onDelete { index in
                         tokenMemos.remove(atOffsets: index)
@@ -109,6 +89,27 @@ struct TokenMemoList: View {
                         } catch {
                             fatalError(error.localizedDescription)
                         }
+                    }
+                    
+                    ZStack {
+                        NavigationLink {
+                            MemoAdd()
+                        } label: {
+                            Text("")
+                        }
+                        .opacity(0.0)
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        HStack {
+                            Spacer()
+                            Image(systemName: "plus.circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 25)
+                                .foregroundColor(.blue)
+                            Spacer()
+                        }
+                        .padding(.all, 8)
                     }
                 }
                
