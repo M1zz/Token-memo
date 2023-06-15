@@ -133,6 +133,17 @@ class KeyboardViewController: UIInputViewController {
         segmentedControl.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         segmentedControl.trailingAnchor.constraint(equalTo: backButton.leadingAnchor).isActive = true
         segmentedControl.addTarget(self, action: #selector(didChangeValue(segment:)), for: .valueChanged)
+        
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(KeyboardViewController.handleLongPress(_:)))
+        longPress.minimumPressDuration = 0.5
+        longPress.numberOfTouchesRequired = 1
+        longPress.allowableMovement = 0.5
+        backButton.addGestureRecognizer(longPress)
+    }
+    
+    @objc private func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
+        textDocumentProxy.deleteBackward()
     }
     
     @objc private func didChangeValue(segment: UISegmentedControl) {
@@ -160,7 +171,7 @@ class KeyboardViewController: UIInputViewController {
     override func textWillChange(_ textInput: UITextInput?) {
         // The app is about to change the document's contents. Perform any preparation here.
     }
-
+    
     override func textDidChange(_ textInput: UITextInput?) {
         // The app has just changed the document's contents, the document context has been updated.
         var textColor: UIColor
