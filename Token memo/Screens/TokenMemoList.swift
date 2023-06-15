@@ -75,6 +75,15 @@ struct TokenMemoList: View {
                                 Label(memo.title,
                                       systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
                                 .font(.system(size: fontSize))
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    NavigationLink {
+                                        MemoAdd(insertedKeyword: memo.title ,
+                                                insertedValue: memo.value)
+                                    } label: {
+                                        Label("update", systemImage: "pencil")
+                                    }
+                                    .tint(.green)
+                                }
                             }
                             .buttonStyle(.borderless)
                         }

@@ -13,6 +13,7 @@ struct MemoAdd: View {
     @State private var value: String = ""
     @State private var showAlert: Bool = false
     @State private var showSucessAlert: Bool = false
+    var insertedKeyword: String = ""
     var insertedValue: String = ""
     
     @Environment(\.dismiss) private var dismiss
@@ -46,7 +47,6 @@ struct MemoAdd: View {
             }
             Spacer()
             Button {
-                
                 if !keyword.isEmpty,
                    !value.isEmpty {
                     showSucessAlert = true
@@ -80,6 +80,10 @@ struct MemoAdd: View {
             }
         }
         .onAppear {
+            if !insertedKeyword.isEmpty {
+                keyword = insertedKeyword
+            }
+            
             if !insertedValue.isEmpty {
                 value = insertedValue
             }
