@@ -39,54 +39,50 @@ struct TokenMemoList: View {
                         }
                     }
                     ForEach($tokenMemos) { $memo in
-                        NavigationLink {
-                            MemoDetail(memo: $memo)
-                        } label: {
-                            Button {
+                        Button {
+                            
+                            UIPasteboard.general.string = memo.value // copy
+                            tokenMemos = loadedData // init clicked data
+                            
+                            
+                            memo.isChecked = true // click data
+                            showToast(message: memo.value) // show toast
+                            
+                            
+                            do {
+                                var loadedClipboardMemos = try MemoStore.shared.load(type: .clipboardMemo)
+                                loadedClipboardMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error"))
                                 
-                                UIPasteboard.general.string = memo.value // copy
-                                tokenMemos = loadedData // init clicked data
-                                
-                                
-                                memo.isChecked = true // click data
-                                showToast(message: memo.value) // show toast
-                                
-                                
-                                do {
-                                    var loadedClipboardMemos = try MemoStore.shared.load(type: .clipboardMemo)
-                                    loadedClipboardMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error"))
-                                    
-                                    var doNotHaveDuplication: Bool = false
-                                    for item in loadedClipboardMemos {
-                                        if UIPasteboard.general.string == item.value {
-                                            doNotHaveDuplication = true
-                                        }
+                                var doNotHaveDuplication: Bool = false
+                                for item in loadedClipboardMemos {
+                                    if UIPasteboard.general.string == item.value {
+                                        doNotHaveDuplication = true
                                     }
-                                    
-                                    if doNotHaveDuplication {
-                                        try MemoStore.shared.save(memos: loadedClipboardMemos, type: .clipboardMemo)
-                                    }
-                                    
-                                } catch {
-                                    fatalError(error.localizedDescription)
                                 }
                                 
-                            } label: {
-                                Label(memo.title,
-                                      systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
-                                .font(.system(size: fontSize))
-                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                    NavigationLink {
-                                        MemoAdd(insertedKeyword: memo.title ,
-                                                insertedValue: memo.value)
-                                    } label: {
-                                        Label("update", systemImage: "pencil")
-                                    }
-                                    .tint(.green)
+                                if doNotHaveDuplication {
+                                    try MemoStore.shared.save(memos: loadedClipboardMemos, type: .clipboardMemo)
                                 }
+                                
+                            } catch {
+                                fatalError(error.localizedDescription)
                             }
-                            .buttonStyle(.borderless)
+                            
+                        } label: {
+                            Label(memo.title,
+                                  systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
+                            .font(.system(size: fontSize))
+                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                NavigationLink {
+                                    MemoAdd(insertedKeyword: memo.title ,
+                                            insertedValue: memo.value)
+                                } label: {
+                                    Label("update", systemImage: "pencil")
+                                }
+                                .tint(.green)
+                            }
                         }
+                        .buttonStyle(.borderless)
                     }
                     .onDelete { index in
                         tokenMemos.remove(atOffsets: index)
