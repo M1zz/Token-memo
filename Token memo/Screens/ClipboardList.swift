@@ -25,30 +25,26 @@ struct ClipboardList: View {
                         .padding()
                 }
                 ForEach($clipboardMemos) { $memo in
-                    NavigationLink {
-                        MemoDetail(memo: $memo)
-                    } label: {
-                        Button {
-                            UIPasteboard.general.string = memo.value
-                            clipboardMemos = loadedData
-                            memo.isChecked = true
-                            showToast(message: memo.value)
-                            do {
-                                var tempMemos = try MemoStore.shared.load(type: .clipboardMemo)
-                                tempMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error"))
-                                try MemoStore.shared.save(memos: tempMemos, type: .clipboardMemo)
-                                
-                            } catch {
-                                fatalError(error.localizedDescription)
-                            }
+                    Button {
+                        UIPasteboard.general.string = memo.value
+                        clipboardMemos = loadedData
+                        memo.isChecked = true
+                        showToast(message: memo.value)
+                        do {
+                            var tempMemos = try MemoStore.shared.load(type: .clipboardMemo)
+                            tempMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error"))
+                            try MemoStore.shared.save(memos: tempMemos, type: .clipboardMemo)
                             
-                        } label: {
-                            Label(memo.title,
-                                  systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
-                            .font(.system(size: fontSize))
+                        } catch {
+                            fatalError(error.localizedDescription)
                         }
-                        .buttonStyle(.borderless)
+                        
+                    } label: {
+                        Label(memo.title,
+                              systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
+                        .font(.system(size: fontSize))
                     }
+                    .buttonStyle(.borderless)
                 }
                 .onDelete { index in
                     clipboardMemos.remove(atOffsets: index)

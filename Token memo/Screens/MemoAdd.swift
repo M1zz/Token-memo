@@ -13,6 +13,7 @@ struct MemoAdd: View {
     @State private var value: String = ""
     @State private var showAlert: Bool = false
     @State private var showSucessAlert: Bool = false
+    var insertedKeyword: String = ""
     var insertedValue: String = ""
     
     @Environment(\.dismiss) private var dismiss
@@ -46,7 +47,6 @@ struct MemoAdd: View {
             }
             Spacer()
             Button {
-                
                 if !keyword.isEmpty,
                    !value.isEmpty {
                     showSucessAlert = true
@@ -70,6 +70,16 @@ struct MemoAdd: View {
             .buttonStyle(.borderedProminent)
 
         }
+//        .onChange(of: keyword, perform: { value in
+//            do {
+//                var loadedMemos:[Memo] = []
+//                loadedMemos = try MemoStore.shared.load(type: .tokenMemo)
+//                loadedMemos.append(Memo(title: keyword, value: value))
+//                try MemoStore.shared.save(memos: loadedMemos, type: .tokenMemo)
+//            } catch {
+//                fatalError(error.localizedDescription)
+//            }
+//        })
         .padding()
         .alert("Insert contents", isPresented: $showAlert) {
             
@@ -80,6 +90,10 @@ struct MemoAdd: View {
             }
         }
         .onAppear {
+            if !insertedKeyword.isEmpty {
+                keyword = insertedKeyword
+            }
+            
             if !insertedValue.isEmpty {
                 value = insertedValue
             }
