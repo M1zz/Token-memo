@@ -25,6 +25,8 @@
 		58C473692A10C9A0009D87BC /* TokenMemoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C473682A10C9A0009D87BC /* TokenMemoList.swift */; };
 		58C7ACB52A2CF1A3003F791F /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7ACB42A2CF1A3003F791F /* SettingView.swift */; };
 		58C7ACB72A2CF27B003F791F /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7ACB62A2CF27B003F791F /* TutorialView.swift */; };
+		58D9D52E2A3B23900086BE1A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D9D52D2A3B23900086BE1A /* DataManager.swift */; };
+		58D9D5302A3B241F0086BE1A /* ColorfulOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D9D52F2A3B241F0086BE1A /* ColorfulOnboardingView.swift */; };
 		58F8FBBD2A127B3000F5446E /* MemoAdd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F8FBBC2A127B3000F5446E /* MemoAdd.swift */; };
 		58F8FBBF2A127D3C00F5446E /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F8FBBE2A127D3C00F5446E /* Memo.swift */; };
 		58F8FBC12A13C9A400F5446E /* MemoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F8FBC02A13C9A400F5446E /* MemoStore.swift */; };
@@ -93,6 +95,8 @@
 		58C473682A10C9A0009D87BC /* TokenMemoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMemoList.swift; sourceTree = "<group>"; };
 		58C7ACB42A2CF1A3003F791F /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		58C7ACB62A2CF27B003F791F /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
+		58D9D52D2A3B23900086BE1A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		58D9D52F2A3B241F0086BE1A /* ColorfulOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorfulOnboardingView.swift; sourceTree = "<group>"; };
 		58F8FBBC2A127B3000F5446E /* MemoAdd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoAdd.swift; sourceTree = "<group>"; };
 		58F8FBBE2A127D3C00F5446E /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		58F8FBC02A13C9A400F5446E /* MemoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoStore.swift; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 			children = (
 				5802F4142A2B966E002825D6 /* Token-memo-Info.plist */,
 				587BDC5A2A1FCA10001464E4 /* Token memo.entitlements */,
+				58D9D52C2A3B237D0086BE1A /* Manager */,
 				58F8FBC42A15278100F5446E /* Screens */,
 				58F8FBC32A15277700F5446E /* Service */,
 				58F8FBC22A15276400F5446E /* Model */,
@@ -221,6 +226,14 @@
 			path = Temp;
 			sourceTree = "<group>";
 		};
+		58D9D52C2A3B237D0086BE1A /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				58D9D52D2A3B23900086BE1A /* DataManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
 		58F8FBC22A15276400F5446E /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -248,6 +261,7 @@
 				58C7ACB42A2CF1A3003F791F /* SettingView.swift */,
 				58C7ACB62A2CF27B003F791F /* TutorialView.swift */,
 				580B0D682A30C45E00C7B586 /* FontSetting.swift */,
+				58D9D52F2A3B241F0086BE1A /* ColorfulOnboardingView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -426,6 +440,7 @@
 				58C4733C2A109F0D009D87BC /* Token_memoApp.swift in Sources */,
 				580B0D692A30C45E00C7B586 /* FontSetting.swift in Sources */,
 				58C7ACB52A2CF1A3003F791F /* SettingView.swift in Sources */,
+				58D9D5302A3B241F0086BE1A /* ColorfulOnboardingView.swift in Sources */,
 				58F8FBC12A13C9A400F5446E /* MemoStore.swift in Sources */,
 				5802F4102A2B3C91002825D6 /* ClipboardList.swift in Sources */,
 				5802F4132A2B8E08002825D6 /* ShortcutMemoView.swift in Sources */,
@@ -434,6 +449,7 @@
 				58C7ACB72A2CF27B003F791F /* TutorialView.swift in Sources */,
 				58C473692A10C9A0009D87BC /* TokenMemoList.swift in Sources */,
 				58F8FBBD2A127B3000F5446E /* MemoAdd.swift in Sources */,
+				58D9D52E2A3B23900086BE1A /* DataManager.swift in Sources */,
 				58F8FBBF2A127D3C00F5446E /* Memo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -652,7 +668,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Token memo/Token memo.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Token memo/Preview Content\"";
 				DEVELOPMENT_TEAM = QGAQ3AY3R3;
 				ENABLE_PREVIEWS = YES;
@@ -670,7 +686,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.4;
+				MARKETING_VERSION = 2.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Ysoup.TokenMemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -690,7 +706,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Token memo/Token memo.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Token memo/Preview Content\"";
 				DEVELOPMENT_TEAM = QGAQ3AY3R3;
 				ENABLE_PREVIEWS = YES;
@@ -708,7 +724,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.4;
+				MARKETING_VERSION = 2.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Ysoup.TokenMemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
