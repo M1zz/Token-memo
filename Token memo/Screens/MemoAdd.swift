@@ -70,6 +70,16 @@ struct MemoAdd: View {
             .buttonStyle(.borderedProminent)
 
         }
+//        .onChange(of: keyword, perform: { value in
+//            do {
+//                var loadedMemos:[Memo] = []
+//                loadedMemos = try MemoStore.shared.load(type: .tokenMemo)
+//                loadedMemos.append(Memo(title: keyword, value: value))
+//                try MemoStore.shared.save(memos: loadedMemos, type: .tokenMemo)
+//            } catch {
+//                fatalError(error.localizedDescription)
+//            }
+//        })
         .padding()
         .alert("Insert contents", isPresented: $showAlert) {
             
