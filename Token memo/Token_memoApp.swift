@@ -25,6 +25,16 @@ struct Token_memoApp: App {
                 }
             } else {
                 TokenMemoList()
+//                    .onOpenURL { url in
+//                        if (url.scheme! == "tokenMemo" && url.host! == "test") {
+//                            if let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true) {
+//                                for query in components.queryItems! {
+//                                    print(query.name)
+//                                    print(query.value!)
+//                                }
+//                            }
+//                        }
+//                    }
             }
             
         }

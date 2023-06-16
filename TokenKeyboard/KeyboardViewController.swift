@@ -57,6 +57,20 @@ class KeyboardViewController: UIInputViewController {
         return button
     }()
     
+    let addButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        button.layer.cornerRadius = 8
+        button.layer.borderColor = UIColor.black.cgColor
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.tintColor = .black
+        button.backgroundColor = .systemGray2
+        button.setTitleColor(.black, for: .normal)
+        return button
+    }()
+    
     override func updateViewConstraints() {
         super.updateViewConstraints()
     }
@@ -128,8 +142,14 @@ class KeyboardViewController: UIInputViewController {
         backButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         backButton.addTarget(self, action: #selector(backSpacePressed), for: .touchUpInside)
         
+        bottomView.addSubview(addButton)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        addButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+        addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+        addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
+        
         bottomView.addSubview(segmentedControl)
-        segmentedControl.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+        segmentedControl.leadingAnchor.constraint(equalTo: addButton.trailingAnchor).isActive = true
         segmentedControl.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         segmentedControl.trailingAnchor.constraint(equalTo: backButton.leadingAnchor).isActive = true
         segmentedControl.addTarget(self, action: #selector(didChangeValue(segment:)), for: .valueChanged)
@@ -161,6 +181,22 @@ class KeyboardViewController: UIInputViewController {
     
     @objc private func backSpacePressed(button: UIButton) {
         (textDocumentProxy as UIKeyInput).deleteBackward()
+    }
+    
+    @objc func openURL(_ url: URL) {
+        return
+    }
+
+    @objc private func openAppPressed(button: UIButton) {
+        var responder: UIResponder? = self as UIResponder
+        let selector = #selector(openURL(_:))
+        while responder != nil {
+            if responder!.responds(to: selector) && responder != self {
+                responder!.perform(selector, with: URL(string: "tokenMemo://com.Ysoup.TokenMemo")!)
+                return
+            }
+            responder = responder?.next
+        }
     }
     
     override func viewWillLayoutSubviews() {
