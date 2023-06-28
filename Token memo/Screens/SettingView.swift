@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct SettingView: View {
+    
+    @Environment(\.requestReview) var requestReview
+    
     var body: some View {
         List {
             NavigationLink(destination: CopyTutorialView()) {
@@ -28,6 +32,10 @@ struct SettingView: View {
                 }
             } label: {
                 Text("붙여넣기 알림이 귀찮으신가요?")
+            }
+            
+            Button("Review the app") {
+                requestReview()
             }
         }
     }
