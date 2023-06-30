@@ -167,7 +167,7 @@ struct TokenMemoList: View {
                 .animation(.easeInOut(duration: 0.5), value: showToast)
                 .transition(.opacity)
             }
-            .navigationTitle("Token Store")
+            .navigationTitle("Clip Store")
             .overlay(content: {
                 VStack {
                     Spacer()
