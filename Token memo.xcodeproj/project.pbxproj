@@ -674,7 +674,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Token-memo-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Token memo";
+				INFOPLIST_KEY_CFBundleDisplayName = "Clip Keyboard";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -686,7 +686,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.6;
+				MARKETING_VERSION = 2.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Ysoup.TokenMemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -712,7 +712,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Token-memo-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Token memo";
+				INFOPLIST_KEY_CFBundleDisplayName = "Clip Keyboard";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -724,7 +724,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.6;
+				MARKETING_VERSION = 2.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Ysoup.TokenMemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
