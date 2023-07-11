@@ -33,9 +33,10 @@ struct TokenMemoList: View {
                         NavigationLink {
                             MemoAdd()
                         } label: {
-                            Text("No token, please add a new token.")
-                                .foregroundColor(.gray)
-                                .padding()
+                            EmptyListView
+//                            Text("No token, please add a new token.")
+//                                .foregroundColor(.gray)
+//                                .padding()
                         }
                     }
                     ForEach($tokenMemos) { $memo in
@@ -206,8 +207,16 @@ struct TokenMemoList: View {
                 fontSize = UserDefaults.standard.object(forKey: "fontSize") as? CGFloat ?? 20.0
             }
         }
-        
-       
+    }
+    
+    /// Empty list view
+    private var EmptyListView: some View {
+        VStack(spacing: 5) {
+            Image(systemName: "eyes").font(.system(size: 45)).padding(10)
+            Text("Nothing to Paste")
+                .font(.system(size: 22)).bold()
+            Text("You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps").opacity(0.7)
+        }.multilineTextAlignment(.center).padding(30)
     }
     
     private func showToast(message: String) {

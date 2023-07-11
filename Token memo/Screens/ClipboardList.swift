@@ -20,9 +20,7 @@ struct ClipboardList: View {
         ZStack {
             List {
                 if clipboardMemos.isEmpty {
-                    Text("No clipboard, please copy a new clipboard.")
-                        .foregroundColor(.gray)
-                        .padding()
+                    EmptyListView
                 }
                 ForEach($clipboardMemos) { $memo in
                     Button {
@@ -89,6 +87,16 @@ struct ClipboardList: View {
             .animation(.easeInOut(duration: 0.5), value: showToast)
             .transition(.opacity)
         }
+    }
+    
+    /// Empty list view
+    private var EmptyListView: some View {
+        VStack(spacing: 5) {
+            Image(systemName: "eyes").font(.system(size: 45)).padding(10)
+            Text("Nothing to paste")
+                .font(.system(size: 22)).bold()
+            Text("No clipboard, Copy the items you want to paste and add them to the clipboard.").opacity(0.7)
+        }.multilineTextAlignment(.center).padding(30)
     }
     
     private func showToast(message: String) {

@@ -357,3 +357,59 @@ extension String {
         return self.size(withAttributes: [NSAttributedString.Key.font: UIFont(name: "Helvetica", size: 15)]).width
     }
 }
+
+
+final class EmptyListView: UIView {
+    
+    init() {
+        super.init(frame: .zero)
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
+    }
+    
+    private func setupView() {
+        // Create the image view
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "eyes")
+        imageView.contentMode = .scaleAspectFit
+        
+        // Create the title label
+        let titleLabel = UILabel()
+        titleLabel.text = "Nothing to Paste"
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 22)
+        titleLabel.textAlignment = .center
+        
+        // Create the body label
+        let bodyLabel = UILabel()
+        bodyLabel.text = "You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps"
+        bodyLabel.font = UIFont.systemFont(ofSize: 16)
+        bodyLabel.textAlignment = .center
+        bodyLabel.numberOfLines = 0
+        bodyLabel.textColor = UIColor.black.withAlphaComponent(0.7)
+        
+        // Create a vertical stack view
+        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, bodyLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 5
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stackView)
+        
+        // Constraints for the stack view
+        NSLayoutConstraint.activate([
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30)
+        ])
+        
+        // Constraints for the image view
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.heightAnchor.constraint(equalToConstant: 45),
+            imageView.widthAnchor.constraint(equalToConstant: 45)
+        ])
+    }
+}
