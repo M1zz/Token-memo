@@ -57,6 +57,38 @@ class KeyboardViewController: UIInputViewController {
         return button
     }()
     
+    let spaceButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: "Space".textSize() + 20).isActive = true
+        button.layer.cornerRadius = 8
+        button.layer.borderColor = UIColor.black.cgColor
+        button.setTitle("Space", for: UIControl.State.normal)
+        button.titleLabel!.font = .systemFont(ofSize: 12)
+        button.backgroundColor = UIColor.white
+        button.setTitleColor(UIColor.black, for: UIControl.State.normal)
+        button.addTarget(self, action: #selector(spacePressed), for: .touchUpInside)
+        return button
+    }()
+    
+    let returnButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: "Return".textSize() + 20).isActive = true
+        button.layer.cornerRadius = 8
+        button.layer.borderColor = UIColor.black.cgColor
+        button.setTitle("Return", for: UIControl.State.normal)
+        button.titleLabel!.font = .systemFont(ofSize: 12)
+        button.backgroundColor = UIColor.systemBlue
+        button.setTitleColor(UIColor.white, for: UIControl.State.normal)
+        button.addTarget(self, action: #selector(returnPressed), for: .touchUpInside)
+        return button
+    }()
+    
+    
+    
     let addButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -69,6 +101,14 @@ class KeyboardViewController: UIInputViewController {
         button.backgroundColor = .systemGray2
         button.setTitleColor(.black, for: .normal)
         return button
+    }()
+    
+    let textField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .roundedRect
+        textField.placeholder = "Enter text"
+        return textField
     }()
     
     override func updateViewConstraints() {
@@ -136,12 +176,6 @@ class KeyboardViewController: UIInputViewController {
         bottomView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         bottomView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        bottomView.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        backButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor).isActive = true
-        backButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
-        backButton.addTarget(self, action: #selector(backSpacePressed), for: .touchUpInside)
-        
         bottomView.addSubview(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
         addButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
@@ -151,15 +185,40 @@ class KeyboardViewController: UIInputViewController {
         bottomView.addSubview(segmentedControl)
         segmentedControl.leadingAnchor.constraint(equalTo: addButton.trailingAnchor).isActive = true
         segmentedControl.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
-        segmentedControl.trailingAnchor.constraint(equalTo: backButton.leadingAnchor).isActive = true
+        segmentedControl.widthAnchor.constraint(equalToConstant: 80).isActive = true
         segmentedControl.addTarget(self, action: #selector(didChangeValue(segment:)), for: .valueChanged)
         
+        bottomView.addSubview(spaceButton)
+        spaceButton.translatesAutoresizingMaskIntoConstraints = false
+        spaceButton.leadingAnchor.constraint(equalTo: segmentedControl.trailingAnchor).isActive = true
+        spaceButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+        spaceButton.addTarget(self, action: #selector(spacePressed), for: .touchUpInside)
+        
+        bottomView.addSubview(backButton)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.leadingAnchor.constraint(equalTo: spaceButton.trailingAnchor).isActive = true
+        backButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+        backButton.addTarget(self, action: #selector(backSpacePressed), for: .touchUpInside)
+        
+        bottomView.addSubview(returnButton)
+        returnButton.translatesAutoresizingMaskIntoConstraints = false
+        returnButton.leadingAnchor.constraint(equalTo: backButton.trailingAnchor).isActive = true
+        returnButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor).isActive = true
+        returnButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(KeyboardViewController.handleLongPress(_:)))
         longPress.minimumPressDuration = 0.5
         longPress.numberOfTouchesRequired = 1
         longPress.allowableMovement = 0.5
         backButton.addGestureRecognizer(longPress)
+    }
+    
+    @objc func spacePressed(button: UIButton) {
+        (textDocumentProxy as UIKeyInput).insertText(" ")
+    }
+    
+    @objc func returnPressed(button: UIButton) {
+        (textDocumentProxy as UIKeyInput).insertText("\n")
     }
     
     @objc private func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
@@ -290,5 +349,11 @@ extension KeyboardViewController: TextInput {
     func tapped(text: String) {
         let proxy = textDocumentProxy as UIKeyInput
         proxy.insertText(text)
+    }
+}
+
+extension String {
+    func textSize() -> CGFloat {
+        return self.size(withAttributes: [NSAttributedString.Key.font: UIFont(name: "Helvetica", size: 15)]).width
     }
 }
