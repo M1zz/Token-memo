@@ -123,11 +123,11 @@ struct TokenMemoList: View {
                 
                 .toolbar {
                     ToolbarItemGroup(placement: .bottomBar) {
-                        NavigationLink {
-                            ClipboardList()
-                        } label: {
-                            Image(systemName: "rectangle.and.paperclip")
-                        }
+//                        NavigationLink {
+//                            ClipboardList()
+//                        } label: {
+//                            Image(systemName: "rectangle.and.paperclip")
+//                        }
                         
                         
                         NavigationLink {

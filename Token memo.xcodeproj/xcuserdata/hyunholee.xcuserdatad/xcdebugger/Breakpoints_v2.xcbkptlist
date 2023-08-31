@@ -14,48 +14,28 @@
             filePath = "TokenKeyboard/KeyboardViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "249"
-            endingLineNumber = "249"
-            landmarkName = "KeyboardViewController"
-            landmarkType = "3">
-            <Locations>
-               <Location
-                  uuid = "92D9628A-F0F0-4B92-A8E9-3F60AB87067B - 97ea3f0029db4086"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "TokenKeyboard.KeyboardViewController.openAppPressed(button: __C.UIButton) -&gt; ()"
-                  moduleName = "TokenKeyboard"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/Token-memo/TokenKeyboard/KeyboardViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "251"
-                  endingLineNumber = "251"
-                  offsetFromSymbolStart = "156">
-               </Location>
-               <Location
-                  uuid = "92D9628A-F0F0-4B92-A8E9-3F60AB87067B - 97ea3f0029db40a7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "TokenKeyboard.KeyboardViewController.openAppPressed(button: __C.UIButton) -&gt; ()"
-                  moduleName = "TokenKeyboard"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/hyunholee/Documents/develop/workspace/Token-memo/TokenKeyboard/KeyboardViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "250"
-                  endingLineNumber = "250"
-                  offsetFromSymbolStart = "156">
-               </Location>
-            </Locations>
+            startingLineNumber = "223"
+            endingLineNumber = "223"
+            landmarkName = "openAppPressed(button:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
          <BreakpointContent
             uuid = "D58AD0ED-0681-44A9-949E-58A7B7CBC817"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            breakpointStackSelectionBehavior = "1"
+            scope = "1"
+            stopOnStyle = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
+         <BreakpointContent
+            uuid = "2FAA0CA7-495A-42BE-9654-F7F95B285936"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
