@@ -60,25 +60,6 @@ struct ShortcutMemoView: View {
                     
                         .foregroundColor(.green)
                 }
-                
-//                Button {
-//
-//
-//
-//                    do {
-//                        var tempMemos = try MemoStore.shared.load(type: .clipboardMemo)
-//                        tempMemos.append(Memo(title: keyword, value: value))
-//                        try MemoStore.shared.save(memos: tempMemos)
-//                        tokenMemos = tempMemos
-//                        originalData = tokenMemos
-//                    } catch {
-//                        fatalError(error.localizedDescription)
-//                    }
-//
-//                    showShortcutSheet.toggle()
-//                } label: {
-//
-//                }
             }
             .padding()
         }

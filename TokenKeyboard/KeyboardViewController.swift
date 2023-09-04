@@ -135,12 +135,12 @@ class KeyboardViewController: UIInputViewController {
                 tokenMemoData[item.title] = item.value
             }
             
-            let temp2 = try MemoStore.shared.load(type: .clipboardMemo)
+//            let temp2 = try MemoStore.shared.load(type: .clipboardMemo)
             var tempDic2: [String:String] = [:]
-            for item in temp2 {
-                tempDic2[item.title] = item.value
-                clipboardData[item.title] = item.value
-            }
+//            for item in temp2 {
+//                tempDic2[item.title] = item.value
+//                clipboardData[item.title] = item.value
+//            }
             
             displayKeyboardData = tempDic
         } catch {

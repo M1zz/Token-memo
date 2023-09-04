@@ -55,7 +55,7 @@ struct MemoAdd: View {
                     do {
                         var loadedMemos:[Memo] = []
                         loadedMemos = try MemoStore.shared.load(type: .tokenMemo)
-                        loadedMemos.append(Memo(title: keyword, value: value))
+                        loadedMemos.append(Memo(title: keyword, value: value, lastEdited: Date()))
                         try MemoStore.shared.save(memos: loadedMemos, type: .tokenMemo)
                     } catch {
                         fatalError(error.localizedDescription)

@@ -9,7 +9,7 @@ import Foundation
 
 enum MemoType {
     case tokenMemo
-    case clipboardMemo
+    //case clipboardMemo
 }
 
 class MemoStore: ObservableObject {
@@ -24,8 +24,8 @@ class MemoStore: ObservableObject {
         switch type {
         case .tokenMemo:
             return containerURL.appendingPathComponent("memos.data")
-        case .clipboardMemo:
-            return containerURL.appendingPathComponent("memos.clipboard.data")
+//        case .clipboardMemo:
+//            return containerURL.appendingPathComponent("memos.clipboard.data")
         }
     }
     
@@ -34,8 +34,8 @@ class MemoStore: ObservableObject {
         switch type {
         case .tokenMemo:
             data = try JSONEncoder().encode(memos)
-        case .clipboardMemo:
-            data = try JSONEncoder().encode(removeDuplicate(memos))
+//        case .clipboardMemo:
+//            data = try JSONEncoder().encode(removeDuplicate(memos))
         }
         
         guard let outfile = try Self.fileURL(type: type) else { return }
@@ -47,8 +47,21 @@ class MemoStore: ObservableObject {
         guard let data = try? Data(contentsOf: fileURL) else {
             return []
         }
+        var memos: [Memo] = []
+        //print(String(data: data, encoding: .utf8))
         
-        let memos = try JSONDecoder().decode([Memo].self, from: data)
+        if let newMemos = try? JSONDecoder().decode([Memo].self, from: data) {
+            memos = newMemos
+        } else {
+            if let oldMemos = try? JSONDecoder().decode([OldMemo].self, from: data) {
+                oldMemos.forEach { oldMemo in
+                    memos.append(Memo(from: oldMemo))
+                }
+                
+                //memos = oldMemos
+            }
+        }
+        
         return memos
     }
     
