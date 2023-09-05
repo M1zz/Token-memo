@@ -80,15 +80,19 @@ struct TokenMemoList: View {
                             
                             Spacer()
                             Button {
-                                memo.isFavorite.toggle()
-                                
-                                // update
-                                do {
-                                    try MemoStore.shared.save(memos: tokenMemos, type: .tokenMemo)
-                                    loadedData = tokenMemos
-                                } catch {
-                                    fatalError(error.localizedDescription)
+                                withAnimation(.easeInOut) {
+                                    memo.isFavorite.toggle()
+                                    tokenMemos = sortMemos(tokenMemos)
+                                    
+                                    // update
+                                    do {
+                                        try MemoStore.shared.save(memos: tokenMemos, type: .tokenMemo)
+                                        loadedData = tokenMemos
+                                    } catch {
+                                        fatalError(error.localizedDescription)
+                                    }
                                 }
+                                
                                 
                             } label: {
                                 Image(systemName: memo.isFavorite ? "heart.fill" : "heart")
@@ -98,6 +102,7 @@ struct TokenMemoList: View {
                             .background(.clear)
                             .buttonStyle(BorderedButtonStyle())
                         }
+                        .transition(.scale)
                     }
                     .onDelete { index in
                         tokenMemos.remove(atOffsets: index)
@@ -204,7 +209,7 @@ struct TokenMemoList: View {
                 do {
                     tokenMemos = sortMemos(try MemoStore.shared.load(type: .tokenMemo))
                     //tokenMemos.sort {$0.lastEdited > $1.lastEdited}
-                    loadedData = tokenMemos	
+                    loadedData = tokenMemos
                     
                 } catch {
                     fatalError(error.localizedDescription)
