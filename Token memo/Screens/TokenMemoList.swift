@@ -78,6 +78,7 @@ struct TokenMemoList: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                             
+                            
                             Spacer()
                             Button {
                                 withAnimation(.easeInOut) {
@@ -99,7 +100,6 @@ struct TokenMemoList: View {
                                     .symbolRenderingMode(.multicolor)
                             }
                             .frame(width: 40, height: 40)
-                            .background(.clear)
                             .buttonStyle(BorderedButtonStyle())
                         }
                         .transition(.scale)

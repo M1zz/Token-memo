@@ -27,6 +27,7 @@ struct Memo: Identifiable, Codable {
     var isChecked: Bool = false
     var lastEdited: Date = Date()
     var isFavorite: Bool = false
+    var clipCount: Int = 0
     
     init(id: UUID = UUID(), title: String, value: String, isChecked: Bool = false, lastEdited: Date = Date(), isFavorite: Bool = false) {
         self.id = id
