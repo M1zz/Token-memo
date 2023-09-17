@@ -28,14 +28,14 @@ struct ClipboardList: View {
                         clipboardMemos = loadedData
                         memo.isChecked = true
                         showToast(message: memo.value)
-                        do {
-                            var tempMemos = try MemoStore.shared.load(type: .clipboardMemo)
-                            tempMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error"))
-                            try MemoStore.shared.save(memos: tempMemos, type: .clipboardMemo)
+//                        do {
+//                            var tempMemos = try MemoStore.shared.load(type: .clipboardMemo)
+//                            tempMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error", lastEdited: memo.lastEdited))
+//                            try MemoStore.shared.save(memos: tempMemos, type: .clipboardMemo)
                             
-                        } catch {
-                            fatalError(error.localizedDescription)
-                        }
+//                        } catch {
+//                            fatalError(error.localizedDescription)
+//                        }
                         
                     } label: {
                         Label(memo.title,
@@ -47,25 +47,25 @@ struct ClipboardList: View {
                 .onDelete { index in
                     clipboardMemos.remove(atOffsets: index)
                     
-                    do {
-                        try MemoStore.shared.save(memos: clipboardMemos, type: .clipboardMemo)
-                        loadedData = clipboardMemos
-                    } catch {
-                        fatalError(error.localizedDescription)
-                    }
+//                    do {
+//                        try MemoStore.shared.save(memos: clipboardMemos, type: .clipboardMemo)
+//                        loadedData = clipboardMemos
+//                    } catch {
+//                        fatalError(error.localizedDescription)
+//                    }
                 }
             }
             .navigationTitle("Clipboard List")
-            .onAppear {
+            //.onAppear {
                 // load
-                do {
-                    loadedData = try MemoStore.shared.load(type: .clipboardMemo)
-                    clipboardMemos = removeDuplicate(loadedData)
-                    print(loadedData)
-                } catch {
-                    fatalError(error.localizedDescription)
-                }
-            }
+//                do {
+//                    loadedData = try MemoStore.shared.load(type: .clipboardMemo)
+//                    clipboardMemos = removeDuplicate(loadedData)
+//                    print(loadedData)
+//                } catch {
+//                    fatalError(error.localizedDescription)
+//                }
+            //}
             
             VStack {
                 Spacer()

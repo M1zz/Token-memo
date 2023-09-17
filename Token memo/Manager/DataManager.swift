@@ -56,3 +56,5 @@ class AppConfig {
     /// Your email for support
     static let emailSupport = "leeo@kakao.com"
 }
+
+
