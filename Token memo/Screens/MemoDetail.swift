@@ -32,6 +32,8 @@ struct MemoDetail: View {
 
 struct MemoDetail_Previews: PreviewProvider {
     static var previews: some View {
-        MemoDetail(memo: .constant(Memo(title: "계좌번호", value: "1111")))
+        MemoDetail(memo: .constant(Memo(title: "계좌번호",
+                                        value: "1111",
+                                        lastEdited: dateFormatter.date(from: "2023-08-31 10:00:00")!)))
     }
 }

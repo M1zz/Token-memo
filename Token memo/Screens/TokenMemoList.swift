@@ -27,62 +27,82 @@ struct TokenMemoList: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                
                 List {
                     if tokenMemos.isEmpty {
                         NavigationLink {
                             MemoAdd()
                         } label: {
-                            Text("No token, please add a new token.")
-                                .foregroundColor(.gray)
-                                .padding()
+                            EmptyListView
                         }
                     }
                     ForEach($tokenMemos) { $memo in
-                        Button {
-                            
-                            UIPasteboard.general.string = memo.value // copy
-                            tokenMemos = loadedData // init clicked data
-                            
-                            
-                            memo.isChecked = true // click data
-                            showToast(message: memo.value) // show toast
-                            
-                            
-                            do {
-                                var loadedClipboardMemos = try MemoStore.shared.load(type: .clipboardMemo)
-                                loadedClipboardMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error"))
+                        HStack {
+                            Button {
+                                UIPasteboard.general.string = memo.value // copy
+                                tokenMemos = loadedData // init clicked data
+                                memo.isChecked = true // click data
+                                showToast(message: memo.value) // show toast
                                 
-                                var doNotHaveDuplication: Bool = false
-                                for item in loadedClipboardMemos {
-                                    if UIPasteboard.general.string == item.value {
-                                        doNotHaveDuplication = true
+                                //do {
+                                //                                    var loadedClipboardMemos = try MemoStore.shared.load(type: .clipboardMemo)
+                                //                                    loadedClipboardMemos.append(Memo(title: UIPasteboard.general.string ?? "error",
+                                //                                                                     value: UIPasteboard.general.string ?? "error", lastEdited: memo.lastEdited))
+                                //
+                                //                                    var doNotHaveDuplication: Bool = false
+                                //                                    for item in loadedClipboardMemos {
+                                //                                        if UIPasteboard.general.string == item.value {
+                                //                                            doNotHaveDuplication = true
+                                //                                        }
+                                //                                    }
+                                //
+                                //                                    if doNotHaveDuplication {
+                                //                                        try MemoStore.shared.save(memos: loadedClipboardMemos, type: .clipboardMemo)
+                                //                                    }
+                                //
+                                //                                } catch {
+                                //                                    fatalError(error.localizedDescription)
+                                //                                }
+                            } label: {
+                                Label(memo.title,
+                                      systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
+                                .font(.system(size: fontSize))
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    NavigationLink {
+                                        MemoAdd(insertedKeyword: memo.title ,
+                                                insertedValue: memo.value)
+                                    } label: {
+                                        Label("update", systemImage: "pencil")
+                                    }
+                                    .tint(.green)
+                                }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            
+                            Spacer()
+                            Button {
+                                withAnimation(.easeInOut) {
+                                    memo.isFavorite.toggle()
+                                    tokenMemos = sortMemos(tokenMemos)
+                                    
+                                    // update
+                                    do {
+                                        try MemoStore.shared.save(memos: tokenMemos, type: .tokenMemo)
+                                        loadedData = tokenMemos
+                                    } catch {
+                                        fatalError(error.localizedDescription)
                                     }
                                 }
                                 
-                                if doNotHaveDuplication {
-                                    try MemoStore.shared.save(memos: loadedClipboardMemos, type: .clipboardMemo)
-                                }
                                 
-                            } catch {
-                                fatalError(error.localizedDescription)
+                            } label: {
+                                Image(systemName: memo.isFavorite ? "heart.fill" : "heart")
+                                    .symbolRenderingMode(.multicolor)
                             }
-                            
-                        } label: {
-                            Label(memo.title,
-                                  systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
-                            .font(.system(size: fontSize))
-                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                NavigationLink {
-                                    MemoAdd(insertedKeyword: memo.title ,
-                                            insertedValue: memo.value)
-                                } label: {
-                                    Label("update", systemImage: "pencil")
-                                }
-                                .tint(.green)
-                            }
+                            .frame(width: 40, height: 40)
+                            .buttonStyle(BorderedButtonStyle())
                         }
-                        .buttonStyle(.borderless)
+                        .transition(.scale)
                     }
                     .onDelete { index in
                         tokenMemos.remove(atOffsets: index)
@@ -117,16 +137,16 @@ struct TokenMemoList: View {
                         .padding(.all, 8)
                     }
                 }
-               
+                
                 .listRowInsets(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
                 
                 .toolbar {
                     ToolbarItemGroup(placement: .bottomBar) {
-                        NavigationLink {
-                            ClipboardList()
-                        } label: {
-                            Image(systemName: "rectangle.and.paperclip")
-                        }
+                        //                        NavigationLink {
+                        //                            ClipboardList()
+                        //                        } label: {
+                        //                            Image(systemName: "rectangle.and.paperclip")
+                        //                        }
                         
                         
                         NavigationLink {
@@ -187,8 +207,10 @@ struct TokenMemoList: View {
             .onAppear {
                 // load
                 do {
-                    tokenMemos = try MemoStore.shared.load(type: .tokenMemo)
+                    tokenMemos = sortMemos(try MemoStore.shared.load(type: .tokenMemo))
+                    //tokenMemos.sort {$0.lastEdited > $1.lastEdited}
                     loadedData = tokenMemos
+                    
                 } catch {
                     fatalError(error.localizedDescription)
                 }
@@ -206,8 +228,27 @@ struct TokenMemoList: View {
                 fontSize = UserDefaults.standard.object(forKey: "fontSize") as? CGFloat ?? 20.0
             }
         }
-        
-       
+    }
+    
+    private func sortMemos(_ memos: [Memo]) -> [Memo] {
+        return memos.sorted { (memo1, memo2) -> Bool in
+            if memo1.isFavorite != memo2.isFavorite {
+                return memo1.isFavorite && !memo2.isFavorite
+            } else {
+                return memo1.lastEdited > memo2.lastEdited
+            }
+        }
+    }
+
+    
+    /// Empty list view
+    private var EmptyListView: some View {
+        VStack(spacing: 5) {
+            Image(systemName: "eyes").font(.system(size: 45)).padding(10)
+            Text("Nothing to Paste")
+                .font(.system(size: 22)).bold()
+            Text("You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps").opacity(0.7)
+        }.multilineTextAlignment(.center).padding(30)
     }
     
     private func showToast(message: String) {
@@ -227,3 +268,11 @@ struct TokenMemoList_Previews: PreviewProvider {
     }
 }
 //square.and.pencil
+
+extension Date {
+    func toString(format: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        return dateFormatter.string(from: self)
+    }
+}

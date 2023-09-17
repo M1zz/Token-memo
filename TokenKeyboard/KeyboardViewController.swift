@@ -36,12 +36,6 @@ class KeyboardViewController: UIInputViewController {
         return view
     }()
     
-    let segmentedControl: UISegmentedControl = {
-        let control = UISegmentedControl(items: ["memo list", "clip board"])
-        control.translatesAutoresizingMaskIntoConstraints = false
-        control.selectedSegmentIndex = 0
-        return control
-    }()
     
     let backButton: UIButton = {
         let button = UIButton()
@@ -54,6 +48,36 @@ class KeyboardViewController: UIInputViewController {
         button.tintColor = .black
         button.backgroundColor = .systemGray2
         button.setTitleColor(.black, for: .normal)
+        return button
+    }()
+    
+    let spaceButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: "Space".textSize() + 20).isActive = true
+        button.layer.cornerRadius = 8
+        button.layer.borderColor = UIColor.black.cgColor
+        button.setTitle("Space", for: UIControl.State.normal)
+        button.titleLabel!.font = .systemFont(ofSize: 12)
+        button.backgroundColor = UIColor.white
+        button.setTitleColor(UIColor.black, for: UIControl.State.normal)
+        button.addTarget(KeyboardViewController.self, action: #selector(spacePressed), for: .touchUpInside)
+        return button
+    }()
+    
+    let returnButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: "Return".textSize() + 20).isActive = true
+        button.layer.cornerRadius = 8
+        button.layer.borderColor = UIColor.black.cgColor
+        button.setTitle("Return", for: UIControl.State.normal)
+        button.titleLabel!.font = .systemFont(ofSize: 12)
+        button.backgroundColor = UIColor.systemBlue
+        button.setTitleColor(UIColor.white, for: UIControl.State.normal)
+        button.addTarget(KeyboardViewController.self, action: #selector(returnPressed), for: .touchUpInside)
         return button
     }()
     
@@ -71,14 +95,21 @@ class KeyboardViewController: UIInputViewController {
         return button
     }()
     
+    let textField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .roundedRect
+        textField.placeholder = "Enter text"
+        return textField
+    }()
+    
     override func updateViewConstraints() {
         super.updateViewConstraints()
     }
     
     private func configureNextKeyboardButton() {
-        // Perform custom UI setup here
+
         self.nextKeyboardButton = UIButton(type: .system)
-        
         self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
         self.nextKeyboardButton.sizeToFit()
         self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
@@ -104,12 +135,12 @@ class KeyboardViewController: UIInputViewController {
                 tokenMemoData[item.title] = item.value
             }
             
-            let temp2 = try MemoStore.shared.load(type: .clipboardMemo)
+//            let temp2 = try MemoStore.shared.load(type: .clipboardMemo)
             var tempDic2: [String:String] = [:]
-            for item in temp2 {
-                tempDic2[item.title] = item.value
-                clipboardData[item.title] = item.value
-            }
+//            for item in temp2 {
+//                tempDic2[item.title] = item.value
+//                clipboardData[item.title] = item.value
+//            }
             
             displayKeyboardData = tempDic
         } catch {
@@ -136,24 +167,31 @@ class KeyboardViewController: UIInputViewController {
         bottomView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         bottomView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        bottomView.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        backButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor).isActive = true
-        backButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
-        backButton.addTarget(self, action: #selector(backSpacePressed), for: .touchUpInside)
-        
         bottomView.addSubview(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
         addButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
         addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
         
-        bottomView.addSubview(segmentedControl)
-        segmentedControl.leadingAnchor.constraint(equalTo: addButton.trailingAnchor).isActive = true
-        segmentedControl.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
-        segmentedControl.trailingAnchor.constraint(equalTo: backButton.leadingAnchor).isActive = true
-        segmentedControl.addTarget(self, action: #selector(didChangeValue(segment:)), for: .valueChanged)
+        bottomView.addSubview(spaceButton)
+        spaceButton.translatesAutoresizingMaskIntoConstraints = false
+        spaceButton.leadingAnchor.constraint(equalTo: addButton.trailingAnchor).isActive = true
+        spaceButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        spaceButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+        spaceButton.addTarget(self, action: #selector(spacePressed), for: .touchUpInside)
         
+        bottomView.addSubview(backButton)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.leadingAnchor.constraint(equalTo: spaceButton.trailingAnchor).isActive = true
+        backButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+        backButton.addTarget(self, action: #selector(backSpacePressed), for: .touchUpInside)
+        
+        bottomView.addSubview(returnButton)
+        returnButton.translatesAutoresizingMaskIntoConstraints = false
+        returnButton.leadingAnchor.constraint(equalTo: backButton.trailingAnchor).isActive = true
+        returnButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor).isActive = true
+        returnButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        returnButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(KeyboardViewController.handleLongPress(_:)))
         longPress.minimumPressDuration = 0.5
@@ -162,21 +200,16 @@ class KeyboardViewController: UIInputViewController {
         backButton.addGestureRecognizer(longPress)
     }
     
-    @objc private func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
-        textDocumentProxy.deleteBackward()
+    @objc func spacePressed(button: UIButton) {
+        (textDocumentProxy as UIKeyInput).insertText(" ")
     }
     
-    @objc private func didChangeValue(segment: UISegmentedControl) {
-        if let key = UIPasteboard.general.string  {
-            clipboardData[key] = key
-        }
-        
-        if segmentedControl.selectedSegmentIndex == 0 {
-            displayKeyboardData = tokenMemoData
-        } else {
-            displayKeyboardData = clipboardData
-        }
-        customCollectionView.reloadData()
+    @objc func returnPressed(button: UIButton) {
+        (textDocumentProxy as UIKeyInput).insertText("\n")
+    }
+    
+    @objc private func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
+        textDocumentProxy.deleteBackward()
     }
     
     @objc private func backSpacePressed(button: UIButton) {
@@ -205,11 +238,10 @@ class KeyboardViewController: UIInputViewController {
     }
     
     override func textWillChange(_ textInput: UITextInput?) {
-        // The app is about to change the document's contents. Perform any preparation here.
+
     }
     
     override func textDidChange(_ textInput: UITextInput?) {
-        // The app has just changed the document's contents, the document context has been updated.
         var textColor: UIColor
         let proxy = self.textDocumentProxy
         if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
@@ -233,28 +265,14 @@ extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         var tempKeys:[String] = []
-        var tempKeys2:[String] = []
-        if segmentedControl.selectedSegmentIndex == 0 {
-            for key in displayKeyboardData.keys {
-                tempKeys.append(key)
-            }
-            //keyBoardData = keyBoardMemoData
-        } else {
-            for key in clipboardData.keys {
-                tempKeys2.append(key)
-            }
+        for key in displayKeyboardData.keys {
+            tempKeys.append(key)
         }
-        
         
         guard let cell = customCollectionView.dequeueReusableCell(withReuseIdentifier: "cellIdentifier", for: indexPath) as? CollectionViewCell else {
             return CollectionViewCell()
         }
-        if segmentedControl.selectedSegmentIndex == 0 {
-            cell.setTitle(tempKeys[indexPath.row])
-        } else {
-            cell.setTitle(tempKeys2[indexPath.row])
-        }
-        
+        cell.setTitle(tempKeys[indexPath.row])
         cell.delegate = self
         
         return cell
@@ -263,15 +281,8 @@ extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         var tempKeys:[String] = []
-        
-        if segmentedControl.selectedSegmentIndex == 0 {
-            for key in displayKeyboardData.keys {
-                tempKeys.append(key)
-            }
-        } else {
-            for key in clipboardData.keys {
-                tempKeys.append(key)
-            }
+        for key in displayKeyboardData.keys {
+            tempKeys.append(key)
         }
         
         let label = UILabel(frame: .zero)
@@ -290,5 +301,67 @@ extension KeyboardViewController: TextInput {
     func tapped(text: String) {
         let proxy = textDocumentProxy as UIKeyInput
         proxy.insertText(text)
+    }
+}
+
+extension String {
+    func textSize() -> CGFloat {
+        return self.size(withAttributes: [NSAttributedString.Key.font: UIFont(name: "Helvetica", size: 15)]).width
+    }
+}
+
+
+final class EmptyListView: UIView {
+    
+    init() {
+        super.init(frame: .zero)
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
+    }
+    
+    private func setupView() {
+        // Create the image view
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "eyes")
+        imageView.contentMode = .scaleAspectFit
+        
+        // Create the title label
+        let titleLabel = UILabel()
+        titleLabel.text = "Nothing to Paste"
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 22)
+        titleLabel.textAlignment = .center
+        
+        // Create the body label
+        let bodyLabel = UILabel()
+        bodyLabel.text = "You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps"
+        bodyLabel.font = UIFont.systemFont(ofSize: 16)
+        bodyLabel.textAlignment = .center
+        bodyLabel.numberOfLines = 0
+        bodyLabel.textColor = UIColor.black.withAlphaComponent(0.7)
+        
+        // Create a vertical stack view
+        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, bodyLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 5
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stackView)
+        
+        // Constraints for the stack view
+        NSLayoutConstraint.activate([
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30)
+        ])
+        
+        // Constraints for the image view
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.heightAnchor.constraint(equalToConstant: 45),
+            imageView.widthAnchor.constraint(equalToConstant: 45)
+        ])
     }
 }

@@ -20,9 +20,7 @@ struct ClipboardList: View {
         ZStack {
             List {
                 if clipboardMemos.isEmpty {
-                    Text("No clipboard, please copy a new clipboard.")
-                        .foregroundColor(.gray)
-                        .padding()
+                    EmptyListView
                 }
                 ForEach($clipboardMemos) { $memo in
                     Button {
@@ -30,14 +28,14 @@ struct ClipboardList: View {
                         clipboardMemos = loadedData
                         memo.isChecked = true
                         showToast(message: memo.value)
-                        do {
-                            var tempMemos = try MemoStore.shared.load(type: .clipboardMemo)
-                            tempMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error"))
-                            try MemoStore.shared.save(memos: tempMemos, type: .clipboardMemo)
+//                        do {
+//                            var tempMemos = try MemoStore.shared.load(type: .clipboardMemo)
+//                            tempMemos.append(Memo(title: UIPasteboard.general.string ?? "error", value: UIPasteboard.general.string ?? "error", lastEdited: memo.lastEdited))
+//                            try MemoStore.shared.save(memos: tempMemos, type: .clipboardMemo)
                             
-                        } catch {
-                            fatalError(error.localizedDescription)
-                        }
+//                        } catch {
+//                            fatalError(error.localizedDescription)
+//                        }
                         
                     } label: {
                         Label(memo.title,
@@ -49,25 +47,25 @@ struct ClipboardList: View {
                 .onDelete { index in
                     clipboardMemos.remove(atOffsets: index)
                     
-                    do {
-                        try MemoStore.shared.save(memos: clipboardMemos, type: .clipboardMemo)
-                        loadedData = clipboardMemos
-                    } catch {
-                        fatalError(error.localizedDescription)
-                    }
+//                    do {
+//                        try MemoStore.shared.save(memos: clipboardMemos, type: .clipboardMemo)
+//                        loadedData = clipboardMemos
+//                    } catch {
+//                        fatalError(error.localizedDescription)
+//                    }
                 }
             }
             .navigationTitle("Clipboard List")
-            .onAppear {
+            //.onAppear {
                 // load
-                do {
-                    loadedData = try MemoStore.shared.load(type: .clipboardMemo)
-                    clipboardMemos = removeDuplicate(loadedData)
-                    print(loadedData)
-                } catch {
-                    fatalError(error.localizedDescription)
-                }
-            }
+//                do {
+//                    loadedData = try MemoStore.shared.load(type: .clipboardMemo)
+//                    clipboardMemos = removeDuplicate(loadedData)
+//                    print(loadedData)
+//                } catch {
+//                    fatalError(error.localizedDescription)
+//                }
+            //}
             
             VStack {
                 Spacer()
@@ -89,6 +87,16 @@ struct ClipboardList: View {
             .animation(.easeInOut(duration: 0.5), value: showToast)
             .transition(.opacity)
         }
+    }
+    
+    /// Empty list view
+    private var EmptyListView: some View {
+        VStack(spacing: 5) {
+            Image(systemName: "eyes").font(.system(size: 45)).padding(10)
+            Text("Nothing to paste")
+                .font(.system(size: 22)).bold()
+            Text("No clipboard, Copy the items you want to paste and add them to the clipboard.").opacity(0.7)
+        }.multilineTextAlignment(.center).padding(30)
     }
     
     private func showToast(message: String) {
