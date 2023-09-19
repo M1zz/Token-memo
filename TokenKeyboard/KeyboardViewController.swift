@@ -83,6 +83,20 @@ class KeyboardViewController: UIInputViewController {
         return button
     }()
     
+    let globeKeyboardButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        button.layer.cornerRadius = 8
+        button.layer.borderColor = UIColor.black.cgColor
+        button.setImage(UIImage(systemName: "globe"), for: .normal)
+        button.tintColor = .black
+        button.backgroundColor = .systemGray2
+        button.setTitleColor(.black, for: .normal)
+        return button
+    }()
+    
     let addButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -167,9 +181,18 @@ class KeyboardViewController: UIInputViewController {
         bottomView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         bottomView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
+        bottomView.addSubview(globeKeyboardButton)
+        globeKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+        globeKeyboardButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+        globeKeyboardButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+        globeKeyboardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        globeKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+
+        
+        
         bottomView.addSubview(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
-        addButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+        addButton.leadingAnchor.constraint(equalTo: globeKeyboardButton.trailingAnchor).isActive = true
         addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
         
@@ -219,7 +242,7 @@ class KeyboardViewController: UIInputViewController {
     @objc func openURL(_ url: URL) {
         return
     }
-
+    
     @objc private func openAppPressed(button: UIButton) {
         var responder: UIResponder? = self as UIResponder
         let selector = #selector(openURL(_:))
@@ -233,12 +256,12 @@ class KeyboardViewController: UIInputViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
+        self.nextKeyboardButton.isHidden = true //!self.needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
     }
     
     override func textWillChange(_ textInput: UITextInput?) {
-
+        
     }
     
     override func textDidChange(_ textInput: UITextInput?) {
@@ -251,7 +274,7 @@ class KeyboardViewController: UIInputViewController {
         }
         self.nextKeyboardButton.setTitleColor(textColor, for: [])
     }
-
+    
     private func sortMemos(_ memos: [Memo]) -> [Memo] {
         return memos.sorted { (memo1, memo2) -> Bool in
             if memo1.isFavorite != memo2.isFavorite {
