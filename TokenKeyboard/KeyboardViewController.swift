@@ -1,20 +1,23 @@
 //
-//  KeyboardViewController.swift
-//  TokenKeyboard
+// KeyboardViewController.swift
+// TokenKeyboard
 //
-//  Created by hyunho lee on 2023/05/24.
+// Created by hyunho lee on 2023/05/24.
 //
 
 import UIKit
 
 typealias KeyboardData = [String:String]
-var displayKeyboardData: KeyboardData = [:]
+// var displayKeyboardData: KeyboardData = [:]
+var clipKey: [String] = []
+var clipValue: [String] = []
+var tappedIndex = 2
 var clipboardData: KeyboardData = [:]
 var tokenMemoData: KeyboardData = [:]
 
 class KeyboardViewController: UIInputViewController {
-    
     @IBOutlet var nextKeyboardButton: UIButton!
+    
     private let flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -35,7 +38,6 @@ class KeyboardViewController: UIInputViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
     
     let backButton: UIButton = {
         let button = UIButton()
@@ -81,6 +83,20 @@ class KeyboardViewController: UIInputViewController {
         return button
     }()
     
+    let globeKeyboardButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        button.layer.cornerRadius = 8
+        button.layer.borderColor = UIColor.black.cgColor
+        button.setImage(UIImage(systemName: "globe"), for: .normal)
+        button.tintColor = .black
+        button.backgroundColor = .systemGray2
+        button.setTitleColor(.black, for: .normal)
+        return button
+    }()
+    
     let addButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -108,7 +124,6 @@ class KeyboardViewController: UIInputViewController {
     }
     
     private func configureNextKeyboardButton() {
-
         self.nextKeyboardButton = UIButton(type: .system)
         self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
         self.nextKeyboardButton.sizeToFit()
@@ -128,21 +143,20 @@ class KeyboardViewController: UIInputViewController {
         configureNextKeyboardButton()
         
         do {
-            let temp = try MemoStore.shared.load(type: .tokenMemo)
+            var temp = try MemoStore.shared.load(type: .tokenMemo)
+            temp = sortMemos(temp)
+            clipKey = []
+            clipValue = []
+            for item in temp {
+                clipKey.append(item.title)
+                clipValue.append(item.value)
+            }
+            
             var tempDic: [String:String] = [:]
             for item in temp {
                 tempDic[item.title] = item.value
                 tokenMemoData[item.title] = item.value
             }
-            
-//            let temp2 = try MemoStore.shared.load(type: .clipboardMemo)
-            var tempDic2: [String:String] = [:]
-//            for item in temp2 {
-//                tempDic2[item.title] = item.value
-//                clipboardData[item.title] = item.value
-//            }
-            
-            displayKeyboardData = tempDic
         } catch {
             fatalError(error.localizedDescription)
         }
@@ -167,9 +181,18 @@ class KeyboardViewController: UIInputViewController {
         bottomView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         bottomView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
+        bottomView.addSubview(globeKeyboardButton)
+        globeKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+        globeKeyboardButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+        globeKeyboardButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+        globeKeyboardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        globeKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+
+        
+        
         bottomView.addSubview(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
-        addButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+        addButton.leadingAnchor.constraint(equalTo: globeKeyboardButton.trailingAnchor).isActive = true
         addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
         addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
         
@@ -219,7 +242,7 @@ class KeyboardViewController: UIInputViewController {
     @objc func openURL(_ url: URL) {
         return
     }
-
+    
     @objc private func openAppPressed(button: UIButton) {
         var responder: UIResponder? = self as UIResponder
         let selector = #selector(openURL(_:))
@@ -233,12 +256,12 @@ class KeyboardViewController: UIInputViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
+        self.nextKeyboardButton.isHidden = true //!self.needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
     }
     
     override func textWillChange(_ textInput: UITextInput?) {
-
+        
     }
     
     override func textDidChange(_ textInput: UITextInput?) {
@@ -251,11 +274,21 @@ class KeyboardViewController: UIInputViewController {
         }
         self.nextKeyboardButton.setTitleColor(textColor, for: [])
     }
+    
+    private func sortMemos(_ memos: [Memo]) -> [Memo] {
+        return memos.sorted { (memo1, memo2) -> Bool in
+            if memo1.isFavorite != memo2.isFavorite {
+                return memo1.isFavorite && !memo2.isFavorite
+            } else {
+                return memo1.lastEdited > memo2.lastEdited
+            }
+        }
+    }
 }
 
 extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return displayKeyboardData.count
+        return clipKey.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -263,30 +296,18 @@ extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        var tempKeys:[String] = []
-        for key in displayKeyboardData.keys {
-            tempKeys.append(key)
-        }
-        
         guard let cell = customCollectionView.dequeueReusableCell(withReuseIdentifier: "cellIdentifier", for: indexPath) as? CollectionViewCell else {
             return CollectionViewCell()
         }
-        cell.setTitle(tempKeys[indexPath.row])
+        cell.setTitle(clipKey[indexPath.row])
         cell.delegate = self
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        var tempKeys:[String] = []
-        for key in displayKeyboardData.keys {
-            tempKeys.append(key)
-        }
-        
         let label = UILabel(frame: .zero)
-        label.text = tempKeys[indexPath.row]
+        label.text = clipKey[indexPath.row]
         label.sizeToFit()
         
         if label.frame.width > 150 {
