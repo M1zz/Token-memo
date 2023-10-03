@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 typealias KeyboardData = [String:String]
 // var displayKeyboardData: KeyboardData = [:]
@@ -135,8 +136,9 @@ class KeyboardViewController: UIInputViewController {
         
         self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        
     }
+    
+    private let keyboardView = KeyboardView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -160,41 +162,75 @@ class KeyboardViewController: UIInputViewController {
         } catch {
             fatalError(error.localizedDescription)
         }
-        
-        view.addSubview(customCollectionView)
+        let myKeyboardView = UIHostingController(rootView: keyboardView).view!
+        myKeyboardView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(myKeyboardView)
         let bottomView = UIView(frame: CGRect.init(x: 0, y: 0, width: 320, height: 30))
         view.addSubview(bottomView)
         
-        customCollectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        customCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        customCollectionView.bottomAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
-        customCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        customCollectionView.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        customCollectionView.register(CollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "cellIdentifier")
-        customCollectionView.dataSource = self
-        customCollectionView.delegate = self
+        myKeyboardView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        myKeyboardView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        myKeyboardView.bottomAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
+        myKeyboardView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        myKeyboardView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "addTextEntry"), object: nil, queue: nil) { notification in
+            if let text = notification.object as? String {
+                self.textDocumentProxy.insertText(text)
+            }
+        }
         
         bottomView.translatesAutoresizingMaskIntoConstraints = false
-        bottomView.topAnchor.constraint(equalTo: customCollectionView.bottomAnchor).isActive = true
         bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+//        bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
         bottomView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         bottomView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         bottomView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        bottomView.addSubview(globeKeyboardButton)
-        globeKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-        globeKeyboardButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
-        globeKeyboardButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
-        globeKeyboardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        globeKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-
         
+//        #if os(iOS)
+//        bottomView.addSubview(addButton)
+//        addButton.translatesAutoresizingMaskIntoConstraints = false
+//        addButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+//        addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+//        addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
+//        #else
+//        
+//        #endif
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            bottomView.addSubview(globeKeyboardButton)
+//            globeKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+//            globeKeyboardButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+//            globeKeyboardButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+//            globeKeyboardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+//            globeKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+//            
+//            bottomView.addSubview(addButton)
+//            addButton.translatesAutoresizingMaskIntoConstraints = false
+//            addButton.leadingAnchor.constraint(equalTo: globeKeyboardButton.trailingAnchor).isActive = true
+//            addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+//            addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
+//        }
         
-        bottomView.addSubview(addButton)
-        addButton.translatesAutoresizingMaskIntoConstraints = false
-        addButton.leadingAnchor.constraint(equalTo: globeKeyboardButton.trailingAnchor).isActive = true
-        addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
-        addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            bottomView.addSubview(addButton)
+            addButton.translatesAutoresizingMaskIntoConstraints = false
+            addButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+            addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+            addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
+        } else if UIDevice.current.userInterfaceIdiom == .pad {
+            bottomView.addSubview(globeKeyboardButton)
+            globeKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+            globeKeyboardButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor).isActive = true
+            globeKeyboardButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+            globeKeyboardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+            globeKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+            
+            bottomView.addSubview(addButton)
+            addButton.translatesAutoresizingMaskIntoConstraints = false
+            addButton.leadingAnchor.constraint(equalTo: globeKeyboardButton.trailingAnchor).isActive = true
+            addButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor).isActive = true
+            addButton.addTarget(self, action: #selector(openAppPressed), for: .touchUpInside)
+        }
         
         bottomView.addSubview(spaceButton)
         spaceButton.translatesAutoresizingMaskIntoConstraints = false
@@ -286,37 +322,37 @@ class KeyboardViewController: UIInputViewController {
     }
 }
 
-extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return clipKey.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = customCollectionView.dequeueReusableCell(withReuseIdentifier: "cellIdentifier", for: indexPath) as? CollectionViewCell else {
-            return CollectionViewCell()
-        }
-        cell.setTitle(clipKey[indexPath.row])
-        cell.delegate = self
-        
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let label = UILabel(frame: .zero)
-        label.text = clipKey[indexPath.row]
-        label.sizeToFit()
-        
-        if label.frame.width > 150 {
-            return CGSize(width: 150, height: 40)
-        } else {
-            return CGSize(width: label.frame.width + 20, height: 40)
-        }
-    }
-}
+//extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return clipKey.count
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+//        return 10
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        guard let cell = customCollectionView.dequeueReusableCell(withReuseIdentifier: "cellIdentifier", for: indexPath) as? CollectionViewCell else {
+//            return CollectionViewCell()
+//        }
+//        cell.setTitle(clipKey[indexPath.row])
+//        cell.delegate = self
+//        
+//        return cell
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        let label = UILabel(frame: .zero)
+//        label.text = clipKey[indexPath.row]
+//        label.sizeToFit()
+//        
+//        if label.frame.width > 150 {
+//            return CGSize(width: 150, height: 40)
+//        } else {
+//            return CGSize(width: label.frame.width + 20, height: 40)
+//        }
+//    }
+//}
 
 extension KeyboardViewController: TextInput {
     func tapped(text: String) {
@@ -383,6 +419,20 @@ final class EmptyListView: UIView {
         NSLayoutConstraint.activate([
             imageView.heightAnchor.constraint(equalToConstant: 45),
             imageView.widthAnchor.constraint(equalToConstant: 45)
+        ])
+    }
+}
+
+
+extension UIView {
+    func addKeyboardSubview(_ subview: UIView) {
+        subview.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(subview)
+        NSLayoutConstraint.activate([
+            subview.leftAnchor.constraint(equalTo: leftAnchor),
+            subview.rightAnchor.constraint(equalTo: rightAnchor),
+            subview.topAnchor.constraint(equalTo: topAnchor),
+            subview.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 }
