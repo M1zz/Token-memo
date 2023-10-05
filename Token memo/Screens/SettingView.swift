@@ -25,18 +25,54 @@ struct SettingView: View {
             NavigationLink(destination: FontSetting()) {
                 Text("앱 내 폰트 크기 변경")
             }
-            
-            Button {
-                if let url = URL.init(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                }
-            } label: {
+
+            NavigationLink(destination: CopyPasteView()) {
                 Text("붙여넣기 알림이 귀찮으신가요?")
             }
             
-            Button("Review the app") {
-                requestReview()
+            NavigationLink(destination: ReviewWriteView()) {
+                Text("리뷰 및 평점 매기기")
             }
+        }
+    }
+}
+
+struct CopyPasteView: View {
+    
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        VStack {
+            Button("Open Web Page") {
+                
+            }
+            .onAppear(perform: {
+                dismiss()
+
+                if let url = URL.init(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            })
+        }
+    }
+}
+
+struct ReviewWriteView: View {
+    
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        VStack {
+            Button("Open Web Page") {
+                
+            }
+            .onAppear(perform: {
+                dismiss()
+
+                if let url = URL(string: "https://apps.apple.com/app/id1543660502?action=write-review") {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            })
         }
     }
 }
