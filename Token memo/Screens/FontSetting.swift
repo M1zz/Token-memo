@@ -20,7 +20,7 @@ struct FontSetting: View {
     
     var body: some View {
         VStack {
-            Text("Adjustable Token Size")
+            Text("이 사이즈로 내용이 보입니다.")
                 .font(.system(size: fontSize))
                 .padding()
             
