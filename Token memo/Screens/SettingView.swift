@@ -15,10 +15,6 @@ struct SettingView: View {
     var body: some View {
         List {
             NavigationLink(destination: TutorialView()) {
-                Text("웹뷰")
-            }
-            
-            NavigationLink(destination: CopyTutorialView()) {
                 Text("복사 사용방법 튜토리얼")
             }
             
@@ -97,7 +93,7 @@ struct TutorialView: View {
             .onAppear(perform: {
                 dismiss()
 
-                if let url = URL(string: "https://leeo75.notion.site/Swift-Coding-Class-3a037e69b3ca484d88b369f0d24030ff?pvs=4") {
+                if let url = URL(string: "https://leeo75.notion.site/ClipKeyboard-tutorial-70624fccc524465f99289c89bd0261a4?pvs=4") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
             })
