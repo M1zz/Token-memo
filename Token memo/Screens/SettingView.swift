@@ -15,11 +15,11 @@ struct SettingView: View {
     var body: some View {
         List {
             NavigationLink(destination: TutorialView()) {
-                Text("복사 사용방법 튜토리얼")
+                Text("클립키보드 사용방법")
             }
             
             NavigationLink(destination: KeyboardTutorialView()) {
-                Text("키보드 사용방법 튜토리얼")
+                Text("FAQ")
             }
             
             NavigationLink(destination: FontSetting()) {
@@ -27,7 +27,7 @@ struct SettingView: View {
             }
 
             NavigationLink(destination: CopyPasteView()) {
-                Text("붙여넣기 알림이 귀찮으신가요?")
+                Text("붙여넣기 알림 켜기/끄기")
             }
             
             NavigationLink(destination: ReviewWriteView()) {
