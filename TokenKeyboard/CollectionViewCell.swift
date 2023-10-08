@@ -16,7 +16,7 @@ class CollectionViewCell: UICollectionViewCell {
     var delegate: TextInput?
     
     private let titleLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textAlignment = .center
         label.backgroundColor = .white
         label.textColor = .black
@@ -48,6 +48,10 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     @objc func didTapCell() {
-        delegate?.tapped(text: displayKeyboardData[titleLabel.text!]!)
+        
+        if let index = clipKey.firstIndex(of: titleLabel.text!) {
+            let tappedText = clipValue[index]
+            delegate?.tapped(text: tappedText)
+        }
     }
 }
