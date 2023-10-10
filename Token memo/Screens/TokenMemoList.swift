@@ -24,6 +24,8 @@ struct TokenMemoList: View {
     @State private var keyword: String = ""
     @State private var value: String = ""
     
+    @State private var searchQueryString = ""
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -43,25 +45,6 @@ struct TokenMemoList: View {
                                 memo.isChecked = true // click data
                                 showToast(message: memo.value) // show toast
                                 
-                                //do {
-                                //                                    var loadedClipboardMemos = try MemoStore.shared.load(type: .clipboardMemo)
-                                //                                    loadedClipboardMemos.append(Memo(title: UIPasteboard.general.string ?? "error",
-                                //                                                                     value: UIPasteboard.general.string ?? "error", lastEdited: memo.lastEdited))
-                                //
-                                //                                    var doNotHaveDuplication: Bool = false
-                                //                                    for item in loadedClipboardMemos {
-                                //                                        if UIPasteboard.general.string == item.value {
-                                //                                            doNotHaveDuplication = true
-                                //                                        }
-                                //                                    }
-                                //
-                                //                                    if doNotHaveDuplication {
-                                //                                        try MemoStore.shared.save(memos: loadedClipboardMemos, type: .clipboardMemo)
-                                //                                    }
-                                //
-                                //                                } catch {
-                                //                                    fatalError(error.localizedDescription)
-                                //                                }
                             } label: {
                                 Label(memo.title,
                                       systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
@@ -137,6 +120,7 @@ struct TokenMemoList: View {
                         .padding(.all, 8)
                     }
                 }
+
                 
                 .listRowInsets(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
                 
@@ -187,7 +171,29 @@ struct TokenMemoList: View {
                 .animation(.easeInOut(duration: 0.5), value: showToast)
                 .transition(.opacity)
             }
+            
+            .onChange(of: searchQueryString, perform: { value in
+                if searchQueryString.isEmpty {
+                    tokenMemos = loadedData
+                } else {
+                    tokenMemos = tokenMemos.filter { $0.title.localizedStandardContains(searchQueryString)
+                    }
+                }
+            })
+//            .onChange(of: searchQueryString, {
+//                if searchQueryString.isEmpty {
+//                    tokenMemos = loadedData
+//                } else {
+//                    tokenMemos = tokenMemos.filter { $0.title.localizedStandardContains(searchQueryString)
+//                    }
+//                }
+//            })
             .navigationTitle("Touch and Copy")
+            .searchable(
+              text: $searchQueryString,
+              placement: .navigationBarDrawer,
+              prompt: "검색 placholder..."
+            )
             .overlay(content: {
                 VStack {
                     Spacer()
