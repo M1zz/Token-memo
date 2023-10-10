@@ -1,0 +1,110 @@
+{
+  "sourceLanguage" : "ko",
+  "strings" : {
+    "" : {
+
+    },
+    "1" : {
+
+    },
+    "Clipboard List" : {
+
+    },
+    "Completed!" : {
+
+    },
+    "FAQ" : {
+
+    },
+    "Get Started" : {
+
+    },
+    "Insert contents" : {
+
+    },
+    "Insert keyword" : {
+
+    },
+    "Next" : {
+
+    },
+    "Next Keyboard" : {
+      "comment" : "Title for 'Next Keyboard' button"
+    },
+    "No clipboard, Copy the items you want to paste and add them to the clipboard." : {
+
+    },
+    "Nothing to paste" : {
+
+    },
+    "Nothing to Paste" : {
+
+    },
+    "Ok" : {
+
+    },
+    "Open Web Page" : {
+
+    },
+    "Remove all" : {
+
+    },
+    "Save" : {
+
+    },
+    "Send Email" : {
+
+    },
+    "Title : " : {
+
+    },
+    "Touch and Copy" : {
+
+    },
+    "update" : {
+
+    },
+    "Value : " : {
+
+    },
+    "You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps" : {
+
+    },
+    "개발자에게 연락하기" : {
+
+    },
+    "리뷰 및 평점 매기기" : {
+
+    },
+    "부모님댁 주소" : {
+
+    },
+    "붙여넣기 알림 켜기/끄기" : {
+
+    },
+    "새 토큰을 추가할까요?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add new token?"
+          }
+        }
+      }
+    },
+    "앱 내 폰트 크기 변경" : {
+
+    },
+    "이 사이즈로 내용이 보입니다." : {
+
+    },
+    "클립키보드 사용방법" : {
+
+    },
+    "통관번호" : {
+
+    }
+  },
+  "version" : "1.0"
+}
