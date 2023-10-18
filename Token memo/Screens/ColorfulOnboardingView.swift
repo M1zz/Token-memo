@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 /// Shows a full color background for each onboarding view
 struct ColorfulOnboardingView: View {
     

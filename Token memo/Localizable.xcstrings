@@ -2,63 +2,130 @@
   "sourceLanguage" : "ko",
   "strings" : {
     "" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "1" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "Clip Keyboard" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Clipboard List" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Completed!" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "FAQ" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Get Started" : {
-
-    },
-    "Insert contents" : {
-
-    },
-    "Insert keyword" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Next" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Next Keyboard" : {
-      "comment" : "Title for 'Next Keyboard' button"
+      "comment" : "Title for 'Next Keyboard' button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "No clipboard, Copy the items you want to paste and add them to the clipboard." : {
-
-    },
-    "Nothing to paste" : {
-
-    },
-    "Nothing to Paste" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Ok" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Open Web Page" : {
-
-    },
-    "Remove all" : {
-
-    },
-    "Save" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Send Email" : {
 
     },
     "Title : " : {
-
-    },
-    "Touch and Copy" : {
 
     },
     "update" : {
@@ -73,7 +140,7 @@
     "개발자에게 연락하기" : {
 
     },
-    "검색 placholder..." : {
+    "검색" : {
 
     },
     "리뷰 및 평점 매기기" : {
@@ -96,14 +163,69 @@
         }
       }
     },
+    "생성된 키보드가 없어요" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing to Paste"
+          }
+        }
+      }
+    },
     "앱 내 폰트 크기 변경" : {
 
     },
     "이 사이즈로 내용이 보입니다." : {
 
     },
+    "전체 삭제" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove all"
+          }
+        }
+      }
+    },
     "클립키보드 사용방법" : {
 
+    },
+    "키보드 버튼 문구" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insert keyword"
+          }
+        }
+      }
+    },
+    "키보드 입력 시 삽입되는 전체 문구를 작성해주세요" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insert contents"
+          }
+        }
+      }
+    },
+    "키보드 추가" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
     },
     "통관번호" : {
 

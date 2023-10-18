@@ -120,7 +120,7 @@ struct TokenMemoList: View {
                         .padding(.all, 8)
                     }
                 }
-
+                
                 
                 .listRowInsets(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
                 
@@ -180,19 +180,11 @@ struct TokenMemoList: View {
                     }
                 }
             })
-//            .onChange(of: searchQueryString, {
-//                if searchQueryString.isEmpty {
-//                    tokenMemos = loadedData
-//                } else {
-//                    tokenMemos = tokenMemos.filter { $0.title.localizedStandardContains(searchQueryString)
-//                    }
-//                }
-//            })
-            .navigationTitle("Touch and Copy")
+            .navigationTitle("Clip Keyboard")
             .searchable(
-              text: $searchQueryString,
-              placement: .navigationBarDrawer,
-              prompt: "검색 placholder..."
+                text: $searchQueryString,
+                placement: .navigationBarDrawer,
+                prompt: "검색"
             )
             .overlay(content: {
                 VStack {
@@ -245,13 +237,13 @@ struct TokenMemoList: View {
             }
         }
     }
-
+    
     
     /// Empty list view
     private var EmptyListView: some View {
         VStack(spacing: 5) {
             Image(systemName: "eyes").font(.system(size: 45)).padding(10)
-            Text("Nothing to Paste")
+            Text(Constants.nothingToPaste)
                 .font(.system(size: 22)).bold()
             Text("You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps").opacity(0.7)
         }.multilineTextAlignment(.center).padding(30)
@@ -273,7 +265,6 @@ struct TokenMemoList_Previews: PreviewProvider {
         TokenMemoList()
     }
 }
-//square.and.pencil
 
 extension Date {
     func toString(format: String) -> String {

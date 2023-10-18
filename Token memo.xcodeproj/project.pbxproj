@@ -191,6 +191,7 @@
 			children = (
 				5802F4142A2B966E002825D6 /* Token-memo-Info.plist */,
 				587BDC5A2A1FCA10001464E4 /* Token memo.entitlements */,
+				581550622AD5321F00A6115B /* Constants.swift */,
 				58D9D52C2A3B237D0086BE1A /* Manager */,
 				58F8FBC42A15278100F5446E /* Screens */,
 				58F8FBC32A15277700F5446E /* Service */,
@@ -200,7 +201,6 @@
 				58C4733F2A109F0E009D87BC /* Assets.xcassets */,
 				58C473412A109F0E009D87BC /* Preview Content */,
 				5815505F2AD52D6800A6115B /* Localizable.xcstrings */,
-				581550622AD5321F00A6115B /* Constants.swift */,
 			);
 			path = "Token memo";
 			sourceTree = "<group>";
