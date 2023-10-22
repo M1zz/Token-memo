@@ -100,7 +100,7 @@ struct ClipboardList: View {
     }
     
     private func showToast(message: String) {
-        toastMessage = "[\(message)] is copied."
+        toastMessage = "[\(message)] 이 복사되었습니다."
         showToast = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             showToast = false

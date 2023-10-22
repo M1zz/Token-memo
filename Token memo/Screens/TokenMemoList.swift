@@ -245,12 +245,12 @@ struct TokenMemoList: View {
             Image(systemName: "eyes").font(.system(size: 45)).padding(10)
             Text(Constants.nothingToPaste)
                 .font(.system(size: 22)).bold()
-            Text("You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps").opacity(0.7)
+            Text(Constants.emptyDescription).opacity(0.7)
         }.multilineTextAlignment(.center).padding(30)
     }
     
     private func showToast(message: String) {
-        toastMessage = "[\(message)] is copied."
+        toastMessage = "[\(message)] 이 복사되었습니다."
         showToast = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             showToast = false

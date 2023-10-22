@@ -135,7 +135,14 @@
 
     },
     "You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"'+' 버튼을 탭하면 iMessage, Mail 또는 기타 앱에서 쉽게 접근할 수 있는 문구나 일반 텍스트를 추가할 수 있습니다.\""
+          }
+        }
+      }
     },
     "개발자에게 연락하기" : {
 
