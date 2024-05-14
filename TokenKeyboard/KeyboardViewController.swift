@@ -394,7 +394,7 @@ final class EmptyListView: UIView {
         
         // Create the body label
         let bodyLabel = UILabel()
-        bodyLabel.text = "You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps"
+        bodyLabel.text = Constants.emptyDescription
         bodyLabel.font = UIFont.systemFont(ofSize: 16)
         bodyLabel.textAlignment = .center
         bodyLabel.numberOfLines = 0

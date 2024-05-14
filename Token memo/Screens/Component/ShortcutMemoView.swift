@@ -22,7 +22,7 @@ struct ShortcutMemoView: View {
             HStack {
                 VStack {
                     HStack {
-                        Text("Add new token?")
+                        Text(Constants.addNewToken)
                             .padding(.vertical, 5)
                             .font(.title3)
                             .bold()

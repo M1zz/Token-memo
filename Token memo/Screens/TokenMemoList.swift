@@ -24,6 +24,8 @@ struct TokenMemoList: View {
     @State private var keyword: String = ""
     @State private var value: String = ""
     
+    @State private var searchQueryString = ""
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -43,25 +45,6 @@ struct TokenMemoList: View {
                                 memo.isChecked = true // click data
                                 showToast(message: memo.value) // show toast
                                 
-                                //do {
-                                //                                    var loadedClipboardMemos = try MemoStore.shared.load(type: .clipboardMemo)
-                                //                                    loadedClipboardMemos.append(Memo(title: UIPasteboard.general.string ?? "error",
-                                //                                                                     value: UIPasteboard.general.string ?? "error", lastEdited: memo.lastEdited))
-                                //
-                                //                                    var doNotHaveDuplication: Bool = false
-                                //                                    for item in loadedClipboardMemos {
-                                //                                        if UIPasteboard.general.string == item.value {
-                                //                                            doNotHaveDuplication = true
-                                //                                        }
-                                //                                    }
-                                //
-                                //                                    if doNotHaveDuplication {
-                                //                                        try MemoStore.shared.save(memos: loadedClipboardMemos, type: .clipboardMemo)
-                                //                                    }
-                                //
-                                //                                } catch {
-                                //                                    fatalError(error.localizedDescription)
-                                //                                }
                             } label: {
                                 Label(memo.title,
                                       systemImage: memo.isChecked ? "checkmark.square.fill" : "doc.on.doc.fill")
@@ -138,6 +121,7 @@ struct TokenMemoList: View {
                     }
                 }
                 
+                
                 .listRowInsets(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
                 
                 .toolbar {
@@ -187,7 +171,21 @@ struct TokenMemoList: View {
                 .animation(.easeInOut(duration: 0.5), value: showToast)
                 .transition(.opacity)
             }
-            .navigationTitle("Touch and Copy")
+            
+            .onChange(of: searchQueryString, perform: { value in
+                if searchQueryString.isEmpty {
+                    tokenMemos = loadedData
+                } else {
+                    tokenMemos = tokenMemos.filter { $0.title.localizedStandardContains(searchQueryString)
+                    }
+                }
+            })
+            .navigationTitle("Clip Keyboard")
+            .searchable(
+                text: $searchQueryString,
+                placement: .navigationBarDrawer,
+                prompt: "검색"
+            )
             .overlay(content: {
                 VStack {
                     Spacer()
@@ -239,20 +237,20 @@ struct TokenMemoList: View {
             }
         }
     }
-
+    
     
     /// Empty list view
     private var EmptyListView: some View {
         VStack(spacing: 5) {
             Image(systemName: "eyes").font(.system(size: 45)).padding(10)
-            Text("Nothing to Paste")
+            Text(Constants.nothingToPaste)
                 .font(.system(size: 22)).bold()
-            Text("You can tap the '+' button to add a phrase or any common text that you want to easily access from iMessages, Mail or other apps").opacity(0.7)
+            Text(Constants.emptyDescription).opacity(0.7)
         }.multilineTextAlignment(.center).padding(30)
     }
     
     private func showToast(message: String) {
-        toastMessage = "[\(message)] is copied."
+        toastMessage = "[\(message)] 이 복사되었습니다."
         showToast = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             showToast = false
@@ -267,7 +265,6 @@ struct TokenMemoList_Previews: PreviewProvider {
         TokenMemoList()
     }
 }
-//square.and.pencil
 
 extension Date {
     func toString(format: String) -> String {

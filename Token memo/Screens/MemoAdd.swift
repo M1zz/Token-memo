@@ -20,7 +20,7 @@ struct MemoAdd: View {
     
     var body: some View {
         VStack {
-            TextField("Insert keyword", text: $keyword)
+            TextField(Constants.insertKeyword, text: $keyword)
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 16)
                     .strokeBorder())
@@ -39,7 +39,7 @@ struct MemoAdd: View {
                     keyword = ""
                     value = ""
                 } label: {
-                    Text("Remove all")
+                    Text(Constants.removeAll)
                         .foregroundColor(.red)
                         .bold()
                 }
@@ -64,24 +64,14 @@ struct MemoAdd: View {
                     showAlert = true
                 }
             } label: {
-                Text("Save")
+                Text(Constants.save)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
 
         }
-//        .onChange(of: keyword, perform: { value in
-//            do {
-//                var loadedMemos:[Memo] = []
-//                loadedMemos = try MemoStore.shared.load(type: .tokenMemo)
-//                loadedMemos.append(Memo(title: keyword, value: value))
-//                try MemoStore.shared.save(memos: loadedMemos, type: .tokenMemo)
-//            } catch {
-//                fatalError(error.localizedDescription)
-//            }
-//        })
         .padding()
-        .alert("Insert contents", isPresented: $showAlert) {
+        .alert(Constants.insertContents, isPresented: $showAlert) {
             
         }
         .alert("Completed!", isPresented: $showSucessAlert) {
