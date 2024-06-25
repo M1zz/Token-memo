@@ -238,7 +238,6 @@ struct TokenMemoList: View {
         }
     }
     
-    
     /// Empty list view
     private var EmptyListView: some View {
         VStack(spacing: 5) {

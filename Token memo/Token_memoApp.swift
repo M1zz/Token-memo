@@ -13,28 +13,12 @@ struct Token_memoApp: App {
     
     var body: some Scene {
         WindowGroup {
-            // basic UI
-            // memo RC .. DU
-            // persistance
-            // toast
-            // clipboard
-            // half modal
-            if manager.didShowOnboarding == false {
+            if manager.didShowOnboarding {
+                TokenMemoList()
+            } else {
                 ColorfulOnboardingView(pages: OnboardingPages) {
                     manager.didShowOnboarding = true
                 }
-            } else {
-                TokenMemoList()
-//                    .onOpenURL { url in
-//                        if (url.scheme! == "tokenMemo" && url.host! == "test") {
-//                            if let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true) {
-//                                for query in components.queryItems! {
-//                                    print(query.name)
-//                                    print(query.value!)
-//                                }
-//                            }
-//                        }
-//                    }
             }
             
         }
