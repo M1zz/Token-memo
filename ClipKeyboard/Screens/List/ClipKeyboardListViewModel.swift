@@ -8,6 +8,7 @@ import LocalAuthentication
 import TipKit
 #if os(iOS)
 import UIKit
+import UniformTypeIdentifiers
 import LeeoKit
 #endif
 
@@ -1176,17 +1177,31 @@ final class ClipKeyboardListViewModel: ObservableObject {
 
     func finalizeCopy(memo: Memo, processedValue: String, showToastAfter: Bool = true) {
         #if os(iOS)
-        if memo.contentType == .image || memo.contentType == .mixed {
-            if let firstImageFileName = memo.imageFileNames.first,
-               let image = MemoStore.shared.loadImage(fileName: firstImageFileName) {
-                UIPasteboard.general.image = image
-                print("✅ [finalizeCopy] 이미지를 클립보드에 복사: \(firstImageFileName)")
-
-                if !processedValue.isEmpty && memo.contentType == .mixed {
-                    UIPasteboard.general.string = processedValue
+        let imageFileName: String? = (memo.contentType == .image || memo.contentType == .mixed)
+            ? (memo.imageFileNames.first ?? memo.imageFileName)
+            : nil
+        if let imageFileName {
+            if let data = MemoStore.shared.imageData(fileName: imageFileName) {
+                // ⚠️ 사진과 글을 **한 항목에 함께** 얹는다. 예전에는 `.image` 를 넣고 나서
+                //    `.string` 을 넣었는데, 클립보드는 새로 얹을 때마다 앞의 것을 버린다.
+                //    그래서 글+사진 단축어는 **글을 넣는 순간 사진이 사라졌다.**
+                //    한 항목에 두 표현을 담으면 받는 앱이 자기가 받을 수 있는 쪽을 가져간다.
+                var item: [String: Any] = [
+                    MemoStore.shared.imagePasteboardType(fileName: imageFileName): data
+                ]
+                if memo.contentType == .mixed, !processedValue.isEmpty {
+                    item[UTType.utf8PlainText.identifier] = processedValue
                 }
+                UIPasteboard.general.items = [item]
+                print("✅ [finalizeCopy] 이미지를 클립보드에 복사: \(imageFileName) (\(data.count) bytes)")
                 // 이미지 메모 탭 시 복사됨 안내 토스트.
                 showPlainToast(NSLocalizedString("이미지가 복사되었습니다", comment: "Image copied toast"))
+            } else {
+                // 파일이 사라졌거나 아직 안 내려왔다. 예전에는 여기서 **아무 말도 없이**
+                // 아무 일도 안 했다 - 눌렀는데 조용하면 앱이 고장 난 것으로 읽힌다.
+                if !processedValue.isEmpty { UIPasteboard.general.string = processedValue }
+                print("⚠️ [finalizeCopy] 이미지 파일을 읽지 못함: \(imageFileName)")
+                showPlainToast(NSLocalizedString("사진을 찾지 못했어요", comment: "Toast: image file missing"))
             }
         } else {
             UIPasteboard.general.string = processedValue

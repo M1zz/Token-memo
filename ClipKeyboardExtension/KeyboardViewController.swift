@@ -655,14 +655,20 @@ class KeyboardViewController: UIInputViewController {
         let before = proxy.documentContextBeforeInput ?? ""
         let after = proxy.documentContextAfterInput ?? ""
         let hasAny = !before.isEmpty || !after.isEmpty
+        // 리턴 키의 이름은 호스트가 정한다. 같은 자리에서 함께 읽어 둔다 - 이 함수가
+        // 필드가 바뀔 때(viewDidAppear)와 글이 바뀔 때 모두 불리는 유일한 곳이라서다.
+        // `UITextInputTraits` 의 선택 요구사항이라 옵셔널로 온다. 안 주면 기본 리턴이다.
+        let wantedReturn = proxy.returnKeyType ?? .default
         // @Published 갱신은 메인 스레드에서
+        let apply = { [weak self] in
+            guard let self else { return }
+            if self.documentState.hasText != hasAny { self.documentState.hasText = hasAny }
+            if self.documentState.returnKeyType != wantedReturn { self.documentState.returnKeyType = wantedReturn }
+        }
         if Thread.isMainThread {
-            if documentState.hasText != hasAny { documentState.hasText = hasAny }
+            apply()
         } else {
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                if self.documentState.hasText != hasAny { self.documentState.hasText = hasAny }
-            }
+            DispatchQueue.main.async(execute: apply)
         }
     }
 

@@ -248,6 +248,9 @@ struct KeyboardView: View {
     // 옵션 토글 - 기본 OFF로 화면 공간 확보
     @AppStorage("keyboardShowSearch", store: AppGroup.defaults) private var showSearchBar: Bool = false
     @AppStorage("keyboardShowRecent", store: AppGroup.defaults) private var showRecentSection: Bool = false
+    /// 위줄에 리턴(보내기) 키를 세울지. 잘못 눌러 보내는 것이 무서운 사람은 끌 수 있다.
+    /// 기본은 켬 - 없어서 못 보내던 것이 신고로 들어온 쪽이라, 꺼 둔 채로 두면 고친 것이 아니다.
+    @AppStorage(DefaultsKey.keyboardShowReturnKey, store: AppGroup.defaults) private var showReturnKey: Bool = true
     // 한국어 입력 사용 여부(기본 OFF). 꺼져 있으면 한/EN 토글과 한글 자판이 아예 노출되지 않아
     // 영어 전용 사용자는 한글을 볼 일이 없다. 한국어 사용자가 설정에서 직접 켠다.
     @AppStorage("keyboardKoreanEnabled", store: AppGroup.defaults) private var koreanInputEnabled: Bool = false
@@ -357,6 +360,9 @@ struct KeyboardView: View {
     // 보안 메모 PIN 인증
     @State private var showPINEntry = false
     @State private var pendingSecureMemo: Memo?
+    /// 인증을 통과하면 넣을 콤보 단계. nil 이면 콤보가 아니라 본체 값을 넣는다.
+    /// (잠긴 콤보도 값을 고를 수 있어야 한다는 요청 - 고른 자리를 인증 너머까지 들고 간다.)
+    @State private var pendingSecureComboIndex: Int?
     @State private var enteredPIN = ""
     @State private var pinEntryWrong = false
 
@@ -655,6 +661,69 @@ struct KeyboardView: View {
         .accessibilityHint(NSLocalizedString("한 글자씩 지웁니다. 누르고 있으면 이어서 지웁니다", comment: "Backspace key hint"))
     }
 
+    /// 호스트가 시키는 대로 이름이 바뀌는 리턴 키.
+    ///
+    /// 왜 필요한가: 문구는 키보드에서 넣는데 **보내기가 시스템 키보드에만 있었다.** 넣자마자
+    /// 지구본을 눌러 건너가야 했으니, 넣어 준 시간을 나가는 데 다 썼다(사용자 요청:
+    /// "빨리 문구는 넣었는데 보내기 버튼을 못 찾겠다"). 지우기 키가 생긴 이유와 같은 뿌리다.
+    ///
+    /// ⚠️ **우리가 할 수 있는 것은 `"\n"` 을 넣는 것뿐이다.** 리턴 키를 눌렀다고 호스트에게
+    ///    알리는 API 는 없다. 대부분의 채팅 앱은 이 줄바꿈을 받아 보내기로 처리하지만,
+    ///    그렇게 안 만든 앱에서는 줄만 바뀐다.
+    /// ⚠️ 그래서 **이름을 우리가 짓지 않는다.** 호스트가 말한 `returnKeyType` 을 그대로 적는다.
+    ///    우리가 "보내기" 라고 지어 부르면, 안 보내지는 앱에서 그 글자가 거짓말이 된다.
+    private func returnDocumentKey(proxy: TypingInputProxy) -> some View {
+        let name = returnKeyName
+        return Button {
+            KeyboardHaptics.tap()
+            proxy.insertNewline()
+        } label: {
+            Group {
+                if let name {
+                    Text(name)
+                        .font(.system(size: 12, weight: .semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .padding(.horizontal, 9)
+                        .foregroundColor(theme.accentFg)
+                } else {
+                    // 호스트가 이름을 안 줬다(메모장 같은 곳). 그럴 때 줄바꿈은 '행동'이 아니라
+                    // 그냥 줄바꿈이라, 강조색으로 세우지 않는다.
+                    Image(systemName: AppSymbol.returnLeft)
+                        .font(.system(size: 13, weight: .semibold))
+                        .frame(width: 36)
+                        .foregroundColor(theme.text)
+                }
+            }
+            .frame(height: 28)
+            .background(name == nil ? theme.divider : theme.accent)
+            .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
+        }
+        .buttonStyle(PlainButtonStyle())
+        .frame(minWidth: 44, minHeight: 44)
+        .padding(.trailing, 2)
+        .contentShape(Rectangle())
+        // 마찬가지로 "줄바꿈" 도 이미 다른 뜻(글의 줄바꿈 설정)으로 쓰여 "Line breaks" 다.
+        .accessibilityLabel(name ?? NSLocalizedString("리턴 키", comment: "Return key accessibility label"))
+        .accessibilityHint(NSLocalizedString("입력창에 줄바꿈을 넣습니다. 앱에 따라 보내기로 동작합니다", comment: "Return key hint"))
+    }
+
+    /// 호스트가 말한 리턴 키의 이름. 모르는 종류면 nil 이고, 그때는 줄바꿈 화살표로 그린다.
+    /// **없는 이름을 지어내지 않는다** - 틀린 이름은 없는 것보다 나쁘다.
+    private var returnKeyName: String? {
+        switch documentState.returnKeyType {
+        case .send:   return NSLocalizedString("보내기", comment: "Return key label: send")
+        case .search: return NSLocalizedString("검색", comment: "Return key label: search")
+        // ⚠️ "이동" 은 못 쓴다. 이미 목록에서 **자리를 옮긴다**는 뜻으로 쓰고 있어서
+        //    영어가 "Move" 로 번역돼 있다. 사파리 주소창 키에 "Move" 가 서면 거짓말이다.
+        //    String Catalog 는 한 낱말에 뜻을 둘 담지 못하므로 문구를 달리한다.
+        case .go:     return NSLocalizedString("이동하기", comment: "Return key label: go")
+        case .done:   return NSLocalizedString("완료", comment: "Return key label: done")
+        case .next:   return NSLocalizedString("다음", comment: "Return key label: next")
+        default:      return nil
+        }
+    }
+
     /// 복사한 것을 넣는 키.
     ///
     /// **짧게 누르면 통째로, 길게 누르면 조각을 골라서.**
@@ -762,6 +831,12 @@ struct KeyboardView: View {
                     // 복사한 것을 넣는 키. 지울 수 있게 된 김에 붙여넣을 수도 있어야 한다.
                     if let proxy = typingProxy {
                         clipboardKey(proxy: proxy)
+                    }
+                    // 넣고 나서 보내는 키. **X 옆에 두지 않는다** - 하나는 보내 버리고 하나는
+                    // 다 지우는 키라, 붙여 놓으면 잘못 누른 값이 양쪽 다 크다. 사이에 지우기를 끼운다.
+                    if let proxy = typingProxy, showReturnKey,
+                       documentState.hasText || hostKind == .inApp {
+                        returnDocumentKey(proxy: proxy)
                     }
                     // 한 글자 지우기. 이게 없어서 오타 하나를 고치려고 **다른 키보드로
                     // 건너갔다가 돌아와야 했다**(사용자 요청).
@@ -1503,7 +1578,7 @@ struct KeyboardView: View {
         let imageFileName = memo.imageFileNames.first ?? memo.imageFileName ?? ""
         let bypass = false
 
-        if isImageMemo && !imageFileName.isEmpty && !(memo.isCombo && !memo.isSecure) {
+        if isImageMemo && !imageFileName.isEmpty && !memo.isCombo {
             // 이미지 메모(콤보 아님): 전체 배경으로 이미지 표시.
             // 이미지+여러 값(콤보)이면 아래 분할 버튼으로 값을 넣게 하고, 이미지는 롱프레스로 복사.
             Button {
@@ -1520,12 +1595,19 @@ struct KeyboardView: View {
             .modifier(MemoPeekOnLongPress(memo: memo, enabled: hostKind != .inApp, onPeek: showPeek))
             .accessibilityLabel(memoAccessibilityLabel(for: memo))
             .accessibilityHint(memoAccessibilityHint(for: memo))
-        } else if memo.isCombo && !memo.isSecure {
+        } else if memo.isCombo {
             // 여러 값(콤보) - 2/3 분할: 왼쪽 현재 값 삽입, 오른쪽 → 다음 값.
+            //
+            // ⚠️ **잠긴 콤보도 여기로 온다.** 예전에는 `&& !memo.isSecure` 로 빼 두었는데,
+            //    그러면 잠긴 콤보는 아래 통짜 키로 떨어져 **1번 값만** 나가고 2번부터는
+            //    키보드에서 꺼낼 길이 아예 없었다(사용자 요청: "잠금 푼 뒤에 고를 수가 없다").
+            //    고르는 일에는 값이 필요 없다 - 값이 나가는 왼쪽만 인증을 받으면 된다.
             comboSplitButton(for: memo, catColor: catColor)
                 .modifier(MemoPeekOnLongPress(memo: memo, enabled: hostKind != .inApp, onPeek: showPeek))
                 .accessibilityLabel(memoAccessibilityLabel(for: memo))
-                .accessibilityHint(NSLocalizedString("왼쪽을 누르면 현재 값을, 오른쪽 화살표로 다음 값을 넣어요", comment: "Combo split button hint"))
+                .accessibilityHint(memo.isSecure
+                    ? NSLocalizedString("오른쪽 화살표로 값을 고르고, 왼쪽을 누르면 PIN 인증 후 넣어요", comment: "Secure combo split button hint")
+                    : NSLocalizedString("왼쪽을 누르면 현재 값을, 오른쪽 화살표로 다음 값을 넣어요", comment: "Combo split button hint"))
         } else {
             Button {
                 memoButtonAction(for: memo, bypassTemplate: bypass)
@@ -1584,11 +1666,20 @@ struct KeyboardView: View {
         return HStack(spacing: 0) {
             // 왼쪽 2/3 - 평소엔 키(제목), → 누르면 현재 값이 디졸브로 잠깐 보였다 사라진다(iOS와 동일).
             Button {
-                insertComboValue(memo: memo, value: current)
+                if memo.isSecure {
+                    // 값이 나가는 쪽만 인증을 받는다. 고른 자리(idx)를 인증 너머로 들고 간다.
+                    authenticateAndInsert(memo: memo, comboIndex: idx)
+                } else {
+                    insertComboValue(memo: memo, value: current)
+                }
             } label: {
                 ComboKeyValueLabel(
                     title: memo.title,
-                    value: current,
+                    // ⚠️ 잠긴 콤보에서는 값을 넘기지 않는다. 이 라벨은 → 를 누를 때마다 값을
+                    //    잠깐 비추는데(디졸브), 잠가 둔 값이 화면에 비치면 잠근 뜻이 사라진다.
+                    //    (게다가 잠긴 값은 암호문이라 비쳐도 읽을 것이 없다.)
+                    value: memo.isSecure ? "" : current,
+                    masked: memo.isSecure,
                     fontSize: buttonFontSize,
                     titleColor: theme.text,
                     valueColor: theme.textMuted,
@@ -1715,7 +1806,10 @@ struct KeyboardView: View {
         if memo.isCombo { parts.append(NSLocalizedString("콤보", comment: "VoiceOver: combo badge")) }
         if memo.contentType == .image || memo.contentType == .mixed {
             parts.append(NSLocalizedString("이미지 단축어", comment: "VoiceOver: image memo"))
-        } else if !memo.value.isEmpty {
+        } else if !memo.isSecure, !memo.value.isEmpty {
+            // ⚠️ 잠긴 단축어의 값은 읽어 주지 않는다. 저장된 것이 암호문("smenc1:...")이라
+            //    보이스오버가 base64 를 40글자 읽는 꼴이었고, 잠근 것을 소리로 흘리는 길이기도
+            //    했다. 화면에 안 보여 주기로 한 것은 소리로도 안 나가야 한다.
             let preview = String(memo.value.strippingTemplateBraces.prefix(40))
             parts.append(preview)
         }
@@ -1791,7 +1885,8 @@ struct KeyboardView: View {
         )
     }
 
-    private func authenticateAndInsert(memo: Memo, bypassTemplate: Bool = false) {
+    /// - Parameter comboIndex: 잠긴 콤보에서 고른 단계. nil 이면 본체 값을 넣는다.
+    private func authenticateAndInsert(memo: Memo, bypassTemplate: Bool = false, comboIndex: Int? = nil) {
         let storedHash = AppGroup.defaults?.string(forKey: DefaultsKey.keyboardSecurePinHash) ?? ""
         guard !storedHash.isEmpty else {
             UINotificationFeedbackGenerator().notificationOccurred(.warning)
@@ -1803,9 +1898,28 @@ struct KeyboardView: View {
         }
         pendingSecureMemo = memo
         pendingBypassTemplate = bypassTemplate
+        pendingSecureComboIndex = comboIndex
         enteredPIN = ""
         pinEntryWrong = false
         showPINEntry = true
+    }
+
+    /// 잠긴 콤보의 한 단계를 복호화해서 넣는다. 키가 아직 안 내려왔으면 넣지 않는다
+    /// (암호문을 그대로 흘리면 상대에게 "smenc1:..." 이 붙여넣어진다).
+    private func insertSecureComboValue(memo: Memo, index: Int) {
+        let raw = memo.comboValues.indices.contains(index) ? memo.comboValues[index] : memo.value
+        guard !raw.isEmpty else { return }
+        let value: String
+        if SecureMemoCrypto.isEncrypted(raw) {
+            guard let decrypted = SecureMemoCrypto.decrypt(raw) else {
+                print("🔒 [insertSecureComboValue] 보안 키 미동기화 - 복호화 불가, 삽입 중단")
+                return
+            }
+            value = decrypted
+        } else {
+            value = raw
+        }
+        insertComboValue(memo: memo, value: value)
     }
 
     private func verifyPIN() {
@@ -1814,8 +1928,15 @@ struct KeyboardView: View {
         let storedHash = AppGroup.defaults?.string(forKey: DefaultsKey.keyboardSecurePinHash) ?? ""
         if hash == storedHash {
             showPINEntry = false
-            if let memo = pendingSecureMemo { insertMemo(memo, bypassTemplate: pendingBypassTemplate) }
+            if let memo = pendingSecureMemo {
+                if let index = pendingSecureComboIndex {
+                    insertSecureComboValue(memo: memo, index: index)
+                } else {
+                    insertMemo(memo, bypassTemplate: pendingBypassTemplate)
+                }
+            }
             pendingSecureMemo = nil
+            pendingSecureComboIndex = nil
             enteredPIN = ""
             pinEntryWrong = false
             pendingBypassTemplate = false
@@ -1826,17 +1947,28 @@ struct KeyboardView: View {
         }
     }
 
+    /// 이미지 단축어를 클립보드에 얹는다.
+    ///
+    /// ⚠️ **`UIImage` 를 거치지 않는다.** 예전에는 `loadImage()` 로 원본을 통째로 펼친 뒤
+    ///    `UIPasteboard.general.image = image` 로 넘겼다. 그러면 펼친 것(3000x2000 이면 24MB)과
+    ///    다시 인코딩한 것이 동시에 잡히는데, **키보드 익스텐션의 메모리 한도는 그걸 못 견딘다.**
+    ///    한도를 넘으면 iOS 가 익스텐션을 조용히 죽인다 - 사용자 눈에는 에러도 없이
+    ///    "눌렀는데 아무 일도 안 일어남" 으로만 보인다(사용자 신고: "앱에서는 복사되는데
+    ///    키보드에서는 안 된다"). 앱에서만 되던 이유가 이것이다. 앱에는 그 한도가 없다.
+    ///
+    ///    파일 바이트를 그대로 건네면 펼치는 일도 인코딩도 없다.
+    ///    자세한 것은 `docs/postmortem/KEYBOARD_IMAGE_MEMORY.md`.
     private func copyImageToClipboard(memo: Memo) {
         guard requireFullAccess() else { return }
         let fileName = memo.imageFileNames.first ?? memo.imageFileName ?? ""
         guard !fileName.isEmpty,
-              let image = MemoStore.shared.loadImage(fileName: fileName) else {
+              let data = MemoStore.shared.imageData(fileName: fileName) else {
             print("⚠️ [KeyboardView] 이미지 로드 실패: \(memo.title)")
             return
         }
-        UIPasteboard.general.image = image
+        UIPasteboard.general.setData(data, forPasteboardType: MemoStore.shared.imagePasteboardType(fileName: fileName))
         UINotificationFeedbackGenerator().notificationOccurred(.success)
-        print("✅ [KeyboardView] 이미지 클립보드 복사 완료: \(memo.title)")
+        print("✅ [KeyboardView] 이미지 클립보드 복사 완료: \(memo.title) (\(data.count) bytes)")
 
         // 앱 무대에서는 복사에서 끝내지 않는다 - 입력창이 우리 것이라 붙여넣은 모습까지
         // 보여줄 수 있다. 익스텐션에서는 남의 텍스트 필드라 넣을 길이 없어 복사가 끝이다.
@@ -2398,10 +2530,23 @@ struct KeyboardView: View {
                 }
                 .padding(.top, 14)
 
+                // ⚠️ 틀림 안내와 **같은 줄자리**를 쓴다. 키보드 높이 안에 숫자판까지 들어가야 해서
+                //    줄을 하나 더 늘리면 작은 기기에서 아래가 잘린다.
+                //
+                // 왜 여기서 Face ID 를 말하나: 앱에서는 Face ID 로 열리는데 키보드에서만 번호를
+                // 묻는다. 그 차이를 설명하지 않으면 고장으로 읽힌다(실제로 그런 문의가 왔다).
+                // iOS 가 키보드 익스텐션에 LocalAuthentication 을 안 열어 준다.
+                // 자세한 것은 docs/postmortem/KEYBOARD_FACEID.md
                 if pinEntryWrong {
                     Text(NSLocalizedString("PIN이 올바르지 않습니다", comment: "PIN wrong error"))
                         .font(.caption2)
                         .foregroundColor(.red)
+                } else {
+                    Text(NSLocalizedString("키보드에서는 Face ID를 쓸 수 없어 번호로 엽니다", comment: "PIN entry: why not Face ID"))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 12)
                 }
 
                 // 4-dot indicator
@@ -2465,6 +2610,7 @@ struct KeyboardView: View {
             KeyboardHaptics.softTap()
             showPINEntry = false
             pendingSecureMemo = nil
+            pendingSecureComboIndex = nil
             enteredPIN = ""
             pinEntryWrong = false
         } label: {
@@ -2599,6 +2745,8 @@ struct KeyboardView: View {
 struct ComboKeyValueLabel: View {
     let title: String
     let value: String
+    /// 잠긴 콤보. 값을 **한 번도** 비추지 않는다 - 디졸브까지 끈다.
+    let masked: Bool
     let fontSize: Double
     let titleColor: Color
     let valueColor: Color
@@ -2633,8 +2781,10 @@ struct ComboKeyValueLabel: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
         // flashToken 변경(→ 또는 최초 등장) 때마다: 값을 잠깐 보여줬다 다시 키로.
+        // 잠긴 콤보에서는 아무것도 비추지 않는다(제목만 서 있는다).
         .task(id: flashToken) {
             showingValue = false
+            guard !masked else { return }
             do {
                 try await Task.sleep(for: .seconds(0.2))
                 withAnimation(.easeInOut(duration: 0.45)) { showingValue = true }

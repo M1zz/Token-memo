@@ -145,6 +145,8 @@ enum DefaultsKey {
     static let keyLabelTruncation = "keyLabelTruncation.v1"
     static let keyboardPasteCount = "keyboard_paste_count"
     static let keyboardSecurePinHash = "keyboard_secure_pin_hash"
+    /// 키보드 위줄에 리턴(보내기) 키를 세울지. App Group - 익스텐션이 읽는다. 기본 켬.
+    static let keyboardShowReturnKey = "keyboardShowReturnKey"
     static let keyboardTypingLang = "keyboardTypingLang"
     static let koreanEnabledMigratedV1 = "koreanEnabledMigrated_v1"
     static let lastBackupDate = "lastBackupDate"

@@ -10,6 +10,9 @@
 
 import Foundation
 import Combine
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// 이 키보드를 **누가 띄우고 있는가.**
 ///
@@ -31,6 +34,13 @@ final class KeyboardDocumentState: ObservableObject {
     /// 호스트 텍스트 필드에 입력된 텍스트가 있는지.
     /// false면 KeyboardView의 X(clear all) 버튼 등 텍스트가 있어야 의미있는 UI를 숨김.
     @Published var hasText: Bool = false
+
+    /// 호스트가 리턴 키에 무엇을 기대하는가. 위챗 입력창이면 `.send`, 사파리 검색창이면 `.search`.
+    ///
+    /// 왜 들고 있나: 리턴 키의 **이름을 우리가 짓지 않기 위해서**다. 우리가 할 수 있는 일은
+    /// 줄바꿈을 넣는 것뿐이라, 그것이 '보내기'가 될지 '검색'이 될지는 호스트가 정한다.
+    /// 호스트가 말한 대로 적어야 그 글자를 찾던 사람이 그 글자를 본다.
+    @Published var returnKeyType: UIReturnKeyType = .default
 
     /// 키보드가 새 텍스트 필드에 나타날 때마다 증가.
     /// TypingKeyboardView가 이 값이 바뀌면 hangulComposer/cheonjiinInput 상태를 초기화해

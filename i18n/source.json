@@ -3353,6 +3353,12 @@
     "comment": "No values hint",
     "h": "e0e21cc570"
   },
+  "값이 여러 개인 단축어를 잠가 두었어도, 오른쪽 화살표로 원하는 값을 고른 다음 왼쪽을 눌러 인증하면 그 값만 들어갑니다.": {
+    "ko": "값이 여러 개인 단축어를 잠가 두었어도, 오른쪽 화살표로 원하는 값을 고른 다음 왼쪽을 눌러 인증하면 그 값만 들어갑니다.",
+    "en": "Even when a snippet with several values is locked, pick the one you want with the arrow, then tap the left side to unlock. Only that value goes in.",
+    "comment": "DYK body: secure combo pick",
+    "h": "d95c9353c6"
+  },
   "강조된 칸만 채우면 나머지 문장은 그대로 완성돼요. 자주 쓰는 양식을 빠르게 입력하세요.": {
     "ko": "강조된 칸만 채우면 나머지 문장은 그대로 완성돼요. 자주 쓰는 양식을 빠르게 입력하세요.",
     "en": "Just fill in the highlighted slots, the rest of the text completes itself. Enter your go-to formats in a flash.",
@@ -3736,6 +3742,12 @@
     "en": "Until then it is set to General. The old default, Digital Nomad, was where this app started, not where you are",
     "comment": "Changelog 5.0.4 persona general",
     "h": "aa7579c8f3"
+  },
+  "글과 사진을 함께 담은 단축어를 복사하면 사진이 빠지던 것을 고쳤어요": {
+    "ko": "글과 사진을 함께 담은 단축어를 복사하면 사진이 빠지던 것을 고쳤어요",
+    "en": "Fixed the image being dropped when copying a snippet that holds both text and a photo",
+    "comment": "Changelog 5.0.9 mixed memo image",
+    "h": "dd2c538bc8"
   },
   "글자 위를 문질러 주세요": {
     "ko": "글자 위를 문질러 주세요",
@@ -4282,6 +4294,12 @@
     "en": "Tomorrow",
     "comment": "Date option: tomorrow",
     "h": "c85ae14422"
+  },
+  "넣고 나서 그 자리에서 보낼 수 있어요": {
+    "ko": "넣고 나서 그 자리에서 보낼 수 있어요",
+    "en": "Insert, then send without leaving",
+    "comment": "DYK title: return key",
+    "h": "7b5fda0021"
   },
   "넣고 나서 매번 같은 곳을 같게 고치시네요. 단축어를 그 값으로 바꿀까요?": {
     "ko": "넣고 나서 매번 같은 곳을 같게 고치시네요. 단축어를 그 값으로 바꿀까요?",
@@ -5003,6 +5021,12 @@
     "comment": "Changelog 4.3.0 item 1",
     "h": "0c5a7d535d"
   },
+  "단축어를 넣은 뒤 키보드를 바꾸지 않고 바로 보냅니다": {
+    "ko": "단축어를 넣은 뒤 키보드를 바꾸지 않고 바로 보냅니다",
+    "en": "Send right after inserting a snippet, without switching keyboards",
+    "comment": "Return key description",
+    "h": "906666f30e"
+  },
   "단축어를 만들 때 내용 칸의 파란 버튼 줄을 접었어요. 쓸 때 채우는 칸을 누르면 펼쳐지고, 한 번 펼치면 그대로 남아요": {
     "ko": "단축어를 만들 때 내용 칸의 파란 버튼 줄을 접었어요. 쓸 때 채우는 칸을 누르면 펼쳐지고, 한 번 펼치면 그대로 남아요",
     "en": "The row of blue buttons in the content field is folded away. Tap the fill in field row to open it, and it stays open",
@@ -5488,6 +5512,12 @@
     "en": "Set how tall snippet cards are in the list. Smaller fits more per screen; larger shows bigger titles.",
     "comment": "Memo height explanation",
     "h": "c2e8e40bdf"
+  },
+  "리턴 키": {
+    "ko": "리턴 키",
+    "en": "Return key",
+    "comment": "Return key accessibility label",
+    "h": "31820dcca5"
   },
   "리텐션 (주간 코호트)": {
     "ko": "리텐션 (주간 코호트)",
@@ -6364,6 +6394,18 @@
     "en": "Send",
     "comment": "Send composed message",
     "h": "577a0cd871"
+  },
+  "보내기 키": {
+    "ko": "보내기 키",
+    "en": "Send key",
+    "comment": "Show return key toggle",
+    "h": "5165bd1e95"
+  },
+  "보내기 키의 이름은 앱이 정합니다. 메시지 앱에서는 보내기, 검색창에서는 검색으로 보여요. 줄바꿈만 되는 앱도 있습니다.": {
+    "ko": "보내기 키의 이름은 앱이 정합니다. 메시지 앱에서는 보내기, 검색창에서는 검색으로 보여요. 줄바꿈만 되는 앱도 있습니다.",
+    "en": "Each app decides what this key is called. It reads Send in messaging apps and Search in a search field. In some apps it only inserts a line break.",
+    "comment": "Return key footer",
+    "h": "aa598dca64"
   },
   "보낸 이미지": {
     "ko": "보낸 이미지",
@@ -7277,6 +7319,12 @@
     "comment": "Changelog 5.0.2 smear to pick",
     "h": "60a511fbe6"
   },
+  "사진을 찾지 못했어요": {
+    "ko": "사진을 찾지 못했어요",
+    "en": "Couldn't find the photo",
+    "comment": "Toast: image file missing",
+    "h": "51690b1103"
+  },
   "사파리 등에서 공유하면 바로 단축어로 담겨요. 앱에 들어가 한 번 더 누르지 않아도 돼요": {
     "ko": "사파리 등에서 공유하면 바로 단축어로 담겨요. 앱에 들어가 한 번 더 누르지 않아도 돼요",
     "en": "Share from Safari and it becomes a shortcut right away, no second step inside the app",
@@ -7798,6 +7846,12 @@
     "en": "Set",
     "comment": "PIN is set",
     "h": "ecf6e35f24"
+  },
+  "설정에 '함께 쓰는 앱'이 생겼어요. 이어 쓰면 좋은 앱들을 장면으로 소개해요": {
+    "ko": "설정에 '함께 쓰는 앱'이 생겼어요. 이어 쓰면 좋은 앱들을 장면으로 소개해요",
+    "en": "Settings now has Apps that work together, where apps worth pairing are shown as everyday scenes",
+    "comment": "Changelog 5.0.9 family apps",
+    "h": "61b3d0a7b8"
   },
   "설정에서 나에게 맞는 유형을 고르면 더 잘 맞는 것부터 보여드려요": {
     "ko": "설정에서 나에게 맞는 유형을 고르면 더 잘 맞는 것부터 보여드려요",
@@ -8597,6 +8651,12 @@
     "comment": "Changelog 5.0.0 typing",
     "h": "af3721f47c"
   },
+  "앱 안에서는 Face ID로 열립니다. 키보드에서만 번호를 묻는 이유는, iOS가 키보드에 Face ID를 열어 주지 않기 때문이에요.": {
+    "ko": "앱 안에서는 Face ID로 열립니다. 키보드에서만 번호를 묻는 이유는, iOS가 키보드에 Face ID를 열어 주지 않기 때문이에요.",
+    "en": "Inside the app it opens with Face ID. The keyboard asks for a number because iOS doesn't give keyboards access to Face ID.",
+    "comment": "Secure PIN: why the keyboard asks for a number instead of Face ID",
+    "h": "77a7fc6b11"
+  },
   "앱 정보": {
     "ko": "앱 정보",
     "en": "App Info",
@@ -9125,6 +9185,12 @@
     "comment": "Changelog 5.0.0 preview",
     "h": "95b0d554f1"
   },
+  "오른쪽 화살표로 값을 고르고, 왼쪽을 누르면 PIN 인증 후 넣어요": {
+    "ko": "오른쪽 화살표로 값을 고르고, 왼쪽을 누르면 PIN 인증 후 넣어요",
+    "en": "Pick a value with the arrow, then tap the left side to enter your PIN and paste it",
+    "comment": "Secure combo split button hint",
+    "h": "83ee800fdf"
+  },
   "오전 · 오후": {
     "ko": "오전 · 오후",
     "en": "AM · PM",
@@ -9610,6 +9676,12 @@
     "en": "Move",
     "comment": "Smear picker tool: pan",
     "h": "05cbe411d3"
+  },
+  "이동하기": {
+    "ko": "이동하기",
+    "en": "Go",
+    "comment": "Return key label: go",
+    "h": "d0218717d0"
   },
   "이런 값을 넣어요": {
     "ko": "이런 값을 넣어요",
@@ -10187,6 +10259,12 @@
     "comment": "Composer field accessibility label",
     "h": "b6edf32f33"
   },
+  "입력창에 줄바꿈을 넣습니다. 앱에 따라 보내기로 동작합니다": {
+    "ko": "입력창에 줄바꿈을 넣습니다. 앱에 따라 보내기로 동작합니다",
+    "en": "Inserts a line break. In some apps this sends the message",
+    "comment": "Return key hint",
+    "h": "23be16ca8e"
+  },
   "입력하기": {
     "ko": "입력",
     "en": "Insert",
@@ -10360,6 +10438,18 @@
     "en": "Enjoying the app?",
     "comment": "Review question",
     "h": "b784a1b96b"
+  },
+  "잠근 단축어도 값을 골라서 넣어요": {
+    "ko": "잠근 단축어도 값을 골라서 넣어요",
+    "en": "Locked snippets let you pick a value",
+    "comment": "DYK title: secure combo pick",
+    "h": "1b5d74fe2b"
+  },
+  "잠근 단축어에 값이 여러 개면, 화살표로 고른 다음 인증해서 그 값만 넣어요": {
+    "ko": "잠근 단축어에 값이 여러 개면, 화살표로 고른 다음 인증해서 그 값만 넣어요",
+    "en": "When a locked snippet holds several values, pick one with the arrow, unlock, and only that value goes in",
+    "comment": "Changelog 5.0.9 secure combo pick",
+    "h": "25f90e43ab"
   },
   "잠근 단축어에 자물쇠가 늘 보여요. 구분 표시를 꺼 두셔도 보입니다": {
     "ko": "잠근 단축어에 자물쇠가 늘 보여요. 구분 표시를 꺼 두셔도 보입니다",
@@ -12329,6 +12419,12 @@
     "comment": "Changelog 3.1.3 item 1",
     "h": "ace3023374"
   },
+  "키보드 위줄에 보내기 키가 생겼어요. 단축어를 넣고 키보드를 바꾸러 나갈 일이 없습니다. 키 이름은 앱이 정해요, 메시지 앱에서는 보내기로 보입니다.": {
+    "ko": "키보드 위줄에 보내기 키가 생겼어요. 단축어를 넣고 키보드를 바꾸러 나갈 일이 없습니다. 키 이름은 앱이 정해요, 메시지 앱에서는 보내기로 보입니다.",
+    "en": "There's a send key in the keyboard's top row now. Insert a snippet and send it without switching keyboards. Each app names the key, so it reads Send in messaging apps.",
+    "comment": "DYK body: return key",
+    "h": "49705f7fce"
+  },
   "키보드 입력 시 삽입되는 전체 문구를 작성해주세요": {
     "ko": "키보드 입력 시 삽입되는 전체 문구를 작성해주세요",
     "en": "Insert contents",
@@ -12449,6 +12545,12 @@
     "comment": "Merged setup page title",
     "h": "741d40232a"
   },
+  "키보드에 보내기 키가 생겼어요. 단축어를 넣고 키보드를 바꾸지 않고 그 자리에서 보냅니다": {
+    "ko": "키보드에 보내기 키가 생겼어요. 단축어를 넣고 키보드를 바꾸지 않고 그 자리에서 보냅니다",
+    "en": "The keyboard has a send key. Insert a snippet and send it right there, without switching keyboards",
+    "comment": "Changelog 5.0.9 return key",
+    "h": "2d6c797474"
+  },
   "키보드에 지우기 키가 생겼어요. 오타 하나를 고치려고 다른 키보드로 건너갈 일이 없어요": {
     "ko": "키보드에 지우기 키가 생겼어요. 오타 하나를 고치려고 다른 키보드로 건너갈 일이 없어요",
     "en": "The keyboard now has a delete key. No more switching keyboards to fix one typo.",
@@ -12491,6 +12593,12 @@
     "comment": "Keyboard visible memos feature row",
     "h": "e133e09780"
   },
+  "키보드에서 사진 단축어를 눌러도 붙여넣어지지 않던 것을 고쳤어요": {
+    "ko": "키보드에서 사진 단축어를 눌러도 붙여넣어지지 않던 것을 고쳤어요",
+    "en": "Fixed image snippets doing nothing when tapped on the keyboard",
+    "comment": "Changelog 5.0.9 keyboard image paste",
+    "h": "2527e08f5f"
+  },
   "키보드에서 이 순서로 입력돼요": {
     "ko": "키보드에서 이 순서로 입력돼요",
     "en": "Typed in this order on the keyboard",
@@ -12520,6 +12628,12 @@
     "en": "Try it on the keyboard",
     "comment": "Did-you-know action: stage",
     "h": "dd281e8f60"
+  },
+  "키보드에서는 Face ID를 쓸 수 없어 번호로 엽니다": {
+    "ko": "키보드에서는 Face ID를 쓸 수 없어 번호로 엽니다",
+    "en": "Keyboards can't use Face ID, so a number opens it",
+    "comment": "PIN entry: why not Face ID",
+    "h": "19e2594077"
   },
   "키보드에서도 쓸 수 있어요": {
     "ko": "키보드에서도 쓸 수 있어요",

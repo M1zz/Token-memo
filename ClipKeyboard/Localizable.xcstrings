@@ -23171,6 +23171,35 @@
         }
       }
     },
+    "값이 여러 개인 단축어를 잠가 두었어도, 오른쪽 화살표로 원하는 값을 고른 다음 왼쪽을 눌러 인증하면 그 값만 들어갑니다." : {
+      "comment" : "DYK body: secure combo pick",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Even when a snippet with several values is locked, pick the one you want with the arrow, then tap the left side to unlock. Only that value goes in."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Даже если фраза с несколькими значениями закрыта, выберите нужное стрелкой справа, затем нажмите слева и подтвердите. Вставится только это значение."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "就算把多值短语锁起来，也可以用右边的箭头挑出想要的那条，再按左边验证，只有那一条会填进去。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "就算把多值短語鎖起來，也可以用右邊的箭頭挑出想要的那條，再按左邊驗證，只有那一條會填進去。"
+          }
+        }
+      }
+    },
     "강조된 칸만 채우면 나머지 문장은 그대로 완성돼요. 자주 쓰는 양식을 빠르게 입력하세요." : {
       "comment" : "Template info tip message",
       "localizations" : {
@@ -25420,6 +25449,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在那之前先放在通用。以前預設的「數位遊民」是這個 App 出發的地方，不是你所在的位置"
+          }
+        }
+      }
+    },
+    "글과 사진을 함께 담은 단축어를 복사하면 사진이 빠지던 것을 고쳤어요" : {
+      "comment" : "Changelog 5.0.9 mixed memo image",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fixed the image being dropped when copying a snippet that holds both text and a photo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исправлено: при копировании фразы с текстом и картинкой картинка терялась"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修好了复制图文短语时图片会丢的问题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修好了複製圖文短語時圖片會丟的問題"
           }
         }
       }
@@ -28391,6 +28449,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "明天"
+          }
+        }
+      }
+    },
+    "넣고 나서 그 자리에서 보낼 수 있어요" : {
+      "comment" : "DYK title: return key",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insert, then send without leaving"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставили и тут же отправили"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "插入之后就地发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "插入之後就地發送"
           }
         }
       }
@@ -32681,6 +32768,35 @@
         }
       }
     },
+    "단축어를 넣은 뒤 키보드를 바꾸지 않고 바로 보냅니다" : {
+      "comment" : "Return key description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send right after inserting a snippet, without switching keyboards"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправляйте сразу после вставки фразы, не переключая клавиатуру"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "插入短语后不用换键盘，直接发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "插入短語後不用換鍵盤，直接發送"
+          }
+        }
+      }
+    },
     "단축어를 만들 때 내용 칸의 파란 버튼 줄을 접었어요. 쓸 때 채우는 칸을 누르면 펼쳐지고, 한 번 펼치면 그대로 남아요" : {
       "comment" : "Changelog 5.0.3 token bar drawer",
       "localizations" : {
@@ -35336,6 +35452,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定列表裡短語卡片的高度。想一屏看更多就選小，想讓標題更大就選大。"
+          }
+        }
+      }
+    },
+    "리턴 키" : {
+      "comment" : "Return key accessibility label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return key"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клавиша возврата"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回车键"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "換行鍵"
           }
         }
       }
@@ -40563,6 +40708,64 @@
         }
       }
     },
+    "보내기 키" : {
+      "comment" : "Show return key toggle",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send key"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клавиша отправки"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送键"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發送鍵"
+          }
+        }
+      }
+    },
+    "보내기 키의 이름은 앱이 정합니다. 메시지 앱에서는 보내기, 검색창에서는 검색으로 보여요. 줄바꿈만 되는 앱도 있습니다." : {
+      "comment" : "Return key footer",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each app decides what this key is called. It reads Send in messaging apps and Search in a search field. In some apps it only inserts a line break."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как называется эта клавиша, решает приложение. В мессенджерах это Отправить, в строке поиска Поиск. В некоторых приложениях она только переносит строку."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这个键叫什么由应用决定。在聊天应用里是发送，在搜索框里是搜索。也有的应用只会换行。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這個鍵叫什麼由應用決定。在聊天應用裡是發送，在搜尋框裡是搜尋。也有的應用只會換行。"
+          }
+        }
+      }
+    },
     "보내는 중…" : {
       "comment" : "Sending feedback progress",
       "extractionState" : "stale",
@@ -45423,6 +45626,35 @@
         }
       }
     },
+    "사진을 찾지 못했어요" : {
+      "comment" : "Toast: image file missing",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't find the photo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось найти фото"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没找到这张图片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒找到這張圖片"
+          }
+        }
+      }
+    },
     "사파리 등에서 공유하면 바로 단축어로 담겨요. 앱에 들어가 한 번 더 누르지 않아도 돼요" : {
       "comment" : "Changelog 4.4.5 item 6",
       "localizations" : {
@@ -48559,6 +48791,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已設定"
+          }
+        }
+      }
+    },
+    "설정에 '함께 쓰는 앱'이 생겼어요. 이어 쓰면 좋은 앱들을 장면으로 소개해요" : {
+      "comment" : "Changelog 5.0.9 family apps",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings now has Apps that work together, where apps worth pairing are shown as everyday scenes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В настройках появился раздел с приложениями, которые хорошо работают вместе, показанными как сцены из обычного дня"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置里多了一起用的应用，用日常场景介绍值得搭配的应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定裡多了一起用的應用，用日常場景介紹值得搭配的應用"
           }
         }
       }
@@ -53188,6 +53449,35 @@
         }
       }
     },
+    "앱 안에서는 Face ID로 열립니다. 키보드에서만 번호를 묻는 이유는, iOS가 키보드에 Face ID를 열어 주지 않기 때문이에요." : {
+      "comment" : "Secure PIN: why the keyboard asks for a number instead of Face ID",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inside the app it opens with Face ID. The keyboard asks for a number because iOS doesn't give keyboards access to Face ID."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В приложении открывается по Face ID. Клавиатура спрашивает код, потому что iOS не даёт клавиатурам доступ к Face ID."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在应用里用 Face ID 打开。键盘之所以问数字，是因为 iOS 不让键盘使用 Face ID。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在應用裡用 Face ID 開啟。鍵盤之所以問數字，是因為 iOS 不讓鍵盤使用 Face ID。"
+          }
+        }
+      }
+    },
     "앱 정보" : {
       "comment" : "App info section",
       "localizations" : {
@@ -56457,6 +56747,35 @@
         }
       }
     },
+    "오른쪽 화살표로 값을 고르고, 왼쪽을 누르면 PIN 인증 후 넣어요" : {
+      "comment" : "Secure combo split button hint",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a value with the arrow, then tap the left side to enter your PIN and paste it"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите значение стрелкой, затем нажмите слева, введите PIN и вставьте"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用右边的箭头选值，按左边输入 PIN 后粘贴"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用右邊的箭頭選值，按左邊輸入 PIN 後貼上"
+          }
+        }
+      }
+    },
     "오전 · 오후" : {
       "comment" : "Time pattern chip: AM/PM",
       "localizations" : {
@@ -59327,6 +59646,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "移動"
+          }
+        }
+      }
+    },
+    "이동하기" : {
+      "comment" : "Return key label: go",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前往"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前往"
           }
         }
       }
@@ -62754,6 +63102,35 @@
         }
       }
     },
+    "입력창에 줄바꿈을 넣습니다. 앱에 따라 보내기로 동작합니다" : {
+      "comment" : "Return key hint",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserts a line break. In some apps this sends the message"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставляет перенос строки. В некоторых приложениях это отправляет сообщение"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在输入框里插入换行。在有些应用里就是发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在輸入框裡插入換行。在有些應用裡就是發送"
+          }
+        }
+      }
+    },
     "입력하기" : {
       "comment" : "Insert with template button",
       "extractionState" : "manual",
@@ -63848,6 +64225,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用得還順手嗎？"
+          }
+        }
+      }
+    },
+    "잠근 단축어도 값을 골라서 넣어요" : {
+      "comment" : "DYK title: secure combo pick",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locked snippets let you pick a value"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В закрытых фразах тоже можно выбрать значение"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锁住的短语也能挑值"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鎖住的短語也能挑值"
+          }
+        }
+      }
+    },
+    "잠근 단축어에 값이 여러 개면, 화살표로 고른 다음 인증해서 그 값만 넣어요" : {
+      "comment" : "Changelog 5.0.9 secure combo pick",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When a locked snippet holds several values, pick one with the arrow, unlock, and only that value goes in"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если в закрытой фразе несколько значений, выберите одно стрелкой, подтвердите, и вставится только оно"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锁住的短语里有多条值时，用箭头挑一条，验证后只填那一条"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鎖住的短語裡有多條值時，用箭頭挑一條，驗證後只填那一條"
           }
         }
       }
@@ -75135,6 +75570,35 @@
         }
       }
     },
+    "키보드 위줄에 보내기 키가 생겼어요. 단축어를 넣고 키보드를 바꾸러 나갈 일이 없습니다. 키 이름은 앱이 정해요, 메시지 앱에서는 보내기로 보입니다." : {
+      "comment" : "DYK body: return key",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There's a send key in the keyboard's top row now. Insert a snippet and send it without switching keyboards. Each app names the key, so it reads Send in messaging apps."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В верхнем ряду клавиатуры появилась клавиша отправки. Вставьте фразу и отправьте, не переключая клавиатуру. Название клавиши задаёт приложение: в мессенджерах это Отправить."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "键盘上排多了一个发送键。插入短语后不用换键盘就能发出去。键叫什么由应用决定，在聊天应用里显示为发送。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鍵盤上排多了一個發送鍵。插入短語後不用換鍵盤就能發出去。鍵叫什麼由應用決定，在聊天應用裡顯示為發送。"
+          }
+        }
+      }
+    },
     "키보드 입력 시 삽입되는 전체 문구를 작성해주세요" : {
       "comment" : "Insert content instruction",
       "extractionState" : "stale",
@@ -75893,6 +76357,35 @@
         }
       }
     },
+    "키보드에 보내기 키가 생겼어요. 단축어를 넣고 키보드를 바꾸지 않고 그 자리에서 보냅니다" : {
+      "comment" : "Changelog 5.0.9 return key",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The keyboard has a send key. Insert a snippet and send it right there, without switching keyboards"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На клавиатуре появилась клавиша отправки. Вставьте фразу и отправьте на месте, не переключая клавиатуру"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "键盘上有了发送键。插入短语后不用换键盘，就地发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鍵盤上有了發送鍵。插入短語後不用換鍵盤，就地發送"
+          }
+        }
+      }
+    },
     "키보드에 지우기 키가 생겼어요. 오타 하나를 고치려고 다른 키보드로 건너갈 일이 없어요" : {
       "comment" : "Changelog 5.0.8 backspace key",
       "localizations" : {
@@ -76236,6 +76729,35 @@
         }
       }
     },
+    "키보드에서 사진 단축어를 눌러도 붙여넣어지지 않던 것을 고쳤어요" : {
+      "comment" : "Changelog 5.0.9 keyboard image paste",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fixed image snippets doing nothing when tapped on the keyboard"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исправлено: фраза с картинкой ничего не делала при нажатии на клавиатуре"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修好了在键盘上点图片短语却粘不出来的问题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修好了在鍵盤上點圖片短語卻貼不出來的問題"
+          }
+        }
+      }
+    },
     "키보드에서 이 순서로 입력돼요" : {
       "comment" : "Combo preview: typed in this order on the keyboard",
       "localizations" : {
@@ -76431,6 +76953,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在鍵盤上試試"
+          }
+        }
+      }
+    },
+    "키보드에서는 Face ID를 쓸 수 없어 번호로 엽니다" : {
+      "comment" : "PIN entry: why not Face ID",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keyboards can't use Face ID, so a number opens it"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На клавиатуре Face ID недоступен, поэтому открывает код"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "键盘里用不了 Face ID，所以用数字解锁"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鍵盤裡用不了 Face ID，所以用數字解鎖"
           }
         }
       }

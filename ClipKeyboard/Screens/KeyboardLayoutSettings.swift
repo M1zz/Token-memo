@@ -30,6 +30,8 @@ struct KeyboardLayoutSettings: View {
     private var keyboardSkinRaw: String = KeyboardSkin.classic.rawValue
     @AppStorage("keyboardShowSearch", store: AppGroup.defaults) private var showSearch: Bool   = false
     @AppStorage("keyboardShowRecent", store: AppGroup.defaults) private var showRecent: Bool   = false
+    /// 위줄의 리턴(보내기) 키. 기본 켬 - 없어서 못 보내던 것이 신고로 들어온 쪽이다.
+    @AppStorage(DefaultsKey.keyboardShowReturnKey, store: AppGroup.defaults) private var showReturnKey: Bool = true
     @AppStorage("keyboardKoreanLayout", store: AppGroup.defaults) private var koreanLayout: String = "dubeolsik"
     @AppStorage("keyboardTypingLang", store: AppGroup.defaults) private var defaultLang: String = "english"
     // 한국어 입력 사용(기본 OFF). 영어 전용 사용자가 한/EN 토글을 보지 않도록 명시적으로 켜야 함.
@@ -206,8 +208,21 @@ struct KeyboardLayoutSettings: View {
                             .font(.caption).foregroundColor(.secondary)
                     }
                 }
+                Toggle(isOn: $showReturnKey) {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(NSLocalizedString("보내기 키", comment: "Show return key toggle"))
+                        Text(NSLocalizedString("단축어를 넣은 뒤 키보드를 바꾸지 않고 바로 보냅니다", comment: "Return key description"))
+                            .font(.caption).foregroundColor(.secondary)
+                    }
+                }
             } header: {
                 Text(NSLocalizedString("표시 옵션", comment: "Section: display options"))
+            } footer: {
+                if showReturnKey {
+                    // 되는 앱과 안 되는 앱이 갈리는 자리라, 켠 사람에게는 미리 말해 둔다.
+                    // 안 그러면 "왜 어떤 앱에서는 줄만 바뀌지" 가 다시 문의로 돌아온다.
+                    Text(NSLocalizedString("보내기 키의 이름은 앱이 정합니다. 메시지 앱에서는 보내기, 검색창에서는 검색으로 보여요. 줄바꿈만 되는 앱도 있습니다.", comment: "Return key footer"))
+                }
             }
 
             // ── 4.5 키캡 스킨 ──────────────────────────────────────────
@@ -355,7 +370,7 @@ struct KeyboardLayoutSettings: View {
         columnCount = 2; buttonHeight = 56; buttonFontSize = 17
         useCustomColors = false; customBgHex = ""; customKeyHex = ""
         customBgColor = .clear; customKeyColor = .clear
-        showSearch = false; showRecent = false
+        showSearch = false; showRecent = false; showReturnKey = true
         koreanLayout = "dubeolsik"; defaultLang = "english"
         keyboardSkinRaw = KeyboardSkin.classic.rawValue
     }
