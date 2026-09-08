@@ -7,6 +7,7 @@
 
 import SwiftUI
 import StoreKit
+import LeeoKit
 
 struct SettingView: View {
 
@@ -664,6 +665,10 @@ struct SettingView: View {
                 .padding(.vertical, 4)
             }
             #endif
+            // 같은 사람이 만든 다른 앱. 목록·문구·이야기는 LeeoKit 카탈로그 한 곳에 있어서
+            // 앱을 새로 내도 여기 코드는 그대로다(LeeoFamilyCatalog).
+            LeeoFamilySettingsRow<ClipKeyboardSpec>()
+                .leeoStyle(theme.leeoStyle)
             if let url = URL(string: Constants.privacyPolicyURL) {
                 Link(destination: url) {
                     Label(NSLocalizedString("개인정보 처리방침", comment: "Privacy policy settings entry"),

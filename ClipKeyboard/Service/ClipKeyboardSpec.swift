@@ -25,6 +25,10 @@ enum ClipKeyboardSpec: LeeoAppSpec {
         appIdentifier: "com.Ysoup.TokenMemo"
     )
 
+    /// App Store 숫자 ID - "리뷰 남기기" 딥링크와 앱 소개(LeeoFamilyCatalog)의 자기 식별에 쓴다.
+    /// 이 값이 없으면 소개 화면이 자기 자신을 걸러내지 못한다.
+    static let appStoreID: String? = Constants.appStoreID
+
     /// 법적·지원 링크 - LeeoKit 3.0 계약 필수 항목.
     /// ⚠️ 개인정보 처리방침 주소는 **App Store Connect 에 등록한 것과 같아야 한다**
     ///    (`Constants` 가 단일 출처이므로 여기서 다시 적지 않고 그 값을 쓴다).
