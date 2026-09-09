@@ -235,8 +235,9 @@ enum SampleMemoStorage {
     /// 옮겨 오기 전에 앱이 먼저 물어볼 수 있어서, 읽는 쪽에서도 옛 자리를 같이 본다.
     /// (옮기는 일 자체는 `migrateToAppGroupIfNeeded` 가 한 번만 한다)
     static func load() -> Set<UUID> {
+        let current = AppGroup.defaults?.stringArray(forKey: key) ?? []
         let legacy = UserDefaults.standard.stringArray(forKey: legacyKey) ?? []
-        return ProFeatureManager.sampleMemoIds.union(legacy.compactMap { UUID(uuidString: $0) })
+        return Set((current + legacy).compactMap { UUID(uuidString: $0) })
     }
 
     /// 옛 자리에 있던 샘플 id 를 App Group 으로 옮긴다.

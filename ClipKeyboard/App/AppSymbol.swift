@@ -109,6 +109,7 @@ enum AppSymbol {
     static let lockShieldFill = "lock.shield.fill"
     static let macbook = "macbook"
     static let magnifyingglass = "magnifyingglass"
+    static let menubarRectangle = "menubar.rectangle"   // 맥 메뉴바 앱 안내
     static let minusCircleFill = "minus.circle.fill"
     static let number = "number"
     static let paperplaneFill = "paperplane.fill"

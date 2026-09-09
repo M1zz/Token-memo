@@ -147,7 +147,7 @@ final class MemoSyncEngine: NSObject, CKSyncEngineDelegate {
 
     // MARK: - Lifecycle
 
-    /// Pro + 플래그가 켜져 있을 때만 동기화를 시작한다. 멱등.
+    /// 권한 + 플래그가 켜져 있을 때만 동기화를 시작한다. 멱등. (맥은 권한 게이트 없음)
     func startIfEnabled() {
         // 켜 둔 채로 업데이트한 기기를 먼저 건져낸다 - 게이트를 보기 전에 한 번만 돈다.
         MemoSyncFlags.adoptCloudPreferenceIfNeeded()
@@ -157,7 +157,7 @@ final class MemoSyncEngine: NSObject, CKSyncEngineDelegate {
         guard RemoteFlagsService.cachedValue(.syncEnabled) else {
             log.info("sync disabled by remote flag"); return
         }
-        guard isProUser else { log.info("sync gated: not Pro"); return }
+        guard hasSyncEntitlement else { log.info("sync gated: no entitlement"); return }
         guard !started else { return }
         // ⚠️ 실제 시작은 아래 Task 안에서 끝나지만, 이 표식은 **여기서** 세운다.
         //    포그라운드 복귀가 잇따라 오면 Task 가 뜨기 전에 다시 불릴 수 있고,
@@ -195,14 +195,21 @@ final class MemoSyncEngine: NSObject, CKSyncEngineDelegate {
         }
     }
 
-    /// Pro 여부 - ProFeatureManager의 키를 직접 읽어 양 타겟(맥은 자체 매니저) 의존을 피한다.
+    /// 동기화 권한 - ProFeatureManager의 키를 직접 읽어 양 타겟 의존을 피한다.
+    ///
+    /// ⚠️ **맥은 게이트가 없다.** 맥 앱은 스토어 유료 다운로드라 구매 자체가 전체 권한이다
+    ///    (`ClipKeyboardTapSpec.monetization = .paidUpfront`). 아이폰 결제 키를 보던 시절엔
+    ///    맥만 산 사용자가 토글을 켜도 엔진이 조용히 거부해 아무것도 올라가지 않았다.
     ///
     /// ⚠️ 결제 키(`proStatus`) 하나만 보면 안 된다. 이 앱은 **결제 외 경로**로도 전체 접근 권한을 준다:
     /// v4.0 이전 유료 구매자(`wasProAtV3`) · v3.x 기존 사용자(`existingFreeUser`) · TestFlight/체험
     /// (`syncEntitled` 로 미러링). 설정의 동기화 토글은 `hasFullAccess` 로 열리는데 엔진만 결제를
     /// 요구하던 탓에, 그랜드파더 사용자는 **토글이 켜져 있는데도 엔진이 조용히 거부**해
     /// 아이폰에서 아무것도 올라가지 않았다.
-    private var isProUser: Bool {
+    private var hasSyncEntitlement: Bool {
+        #if os(macOS)
+        return true
+        #else
         // App Group + iCloud KV 어느 쪽이든 켜져 있으면 인정(기존 백업 게이팅과 동일 취지).
         let keys = [DefaultsKey.proStatus, DefaultsKey.wasProAtV3,
                     DefaultsKey.existingFreeUser, DefaultsKey.syncEntitled]
@@ -211,6 +218,7 @@ final class MemoSyncEngine: NSObject, CKSyncEngineDelegate {
             if NSUbiquitousKeyValueStore.default.bool(forKey: key) { return true }
         }
         return false
+        #endif
     }
 
     /// 외부(포그라운드/푸시)에서 즉시 동기화를 요청.
