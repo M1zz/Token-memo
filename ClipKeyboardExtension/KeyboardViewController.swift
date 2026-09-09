@@ -1051,6 +1051,24 @@ extension KeyboardViewController: TypingInputProxy {
         updateHasTextState()
     }
     /// `advanceToNextInputMode()`는 UIInputViewController에 이미 있어 별도 구현 불요.
+    ///
+    /// ⚠️ 다만 지구본 키는 그쪽을 쓰지 않는다 - 아래 `attachInputModeSwitch(to:)` 참고.
+
+    /// 지구본 키를 iOS 가 직접 다루게 넘긴다.
+    ///
+    /// 왜 우리가 처리하면 안 되나: `advanceToNextInputMode()` 는 **글자 키보드만** 돈다.
+    /// 이모지 키보드는 그 회전에 끼지 않아서, 다른 키보드를 함께 쓰는 사람이 지구본을
+    /// 몇 번을 눌러도 이모지에 닿지 못한다(사용자 제보).
+    /// `handleInputModeList(from:with:)` 는 시스템 지구본과 **같은 물건**이라
+    /// 탭은 다음 키보드로 넘기고, 길게 누르면 이모지가 들어 있는 목록을 띄운다.
+    /// 단 이 동작은 UIControl 의 터치 이벤트를 통째로 받아야 나오므로
+    /// `.allTouchEvents` 로 붙인다(일부만 붙이면 길게 누르기가 죽는다).
+    func attachInputModeSwitch(to button: UIButton) {
+        button.addTarget(self,
+                         action: #selector(handleInputModeList(from:with:)),
+                         for: .allTouchEvents)
+    }
+
     func cursorRight() {
         textDocumentProxy.adjustTextPosition(byCharacterOffset: 1)
     }

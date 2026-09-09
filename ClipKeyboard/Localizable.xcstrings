@@ -27064,6 +27064,35 @@
         }
       }
     },
+    "길게 누르면 이모지를 포함한 키보드 목록이 열립니다" : {
+      "comment" : "Hint for the globe key: long press opens the keyboard list including emoji",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press and hold to open the keyboard list, including emoji"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите и удерживайте, чтобы открыть список клавиатур, включая эмодзи"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "长按可打开键盘列表，包括表情符号"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "長按可開啟鍵盤列表，包括表情符號"
+          }
+        }
+      }
+    },
     "길게 눌러 선택하고, 복사하고, 돌아와서 붙여넣던 손놀림이에요." : {
       "comment" : "Grounds note: handling",
       "localizations" : {

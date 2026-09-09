@@ -4043,6 +4043,12 @@
     "comment": "DYK title: long press",
     "h": "7b8542875d"
   },
+  "길게 누르면 이모지를 포함한 키보드 목록이 열립니다": {
+    "ko": "길게 누르면 이모지를 포함한 키보드 목록이 열립니다",
+    "en": "Press and hold to open the keyboard list, including emoji",
+    "comment": "Hint for the globe key: long press opens the keyboard list including emoji",
+    "h": "c16ea0533c"
+  },
   "길게 눌러 선택하고, 복사하고, 돌아와서 붙여넣던 손놀림이에요.": {
     "ko": "길게 눌러 선택하고, 복사하고, 돌아와서 붙여넣던 손놀림이에요.",
     "en": "Long-pressing to select, copying, coming back, pasting. That whole routine.",

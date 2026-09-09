@@ -10,6 +10,51 @@ import UIKit
 import CryptoKit
 import LeeoKit
 
+/// 지구본 키의 **손잡이**. 그림은 SwiftUI 가 그리고, 손가락은 이 투명 버튼이 받는다.
+///
+/// ## 왜 SwiftUI Button 으로는 안 되나
+///
+/// 예전 지구본은 SwiftUI Button 에서 `advanceToNextInputMode()` 를 불렀다.
+/// 그런데 그 API 는 **글자 키보드만** 순서대로 돈다. 이모지 키보드는 그 회전에
+/// 끼지 않아서, 타사 키보드를 함께 쓰는 사람은 지구본을 몇 번을 눌러도 이모지에
+/// 닿지 못했다(사용자 제보: "타사 키보드와 함께 사용 시 이모지로 변경이 되질 않네요").
+/// 키보드가 하나뿐인 사람에게는 멀쩡해 보여서 더 늦게 드러난 종류의 버그다.
+///
+/// 시스템 지구본과 **같은 물건**은 `handleInputModeList(from:with:)` 하나뿐이다.
+/// 탭이면 다음 키보드로 넘기고, 길게 누르면 이모지가 들어 있는 키보드 목록을 띄운다.
+/// 이건 UIControl 의 터치 이벤트를 통째로(`.allTouchEvents`) 받아야 동작하므로
+/// SwiftUI 제스처로는 흉내 낼 수 없다. 그래서 UIKit 버튼을 얹는다.
+///
+/// 배경은 투명하다 - 키캡 모양·색·코너는 아래 SwiftUI 뷰가 그대로 그린다.
+private struct InputModeSwitchOverlay: UIViewRepresentable {
+    let proxy: TypingInputProxy
+
+    func makeUIView(context: Context) -> UIButton {
+        let button = UIButton(type: .custom)
+        button.backgroundColor = .clear
+        button.isAccessibilityElement = true
+        button.accessibilityLabel = NSLocalizedString("다음 키보드", comment: "Next keyboard button")
+        button.accessibilityHint = NSLocalizedString(
+            "길게 누르면 이모지를 포함한 키보드 목록이 열립니다",
+            comment: "Hint for the globe key: long press opens the keyboard list including emoji")
+        proxy.attachInputModeSwitch(to: button)
+        // 햅틱은 우리 몫이다. 시스템은 전환만 하고 손맛은 주지 않는다.
+        // 다른 키캡과 같은 순간(누르는 순간)에 울려야 줄이 따로 놀지 않는다.
+        button.addTarget(context.coordinator,
+                         action: #selector(Coordinator.pressed),
+                         for: .touchDown)
+        return button
+    }
+
+    func updateUIView(_ uiView: UIButton, context: Context) {}
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    final class Coordinator {
+        @objc func pressed() { KeyboardHaptics.tap() }
+    }
+}
+
 var showOnlyTemplates: Bool = false
 var showOnlyFavorites: Bool = false
 var selectedTheme: String?  // 선택된 테마 필터
@@ -819,6 +864,12 @@ struct KeyboardView: View {
             // 상단 헤더 - 카테고리 탭 + clear 버튼
             if !isReorderMode {
                 HStack(spacing: 0) {
+                    // 지구본이 이 줄의 첫 자리다. 카테고리 탭 **안**이 아니라 밖이라는 게
+                    // 중요하다 - 안에 있던 시절에는 카테고리가 하나뿐이면 아래 else 로 빠져
+                    // 지구본까지 같이 사라졌다.
+                    if KeyboardCapability.needsInputModeSwitchKey, let proxy = typingProxy {
+                        globeKey(proxy: proxy)
+                    }
                     // 앱 안에서는 탭이 하나뿐이어도 보여준다 - 카테고리가 **처음부터** 있어야
                     // "여기서 갈라 볼 수 있다"가 읽힌다. 익스텐션은 자리가 귀해 예전대로 둘 이상일 때만.
                     if hostKind == .inApp ? !categoryPages.isEmpty : categoryPages.count > 1 {
@@ -1455,29 +1506,31 @@ struct KeyboardView: View {
 
     private var categoryTabRow: some View {
         HStack(spacing: 6) {
-            // 지구본(다음 키보드) - 스크롤 밖에 고정한다.
-            // 커스텀 키보드는 다른 키보드로 넘어갈 수단을 반드시 제공해야 한다(심사 요건).
-            // 예전에는 UIKit 버튼이 SwiftUI 호스팅 뷰에 가려 보이지 않아 아예 숨겨져 있었다.
-            if KeyboardCapability.needsInputModeSwitchKey, let proxy = typingProxy {
-                Button {
-                    KeyboardHaptics.tap()
-                    proxy.advanceToNextInputMode()
-                } label: {
-                    Image(systemName: "globe")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(theme.textMuted)
-                        .frame(width: 32, height: 28)
-                        .background(theme.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
-                }
-                .buttonStyle(PlainButtonStyle())
-                .accessibilityLabel(NSLocalizedString("다음 키보드", comment: "Next keyboard button"))
-                .padding(.leading, 8)
-            }
-
             categoryTabScroller
         }
         .padding(.vertical, 5)
+    }
+
+    // MARK: - 지구본(다음 키보드)
+
+    /// 지구본. **카테고리 탭 밖, 늘 같은 자리에 선다.**
+    ///
+    /// 예전에는 `categoryTabRow` 안에 있어서 카테고리가 하나뿐인 사람에게는 줄째로
+    /// 사라졌다. 다른 키보드로 건너갈 유일한 문이라(심사 요건이기도 하다) 카테고리
+    /// 개수와 무관하게 세운다.
+    ///
+    /// 보이는 것은 SwiftUI 가 그리고, 누르는 것은 위에 덮은 투명 UIButton 이 받는다.
+    /// 이유는 `InputModeSwitchOverlay` 주석 참고.
+    private func globeKey(proxy: TypingInputProxy) -> some View {
+        Image(systemName: AppSymbol.globe)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundColor(theme.textMuted)
+            .frame(width: 32, height: 28)
+            .background(theme.surface)
+            .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
+            .frame(minWidth: 44, minHeight: 44)
+            .overlay(InputModeSwitchOverlay(proxy: proxy))
+            .padding(.leading, 8)
     }
 
     private var categoryTabScroller: some View {

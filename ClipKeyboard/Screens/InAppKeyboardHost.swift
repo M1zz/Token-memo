@@ -149,6 +149,10 @@ final class InAppKeyboardHost: ObservableObject, TypingInputProxy {
     /// 앱 안에는 넘어갈 다음 키보드가 없다. (지구본 키 자체를 숨기므로 불릴 일이 없다)
     nonisolated func advanceToNextInputMode() {}
 
+    /// 같은 이유로 붙일 것이 없다. 앱은 입력 뷰 컨트롤러가 아니라
+    /// `handleInputModeList(from:with:)` 자체가 존재하지 않는다.
+    nonisolated func attachInputModeSwitch(to button: UIButton) {}
+
     nonisolated func cursorRight() {
         MainActor.assumeIsolated {
             guard caret < text.count else { return }
