@@ -35,6 +35,15 @@ enum ChangelogData {
     /// ⚠️ 사용자에게 보이는 문장이므로 전부 NSLocalizedString 을 거친다.
     static let entries: [ChangelogEntry] = [
         ChangelogEntry(
+            version: "5.1.0",
+            released: nil,
+            highlights: [
+                // 지구본
+                NSLocalizedString("지구본을 길게 누르면 이모지 키보드로 바로 갈 수 있어요. 다른 키보드를 함께 써도 됩니다", comment: "Changelog 5.1.0 emoji keyboard"),
+                NSLocalizedString("갈래를 하나만 쓰셔도 지구본이 사라지지 않아요", comment: "Changelog 5.1.0 globe always visible"),
+            ]
+        ),
+        ChangelogEntry(
             version: "5.0.9",
             released: nil,
             highlights: [

@@ -3215,6 +3215,12 @@
     "comment": "Interval label\nInterval picker label",
     "h": "b134af45a9"
   },
+  "갈래를 하나만 쓰셔도 지구본이 사라지지 않아요": {
+    "ko": "갈래를 하나만 쓰셔도 지구본이 사라지지 않아요",
+    "en": "The globe stays put even if you keep just one category",
+    "comment": "Changelog 5.1.0 globe always visible",
+    "h": "eec9762c58"
+  },
   "갈래마다 아이콘이 붙어 목록에서 찾기 쉬워졌어요": {
     "ko": "갈래마다 아이콘이 붙어 목록에서 찾기 쉬워졌어요",
     "en": "Each category carries an icon, so the list is easier to scan",
@@ -11134,6 +11140,12 @@
     "en": "No favorite snippets yet.\nLong-press a snippet to add it to favorites.",
     "comment": "Favorites tab empty state with hint",
     "h": "85e08dc3f4"
+  },
+  "지구본을 길게 누르면 이모지 키보드로 바로 갈 수 있어요. 다른 키보드를 함께 써도 됩니다": {
+    "ko": "지구본을 길게 누르면 이모지 키보드로 바로 갈 수 있어요. 다른 키보드를 함께 써도 됩니다",
+    "en": "Press and hold the globe to go straight to the emoji keyboard, even with other keyboards installed",
+    "comment": "Changelog 5.1.0 emoji keyboard",
+    "h": "6bef60d0d6"
   },
   "지금 Pro로 업그레이드하면 평생 사용": {
     "ko": "지금 Pro로 업그레이드하면 평생 사용",

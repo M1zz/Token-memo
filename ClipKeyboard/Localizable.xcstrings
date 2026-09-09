@@ -22417,6 +22417,35 @@
         }
       }
     },
+    "갈래를 하나만 쓰셔도 지구본이 사라지지 않아요" : {
+      "comment" : "Changelog 5.1.0 globe always visible",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The globe stays put even if you keep just one category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Глобус остаётся на месте, даже если у вас всего одна категория"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即使只用一个分类，地球键也不会消失"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即使只用一個分類，地球鍵也不會消失"
+          }
+        }
+      }
+    },
     "갈래마다 아이콘이 붙어 목록에서 찾기 쉬워졌어요" : {
       "comment" : "Changelog 3.1.2 item 3",
       "localizations" : {
@@ -68213,6 +68242,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用地球（🌐）按鈕切換到剪貼鍵盤"
+          }
+        }
+      }
+    },
+    "지구본을 길게 누르면 이모지 키보드로 바로 갈 수 있어요. 다른 키보드를 함께 써도 됩니다" : {
+      "comment" : "Changelog 5.1.0 emoji keyboard",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press and hold the globe to go straight to the emoji keyboard, even with other keyboards installed"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите и удерживайте глобус, чтобы сразу перейти к клавиатуре эмодзи, даже если установлены другие клавиатуры"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "长按地球键可直接切换到表情键盘，装了别的键盘也一样"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "長按地球鍵可直接切換到表情鍵盤，裝了別的鍵盤也一樣"
           }
         }
       }
