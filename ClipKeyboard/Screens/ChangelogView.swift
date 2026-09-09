@@ -41,6 +41,9 @@ enum ChangelogData {
                 // 지구본
                 NSLocalizedString("지구본을 길게 누르면 이모지 키보드로 바로 갈 수 있어요. 다른 키보드를 함께 써도 됩니다", comment: "Changelog 5.1.0 emoji keyboard"),
                 NSLocalizedString("갈래를 하나만 쓰셔도 지구본이 사라지지 않아요", comment: "Changelog 5.1.0 globe always visible"),
+                // 갈래 기억 · 최근 줄
+                NSLocalizedString("키보드를 다시 열면 보던 갈래가 그대로 열려요. 매번 처음으로 돌아가지 않아요", comment: "Changelog 5.1.0 remember category"),
+                NSLocalizedString("단축어가 늘어나면 최근 쓴 것을 위에 모아 보여드려요", comment: "Changelog 5.1.0 recent section auto"),
             ]
         ),
         ChangelogEntry(

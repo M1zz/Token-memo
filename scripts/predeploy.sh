@@ -31,6 +31,9 @@ sh scripts/check_main_thread_pasteboard.sh
 echo "🔔 알림 쏘는 위치 검사 (배경 발행 재발 방지)"
 sh scripts/check_notification_main.sh
 
+echo "🌐 지구본 검사 (check_globe.sh)"
+sh scripts/check_globe.sh
+
 echo "✒️  긴 줄표 검사 (check_dashes.sh)"
 sh scripts/check_dashes.sh
 

@@ -4979,6 +4979,12 @@
     "comment": "Wipe all data confirm message",
     "h": "f1976645cf"
   },
+  "단축어가 늘어나면 최근 쓴 것을 위에 모아 보여드려요": {
+    "ko": "단축어가 늘어나면 최근 쓴 것을 위에 모아 보여드려요",
+    "en": "As your snippets grow, the ones you used recently gather at the top",
+    "comment": "Changelog 5.1.0 recent section auto",
+    "h": "7e41b3ecbb"
+  },
   "단축어가 늘었어요": {
     "ko": "단축어가 늘었어요",
     "en": "Your snippets are piling up",
@@ -11585,6 +11591,12 @@
     "comment": "Show recent snippets toggle",
     "h": "81c85e6ddf"
   },
+  "최근 단축어는 단축어가 늘어나면 저절로 켜집니다. 한 번 직접 켜거나 끄시면 그대로 둡니다.": {
+    "ko": "최근 단축어는 단축어가 늘어나면 저절로 켜집니다. 한 번 직접 켜거나 끄시면 그대로 둡니다.",
+    "en": "Recent snippets turns on by itself as you add more. Once you switch it yourself, your choice stays.",
+    "comment": "Recent snippets auto default footer",
+    "h": "557f5a46ce"
+  },
   "최근 사용": {
     "ko": "최근 사용",
     "en": "Recent",
@@ -12502,6 +12514,12 @@
     "en": "Typed with the keyboard",
     "comment": "Event label: keyboard used",
     "h": "27b76de9dc"
+  },
+  "키보드를 다시 열면 보던 갈래가 그대로 열려요. 매번 처음으로 돌아가지 않아요": {
+    "ko": "키보드를 다시 열면 보던 갈래가 그대로 열려요. 매번 처음으로 돌아가지 않아요",
+    "en": "The keyboard opens on the category you were using, instead of starting over every time",
+    "comment": "Changelog 5.1.0 remember category",
+    "h": "33d75a9097"
   },
   "키보드를 설정에서 뺐는데도 켜라는 안내가 다시는 안 뜨던 것을 고쳤어요. 이제 설정 목록을 그때그때 확인해요": {
     "ko": "키보드를 설정에서 뺐는데도 켜라는 안내가 다시는 안 뜨던 것을 고쳤어요. 이제 설정 목록을 그때그때 확인해요",

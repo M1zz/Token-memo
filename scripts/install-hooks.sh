@@ -43,6 +43,16 @@ sh "$ROOT/scripts/check_notification_main.sh" || {
   exit 1
 }
 
+# 지구본이 advanceToNextInputMode() 로 돌아가면 커밋 차단.
+# 그 API 는 이모지 키보드를 건너뛴다. 시뮬레이터에 타사 키보드를 깔 수 없어
+# 사람 눈으로는 못 잡는 자리다 (5.1.0 이모지 신고).
+sh "$ROOT/scripts/check_globe.sh" || {
+  echo ""
+  echo "❌ 커밋 차단: 지구본이 이모지 키보드를 건너뜁니다."
+  echo "   (긴급 우회: git commit --no-verify)"
+  exit 1
+}
+
 # 켜 놓은 언어 중 하나라도 덜 채워졌거나 자리표시자가 깨졌으면 커밋 차단.
 # 40개 언어를 사람이 눈으로 못 보므로 이 검사가 유일한 품질 보증이다 (i18n 파이프라인).
 python3 "$ROOT/scripts/i18n.py" check || {

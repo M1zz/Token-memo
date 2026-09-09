@@ -22,6 +22,8 @@ DeployBar 가 배포할 때 이 파일의 `## <버전>` 절을 읽어 간다.
 지구본을 눌러 다른 키보드로 넘어갑니다.
 길게 누르면 이모지 키보드로 바로 갑니다.
 지구본이 언제나 같은 자리에 있습니다.
+보던 갈래가 그대로 열립니다.
+단축어가 늘면 최근 쓴 것이 위에 뜹니다.
 ```
 
 ### App Store (English)
@@ -30,6 +32,8 @@ DeployBar 가 배포할 때 이 파일의 `## <버전>` 절을 읽어 간다.
 Tap the globe to switch keyboards.
 Press and hold to jump straight to emoji.
 The globe now always stays in place.
+It opens on the category you were using.
+Recent snippets show up as you add more.
 ```
 
 ### 앱스토어 (중국어 간체)
@@ -38,6 +42,8 @@ The globe now always stays in place.
 点地球键即可切换到其他键盘。
 长按可直接切换到表情键盘。
 地球键现在一直在原来的位置。
+打开时还是上次看的分类。
+短语变多后，最近用过的会排在上面。
 ```
 
 ### 앱스토어 (중국어 번체)
@@ -46,6 +52,8 @@ The globe now always stays in place.
 點地球鍵即可切換到其他鍵盤。
 長按可直接切換到表情鍵盤。
 地球鍵現在一直在原來的位置。
+開啟時還是上次看的分類。
+短語變多後，最近用過的會排在上面。
 ```
 
 ### 앱스토어 (러시아어)
@@ -55,6 +63,8 @@ The globe now always stays in place.
 Нажмите глобус, чтобы сменить клавиатуру.
 Удерживайте, чтобы сразу открыть эмодзи.
 Глобус теперь всегда на своём месте.
+Открывается та категория, где вы были.
+Частые фразы поднимаются наверх.
 ```
 
 ## 5.0.9

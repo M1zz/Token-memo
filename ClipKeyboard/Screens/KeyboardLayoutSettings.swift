@@ -28,8 +28,10 @@ struct KeyboardLayoutSettings: View {
     private var truncationRaw: String = KeyLabelTruncation.middle.rawValue
     @AppStorage(DefaultsKey.keyboardSkin, store: AppGroup.defaults)
     private var keyboardSkinRaw: String = KeyboardSkin.classic.rawValue
-    @AppStorage("keyboardShowSearch", store: AppGroup.defaults) private var showSearch: Bool   = false
-    @AppStorage("keyboardShowRecent", store: AppGroup.defaults) private var showRecent: Bool   = false
+    @AppStorage(DefaultsKey.keyboardShowSearch, store: AppGroup.defaults) private var showSearch: Bool   = false
+    /// '최근 단축어' 토글의 **날값**. 화면이 보여 주는 값은 아래 `showRecentBinding` 이다.
+    /// (값이 없을 때와 false 를 `@AppStorage` 가 구분하지 못하는 탓 - DefaultsKey 참고)
+    @AppStorage(DefaultsKey.keyboardShowRecent, store: AppGroup.defaults) private var showRecentRaw: Bool = false
     /// 위줄의 리턴(보내기) 키. 기본 켬 - 없어서 못 보내던 것이 신고로 들어온 쪽이다.
     @AppStorage(DefaultsKey.keyboardShowReturnKey, store: AppGroup.defaults) private var showReturnKey: Bool = true
     @AppStorage("keyboardKoreanLayout", store: AppGroup.defaults) private var koreanLayout: String = "dubeolsik"
@@ -201,7 +203,7 @@ struct KeyboardLayoutSettings: View {
                             .font(.caption).foregroundColor(.secondary)
                     }
                 }
-                Toggle(isOn: $showRecent) {
+                Toggle(isOn: showRecentBinding) {
                     VStack(alignment: .leading, spacing: 1) {
                         Text(NSLocalizedString("최근 단축어", comment: "Show recent snippets toggle"))
                         Text(NSLocalizedString("최근 사용한 단축어 5개를 상단에 표시합니다", comment: "Recent snippets description"))
@@ -218,6 +220,11 @@ struct KeyboardLayoutSettings: View {
             } header: {
                 Text(NSLocalizedString("표시 옵션", comment: "Section: display options"))
             } footer: {
+                // 손대지 않은 사람에게는 이 줄이 **저절로** 켜진 것이라, 왜 그런지 말해 준다.
+                // 말 없이 켜 두면 "내가 켠 적 없는데" 가 문의로 돌아온다.
+                if !KeyboardDisplayDefaults.hasChosenRecentSection {
+                    Text(NSLocalizedString("최근 단축어는 단축어가 늘어나면 저절로 켜집니다. 한 번 직접 켜거나 끄시면 그대로 둡니다.", comment: "Recent snippets auto default footer"))
+                }
                 if showReturnKey {
                     // 되는 앱과 안 되는 앱이 갈리는 자리라, 켠 사람에게는 미리 말해 둔다.
                     // 안 그러면 "왜 어떤 앱에서는 줄만 바뀌지" 가 다시 문의로 돌아온다.
@@ -364,13 +371,33 @@ struct KeyboardLayoutSettings: View {
         .onTapGesture { if !isSelected { koreanLayout = layoutId } }
     }
 
+    // MARK: - 표시 옵션
+
+    /// 토글이 보여 주는 값과 저장되는 값을 갈라 놓는다.
+    ///
+    /// 읽을 때는 키보드와 **같은 판정**을 거친다. 그래야 저절로 켜진 상태에서 설정을
+    /// 열었을 때 토글이 꺼짐으로 보이는 일이 없다(그러면 켜려고 눌렀는데 꺼진다).
+    /// 쓸 때는 값을 박아 둔다. 이 순간부터 개수 판정은 끝나고 사람이 정한 것을 따른다.
+    private var showRecentBinding: Binding<Bool> {
+        Binding(
+            get: {
+                _ = showRecentRaw  // 값이 바뀌면 다시 그리라고 읽어 둔다
+                return KeyboardDisplayDefaults.showRecentSection(memoCount: MemoStore.shared.memos.count)
+            },
+            set: { KeyboardDisplayDefaults.chooseRecentSection($0) }
+        )
+    }
+
     // MARK: - Reset
 
     private func resetToDefaults() {
         columnCount = 2; buttonHeight = 56; buttonFontSize = 17
         useCustomColors = false; customBgHex = ""; customKeyHex = ""
         customBgColor = .clear; customKeyColor = .clear
-        showSearch = false; showRecent = false; showReturnKey = true
+        showSearch = false; showReturnKey = true
+        // 최근 단축어는 false 로 박지 않는다. 그러면 "꺼 달라고 했다"가 되어
+        // 개수로 정해 주는 길이 영영 막힌다. 값을 지워 "안 정했다"로 되돌린다.
+        AppGroup.defaults?.removeObject(forKey: DefaultsKey.keyboardShowRecent)
         koreanLayout = "dubeolsik"; defaultLang = "english"
         keyboardSkinRaw = KeyboardSkin.classic.rawValue
     }

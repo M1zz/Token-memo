@@ -32533,6 +32533,35 @@
         }
       }
     },
+    "단축어가 늘어나면 최근 쓴 것을 위에 모아 보여드려요" : {
+      "comment" : "Changelog 5.1.0 recent section auto",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As your snippets grow, the ones you used recently gather at the top"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По мере роста числа фраз последние использованные собираются наверху"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短语变多后，最近用过的会集中显示在上面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短語變多後，最近用過的會集中顯示在上面"
+          }
+        }
+      }
+    },
     "단축어가 늘었어요" : {
       "comment" : "Category activation banner title",
       "extractionState" : "manual",
@@ -70861,6 +70890,35 @@
         }
       }
     },
+    "최근 단축어는 단축어가 늘어나면 저절로 켜집니다. 한 번 직접 켜거나 끄시면 그대로 둡니다." : {
+      "comment" : "Recent snippets auto default footer",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent snippets turns on by itself as you add more. Once you switch it yourself, your choice stays."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недавние фразы включаются сами, когда их становится больше. Если вы один раз включите или выключите это сами, выбор сохранится."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短语变多后，最近使用会自动打开。您手动开关过一次后，就按您的选择来。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短語變多後，最近使用會自動開啟。您手動開關過一次後，就按您的選擇來。"
+          }
+        }
+      }
+    },
     "최근 사용" : {
       "comment" : "Recently used section header",
       "extractionState" : "stale",
@@ -76113,6 +76171,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用鍵盤輸入了"
+          }
+        }
+      }
+    },
+    "키보드를 다시 열면 보던 갈래가 그대로 열려요. 매번 처음으로 돌아가지 않아요" : {
+      "comment" : "Changelog 5.1.0 remember category",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The keyboard opens on the category you were using, instead of starting over every time"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клавиатура открывается на той теме, с которой вы работали, а не начинает сначала"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新打开键盘时，还是上次看的分类，不会每次都回到开头"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新開啟鍵盤時，還是上次看的分類，不會每次都回到開頭"
           }
         }
       }

@@ -291,8 +291,21 @@ struct KeyboardView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // 옵션 토글 - 기본 OFF로 화면 공간 확보
-    @AppStorage("keyboardShowSearch", store: AppGroup.defaults) private var showSearchBar: Bool = false
-    @AppStorage("keyboardShowRecent", store: AppGroup.defaults) private var showRecentSection: Bool = false
+    @AppStorage(DefaultsKey.keyboardShowSearch, store: AppGroup.defaults) private var showSearchBar: Bool = false
+
+    /// '최근 사용' 줄 토글의 **날값**. 이걸 직접 보고 판단하지 않는다.
+    ///
+    /// `@AppStorage` 는 값이 없을 때와 false 를 구분하지 못한다(둘 다 false 로 온다).
+    /// 그런데 이 옵션은 그 둘이 다른 뜻이라(안 정했다 / 꺼 달라고 했다) 판정은
+    /// `KeyboardDisplayDefaults` 에 맡기고, 이 프로퍼티는 **값이 바뀌면 다시 그리게**
+    /// 하는 용도로만 둔다. 없으면 설정에서 켜도 키보드가 그대로 있다.
+    @AppStorage(DefaultsKey.keyboardShowRecent, store: AppGroup.defaults) private var showRecentRaw: Bool = false
+
+    /// '최근 사용' 줄을 세울지. 사람이 정했으면 그대로, 아직 안 정했으면 단축어 수가 정한다.
+    private var showRecentSection: Bool {
+        _ = showRecentRaw  // 값이 바뀌면 다시 그리라고 읽어 둔다
+        return KeyboardDisplayDefaults.showRecentSection(memoCount: allMemos.count)
+    }
     /// 위줄에 리턴(보내기) 키를 세울지. 잘못 눌러 보내는 것이 무서운 사람은 끌 수 있다.
     /// 기본은 켬 - 없어서 못 보내던 것이 신고로 들어온 쪽이라, 꺼 둔 채로 두면 고친 것이 아니다.
     @AppStorage(DefaultsKey.keyboardShowReturnKey, store: AppGroup.defaults) private var showReturnKey: Bool = true
@@ -400,7 +413,16 @@ struct KeyboardView: View {
     @State private var hangul = HangulSearchController()
 
     // v4.1.0: 카테고리 swipe 현재 페이지 인덱스 (즐겨찾기 별 토글은 제거됨)
-    @State private var currentCategoryPage: Int = 0
+    //
+    // v5.1.0: `@State` 에서 App Group 저장으로 옮겼다. 익스텐션은 앱을 옮길 때마다
+    // 새로 만들어지고 iOS 가 먼저 죽이므로, @State 는 사실상 매번 0(★basic)으로
+    // 돌아갔다. 업무용 갈래가 네 번째에 있는 사람은 카톡에서 한 번, 메일에서 한 번,
+    // 하루에도 수십 번 같은 갈래를 다시 찾아 들어가야 했다.
+    //
+    // 갈래가 지워져 번호가 넘치는 경우는 `selectedCategoryFilter` 가 잘라 내므로
+    // 여기서 미리 손보지 않는다.
+    @AppStorage(DefaultsKey.keyboardLastCategoryPage, store: AppGroup.defaults)
+    private var currentCategoryPage: Int = 0
 
     // 보안 메모 PIN 인증
     @State private var showPINEntry = false
@@ -869,6 +891,7 @@ struct KeyboardView: View {
                     // 지구본까지 같이 사라졌다.
                     if KeyboardCapability.needsInputModeSwitchKey, let proxy = typingProxy {
                         globeKey(proxy: proxy)
+                            .padding(.leading, 8)
                     }
                     // 앱 안에서는 탭이 하나뿐이어도 보여준다 - 카테고리가 **처음부터** 있어야
                     // "여기서 갈라 볼 수 있다"가 읽힌다. 익스텐션은 자리가 귀해 예전대로 둘 이상일 때만.
@@ -1530,7 +1553,6 @@ struct KeyboardView: View {
             .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
             .frame(minWidth: 44, minHeight: 44)
             .overlay(InputModeSwitchOverlay(proxy: proxy))
-            .padding(.leading, 8)
     }
 
     private var categoryTabScroller: some View {
@@ -2356,6 +2378,13 @@ struct KeyboardView: View {
                     .foregroundColor(theme.textMuted)
             }
             Spacer(minLength: 0)
+            // 순서를 바꾸는 동안에도 다른 키보드로 갈 수 있어야 한다. 이 모드는 위 줄을
+            // 통째로 이 배너가 대신 쓰는데, 지구본이 거기 있어서 순서를 바꾸는 동안에는
+            // "완료" 를 먼저 눌러야만 건너갈 수 있었다. 커스텀 키보드가 전환 수단을
+            // 늘 제공해야 한다는 요건에도 걸린다.
+            if KeyboardCapability.needsInputModeSwitchKey, let proxy = typingProxy {
+                globeKey(proxy: proxy)
+            }
             Button(action: exitReorderMode) {
                 Text(NSLocalizedString("완료", comment: "Keyboard reorder mode: done"))
                     .font(.subheadline.weight(.semibold))

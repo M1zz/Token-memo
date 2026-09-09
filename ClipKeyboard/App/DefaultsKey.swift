@@ -147,6 +147,21 @@ enum DefaultsKey {
     static let keyboardSecurePinHash = "keyboard_secure_pin_hash"
     /// 키보드 위줄에 리턴(보내기) 키를 세울지. App Group - 익스텐션이 읽는다. 기본 켬.
     static let keyboardShowReturnKey = "keyboardShowReturnKey"
+    /// 키보드에 검색줄을 세울지. App Group. 기본 끔(자리를 한 줄 먹는다).
+    static let keyboardShowSearch = "keyboardShowSearch"
+    /// 키보드에 '최근 사용' 줄을 세울지. App Group.
+    ///
+    /// ⚠️ **값이 없는 것과 false 가 다르다.** 값이 없으면 "아직 안 정했다"는 뜻이고,
+    ///    그때는 단축어 수를 보고 `KeyboardDisplayDefaults` 가 알아서 정한다.
+    ///    그래서 이 키는 `bool(forKey:)` 로 읽으면 안 된다(없는 것이 false 로 뭉개진다).
+    static let keyboardShowRecent = "keyboardShowRecent"
+    /// 키보드를 마지막으로 닫을 때 보고 있던 갈래 페이지 번호. App Group.
+    ///
+    /// 왜 저장하나: 익스텐션은 앱을 옮길 때마다 새로 만들어지고 iOS 가 먼저 죽인다.
+    /// `@State` 로 두면 카톡에서 한 번, 메일에서 한 번, 사파리에서 한 번, 하루에도
+    /// 수십 번 같은 갈래를 다시 찾아 들어가야 한다.
+    /// 갈래가 지워져 번호가 넘치는 경우는 읽는 쪽에서 잘라 낸다.
+    static let keyboardLastCategoryPage = "keyboardLastCategoryPage.v1"
     static let keyboardTypingLang = "keyboardTypingLang"
     static let koreanEnabledMigratedV1 = "koreanEnabledMigrated_v1"
     static let lastBackupDate = "lastBackupDate"
@@ -329,4 +344,45 @@ enum DefaultsKey {
     /// 데모(샘플 페르소나) 데이터가 켜져 있는지 (App Group - 키보드도 같은 데이터를 본다).
     /// 켤 때 원본을 demo.backup.data로 백업하고, 끄면 복원한다. DemoDataService 참고.
     static let demoDataActive = "demoDataActive_v1"
+}
+
+// MARK: - 키보드 표시 옵션의 "아직 안 정했다"
+
+/// 사람이 아직 손대지 않은 표시 옵션을 **단축어 수를 보고** 정해 준다.
+///
+/// 왜 필요한가: '최근 사용' 줄은 찾는 시간을 없애 주는 기능인데 기본이 꺼짐이었고,
+/// 켜는 곳은 설정 > 키보드 레이아웃 > 표시 옵션, 두 단계 아래였다. 그래서 그 줄을
+/// 켜 본 사람만 이득을 봤다. 반대로 단축어가 서넛뿐인 사람에게는 그 줄이 자리만 먹는다.
+/// 둘 다 맞는 말이라 **개수로 가른다.**
+///
+/// ⚠️ 값이 **없는 것**과 **false** 는 다르다. 없으면 "아직 안 정했다", false 는
+///    "꺼 달라고 했다"이다. 한 번 손대면 그 뜻을 끝까지 지킨다. 그래서 이 판정은
+///    `bool(forKey:)` 가 아니라 `object(forKey:)` 로 시작한다.
+///    설정 화면과 키보드가 **같은 답**을 보려면 양쪽 다 여기를 거쳐야 한다.
+enum KeyboardDisplayDefaults {
+
+    /// 이 수를 넘으면 '최근 사용' 줄이 저절로 선다.
+    ///
+    /// 12는 한 화면에 들어가는 키 수(3열 x 4줄 남짓)에서 왔다. 스크롤을 해야
+    /// 보이는 것이 생기는 지점부터 "찾는 일"이 시작되기 때문이다.
+    static let recentSectionThreshold = 12
+
+    /// '최근 사용' 줄을 세울지. 사람이 정한 값이 있으면 그것, 없으면 개수로 정한다.
+    /// - Parameter memoCount: 사용자가 가진 단축어 수.
+    static func showRecentSection(memoCount: Int) -> Bool {
+        if let chosen = AppGroup.defaults?.object(forKey: DefaultsKey.keyboardShowRecent) as? Bool {
+            return chosen
+        }
+        return memoCount >= recentSectionThreshold
+    }
+
+    /// 사람이 이 옵션을 직접 정한 적이 있는지. 설정 화면의 안내 문구가 이걸 본다.
+    static var hasChosenRecentSection: Bool {
+        AppGroup.defaults?.object(forKey: DefaultsKey.keyboardShowRecent) != nil
+    }
+
+    /// 설정 화면에서 토글을 움직였을 때. 이 순간부터 개수 판정은 끝난다.
+    static func chooseRecentSection(_ on: Bool) {
+        AppGroup.defaults?.set(on, forKey: DefaultsKey.keyboardShowRecent)
+    }
 }

@@ -33,5 +33,6 @@ fi
 echo "▶︎ [ci_post_clone] 긴 줄표 검사 (전 범위)"
 sh scripts/check_dashes.sh || exit 1
 sh scripts/check_notification_main.sh || exit 1
+sh scripts/check_globe.sh || exit 1
 
 echo "✅ [ci_post_clone] 검사 통과"
