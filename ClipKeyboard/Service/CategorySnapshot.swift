@@ -162,10 +162,9 @@ enum CategorySnapshotStore {
         merged.icons = remote.icons.merging(local.icons) { _, mine in mine }
         merged.colors = remote.colors.merging(local.colors) { _, mine in mine }
 
-        var seenBuiltIns = Set(local.enabledBuiltIns)
-        for name in remote.enabledBuiltIns where seenBuiltIns.insert(name).inserted {
-            merged.enabledBuiltIns.append(name)
-        }
+        // ⚠️ `enabledBuiltIns` 도 합치지 **않는다.** 숨김과 같은 성격이라 - 켠 것만 넘어가고
+        //    끈 것은 안 넘어가면 기본 제공 탭이 기기를 오갈수록 늘기만 한다.
+        //    (`merged` 가 `local` 에서 시작하므로 이 기기 값이 그대로 올라간다)
 
         merged.featureEnabled = local.featureEnabled || remote.featureEnabled
         return merged
@@ -205,14 +204,14 @@ enum CategorySnapshotStore {
             d.set(snapshot.hiddenTabs, forKey: hiddenTabsKey)
             d.set(snapshot.enabledBuiltIns, forKey: enabledBuiltInsKey)
 
-        case .merge:
+        case .merge, .sync:
             var merged = d.stringArray(forKey: categoriesKey) ?? []
             for name in snapshot.categories where !merged.contains(name) {
                 merged.append(name)
             }
             d.set(merged, forKey: categoriesKey)
 
-            // 아이콘·색·숨김은 합집합 - 한쪽에만 있는 설정이 사라지지 않게.
+            // 아이콘·색은 합집합 - 한쪽에만 있는 설정이 사라지지 않게.
             var icons = (d.dictionary(forKey: iconsKey) as? [String: String]) ?? [:]
             for (name, symbol) in snapshot.icons where icons[name] == nil { icons[name] = symbol }
             if !icons.isEmpty { d.set(icons, forKey: iconsKey) }
@@ -221,13 +220,25 @@ enum CategorySnapshotStore {
             for (name, hex) in snapshot.colors where colors[name] == nil { colors[name] = hex }
             if !colors.isEmpty { d.set(colors, forKey: colorsKey) }
 
-            if !snapshot.hiddenTabs.isEmpty {
-                let hidden = Set(d.stringArray(forKey: hiddenTabsKey) ?? []).union(snapshot.hiddenTabs)
-                d.set(Array(hidden), forKey: hiddenTabsKey)
-            }
-            if !snapshot.enabledBuiltIns.isEmpty {
-                let builtIns = Set(d.stringArray(forKey: enabledBuiltInsKey) ?? []).union(snapshot.enabledBuiltIns)
-                d.set(Array(builtIns), forKey: enabledBuiltInsKey)
+            if strategy == .sync {
+                // 숨김·기본 제공은 **재고가 아니라 상태**다 - "지금 이 사람이 원하는 화면 구성".
+                // 그래서 받는 쪽도 그대로 비춘다(거울). 합집합으로 두면 켠 것·숨긴 것만
+                // 넘어가고 **끈 것·되살린 것은 영영 안 넘어가서**, 기기를 오갈수록 설정이
+                // 쌓이기만 하는 래칫이 된다(아이폰에서 탭을 꺼도 맥에는 계속 남았다).
+                // 올리는 쪽이 이미 이 두 필드를 합치지 않으므로(CategorySnapshotStore.union),
+                // 원격 레코드는 "마지막에 동기화한 기기의 구성"이고 모두가 그리로 수렴한다.
+                d.set(snapshot.hiddenTabs, forKey: hiddenTabsKey)
+                d.set(snapshot.enabledBuiltIns, forKey: enabledBuiltInsKey)
+            } else {
+                // 가져오기(.merge)는 "합친다"는 뜻이라 이 기기 설정을 파일이 지우면 안 된다.
+                if !snapshot.hiddenTabs.isEmpty {
+                    let hidden = Set(d.stringArray(forKey: hiddenTabsKey) ?? []).union(snapshot.hiddenTabs)
+                    d.set(Array(hidden), forKey: hiddenTabsKey)
+                }
+                if !snapshot.enabledBuiltIns.isEmpty {
+                    let builtIns = Set(d.stringArray(forKey: enabledBuiltInsKey) ?? []).union(snapshot.enabledBuiltIns)
+                    d.set(Array(builtIns), forKey: enabledBuiltInsKey)
+                }
             }
         }
 
@@ -241,8 +252,14 @@ enum CategorySnapshotStore {
     }
 
     enum MergeStrategy: CustomStringConvertible {
-        case replace, merge
-        var description: String { self == .replace ? "replace" : "merge" }
+        case replace, merge, sync
+        var description: String {
+            switch self {
+            case .replace: return "replace"
+            case .merge:   return "merge"
+            case .sync:    return "sync"
+            }
+        }
     }
 
     // MARK: - 메모에서 역산 (구버전 백업 구제)

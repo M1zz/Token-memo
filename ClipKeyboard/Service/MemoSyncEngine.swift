@@ -671,7 +671,9 @@ final class MemoSyncEngine: NSObject, CKSyncEngineDelegate {
         guard let payload = record["payload"] as? Data,
               let snapshot = try? JSONDecoder().decode(CategorySnapshot.self, from: payload) else { return }
 
-        CategorySnapshotStore.apply(snapshot, strategy: .merge)
+        // 동기화는 `.sync` - 목록·아이콘·색은 더하고, 숨김·기본 제공은 그대로 비춘다.
+        // (`.merge` 로 두면 끈 것·되살린 것이 다른 기기로 영영 안 넘어간다)
+        CategorySnapshotStore.apply(snapshot, strategy: .sync)
         // 방금 받은 상태를 그대로 섀도에 기록 - 받자마자 되올리는 핑퐁을 막는다.
         AppGroup.defaults?
             .set(categoryFingerprint(currentSyncableCategories()), forKey: Self.categoryShadowKey)

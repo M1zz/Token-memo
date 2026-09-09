@@ -115,6 +115,56 @@ final class CategorySnapshotTests: XCTestCase {
         XCTAssertEqual(defaults.stringArray(forKey: CategorySnapshotStore.categoriesKey), ["업무", "개인"])
     }
 
+    // MARK: - 동기화(.sync)는 숨김·기본 제공을 그대로 비춘다
+
+    /// 아이폰에서 탭을 **되살리면** 맥에서도 되살아나야 한다.
+    /// 합집합이던 시절엔 켠 것·숨긴 것만 넘어가고 끈 것·되살린 것은 영영 안 넘어가서,
+    /// 기기를 오갈수록 설정이 쌓이기만 하는 래칫이 됐다.
+    func testSyncMirrorsHiddenTabs() {
+        defaults.set(["여행", "__favorites__"], forKey: CategorySnapshotStore.hiddenTabsKey)
+        let snapshot = CategorySnapshot(categories: ["업무"], hiddenTabs: ["여행"], featureEnabled: true)
+
+        CategorySnapshotStore.apply(snapshot, strategy: .sync)
+
+        XCTAssertEqual(defaults.stringArray(forKey: CategorySnapshotStore.hiddenTabsKey), ["여행"],
+                       "다른 기기에서 즐겨찾기 숨김을 풀었으면 여기서도 풀려야 한다")
+    }
+
+    /// 기본 제공 카테고리를 **끄면** 다른 기기에서도 꺼져야 한다.
+    func testSyncMirrorsEnabledBuiltIns() {
+        defaults.set(["templates", "combos"], forKey: CategorySnapshotStore.enabledBuiltInsKey)
+        let snapshot = CategorySnapshot(categories: ["업무"], enabledBuiltIns: ["templates"],
+                                        featureEnabled: true)
+
+        CategorySnapshotStore.apply(snapshot, strategy: .sync)
+
+        XCTAssertEqual(defaults.stringArray(forKey: CategorySnapshotStore.enabledBuiltInsKey), ["templates"],
+                       "콤보 탭을 껐으면 여기서도 꺼져야 한다")
+    }
+
+    /// 거울은 **숨김·기본 제공에만** 적용된다 - 카테고리 목록은 여전히 더하기만 한다.
+    func testSyncStillKeepsLocalOnlyCategories() {
+        defaults.set(["로컬전용"], forKey: CategorySnapshotStore.categoriesKey)
+        let snapshot = CategorySnapshot(categories: ["업무"], featureEnabled: true)
+
+        CategorySnapshotStore.apply(snapshot, strategy: .sync)
+
+        let result = defaults.stringArray(forKey: CategorySnapshotStore.categoriesKey) ?? []
+        XCTAssertTrue(result.contains("로컬전용"), "동기화가 이 기기 카테고리를 지우면 안 된다")
+        XCTAssertTrue(result.contains("업무"))
+    }
+
+    /// 가져오기(.merge)는 그대로 합집합이어야 한다 - 파일이 이 기기 설정을 지우면 안 된다.
+    func testMergeStillUnionsHiddenTabs() {
+        defaults.set(["여행"], forKey: CategorySnapshotStore.hiddenTabsKey)
+        let snapshot = CategorySnapshot(categories: ["업무"], hiddenTabs: ["쇼핑"], featureEnabled: true)
+
+        CategorySnapshotStore.apply(snapshot, strategy: .merge)
+
+        let hidden = Set(defaults.stringArray(forKey: CategorySnapshotStore.hiddenTabsKey) ?? [])
+        XCTAssertEqual(hidden, ["여행", "쇼핑"], "가져오기는 합친다 - 기존 숨김이 사라지면 안 된다")
+    }
+
     /// ⚠️ 핵심 안전장치: **빈 스냅샷은 아무것도 지우지 않는다.**
     func testEmptySnapshotDoesNotWipeExisting() {
         defaults.set(["소중한카테고리"], forKey: CategorySnapshotStore.categoriesKey)

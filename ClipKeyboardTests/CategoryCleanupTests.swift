@@ -70,6 +70,17 @@ final class CategoryCleanupTests: XCTestCase {
                       "숨김을 더하기만 하면 한 방향으로 굳는다")
     }
 
+    /// 기본 제공 탭도 숨김과 같은 성격이다 - 켠 것만 넘어가면 끈 것이 영영 안 넘어간다.
+    func test_기본제공_탭은_합치지_않는다() {
+        let local = CategorySnapshot(categories: ["업무"], enabledBuiltIns: ["templates"])
+        let remote = CategorySnapshot(categories: ["업무"], enabledBuiltIns: ["templates", "combos"])
+
+        let merged = CategorySnapshotStore.union(local: local, remote: remote)
+
+        XCTAssertEqual(merged.enabledBuiltIns, ["templates"],
+                       "이 기기에서 끈 탭이 원격 값 때문에 되살아나면 안 된다")
+    }
+
     // MARK: - ② 정리 안내
 
     func test_빈_카테고리를_고른다() {
