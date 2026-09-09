@@ -36,6 +36,14 @@ struct SecurePINSettings: View {
                     Text(NSLocalizedString("보안 단축어를 키보드에서 입력할 때 사용하는 4자리 PIN입니다. 메인 앱에서 설정하면 키보드 익스텐션에서 인증에 사용됩니다.", comment: "Secure PIN section footer"))
                         .font(.body)
                         .foregroundColor(.secondary)
+                    // 앱에서는 Face ID 로 열리는데 키보드에서만 번호를 묻는다. 그 차이를 여기서
+                    // 말해 두지 않으면 고장으로 읽힌다(실제로 그런 문의가 왔다).
+                    // iOS 가 키보드 익스텐션에 LocalAuthentication 을 안 열어 준다.
+                    // 자세한 것은 docs/postmortem/KEYBOARD_FACEID.md
+                    Text(NSLocalizedString("앱 안에서는 Face ID로 열립니다. 키보드에서만 번호를 묻는 이유는, iOS가 키보드에 Face ID를 열어 주지 않기 때문이에요.", comment: "Secure PIN: why the keyboard asks for a number instead of Face ID"))
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.vertical, 8)
             }

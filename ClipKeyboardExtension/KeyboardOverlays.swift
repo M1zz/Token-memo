@@ -71,13 +71,45 @@ struct ImageMemoButton: View {
             // 누를 자리는 칸 전체. 모서리를 깎아 두면 둥근 귀퉁이가 죽은 자리가 된다.
             .contentShape(Rectangle())
             .shadow(color: .black.opacity(0.2), radius: 3, y: 1)
-            .onAppear {
-                guard image == nil, !fileName.isEmpty else { return }
-                DispatchQueue.global(qos: .userInitiated).async {
-                    let loaded = MemoStore.shared.loadImage(fileName: fileName)
-                    DispatchQueue.main.async { image = loaded }
-                }
-            }
+            .onAppear(perform: load)
+    }
+
+    /// 키에 그릴 만큼만 줄여서 읽고, 읽은 것은 담아 둔다.
+    ///
+    /// ⚠️ 예전에는 `MemoStore.loadImage()` 로 **원본을 통째로** 그것도 `onAppear` 마다 읽었다.
+    ///    사진 한 장이 펼쳐서 24MB 인데 키에 그려지는 것은 60pt 짜리다. 이미지 단축어가
+    ///    몇 개만 보여도 익스텐션의 메모리 한도를 넘고, 넘으면 iOS 가 조용히 죽인다.
+    ///    앱 목록(`CardSurfaceEffects`)은 처음부터 줄여서 담고 있었다 - 키보드만 안 하고 있었다.
+    ///    (5.0.4 릴리즈 노트의 "남겨 둔 것" 에 적혀 있던 바로 그것이다.)
+    private func load() {
+        guard image == nil, !fileName.isEmpty else { return }
+        if let cached = Self.cache.object(forKey: fileName as NSString) {
+            image = cached
+            return
+        }
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let loaded = MemoStore.shared.loadThumbnail(fileName: fileName,
+                                                              maxPixel: Self.thumbnailMaxPixel) else { return }
+            Self.cache.setObject(loaded, forKey: fileName as NSString, cost: Self.byteCost(loaded))
+            DispatchQueue.main.async { image = loaded }
+        }
+    }
+
+    /// 키 하나는 크게 잡아도 180pt 다. 레티나 3배를 감안해도 이 정도면 넉넉하다.
+    private static let thumbnailMaxPixel: CGFloat = 400
+
+    /// ⚠️ **총량을 반드시 못박는다.** 익스텐션의 몫은 앱보다 훨씬 작아서, 상한 없는 캐시는
+    ///    그 자체가 죽는 이유가 된다. 앱 목록의 캐시(32MB)보다 한참 작게 잡는다.
+    private static let cache: NSCache<NSString, UIImage> = {
+        let c = NSCache<NSString, UIImage>()
+        c.countLimit = 24
+        c.totalCostLimit = 6 * 1024 * 1024   // 6MB
+        return c
+    }()
+
+    /// 캐시가 스스로 덜어낼 수 있도록 알려 주는 대략의 크기(바이트).
+    private static func byteCost(_ image: UIImage) -> Int {
+        Int(image.size.width * image.scale * image.size.height * image.scale * 4)
     }
 }
 

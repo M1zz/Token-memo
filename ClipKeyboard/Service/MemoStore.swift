@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Vision
 import VisionKit
+import ImageIO
+import UniformTypeIdentifiers
 #endif
 
 enum MemoType: Hashable {
@@ -496,14 +498,64 @@ class MemoStore: ObservableObject {
         try imageData.write(to: imagesDirectory.appendingPathComponent(fileName), options: .atomic)
     }
 
+    /// ⚠️ **원본을 통째로 펼친다.** 3000x2000 사진 한 장이 메모리에서 24MB 다.
+    ///    앱에서는 괜찮지만 **키보드 익스텐션에서는 이 한 장이 프로세스를 죽인다**
+    ///    (익스텐션 메모리 한도는 앱의 몇십 분의 일이다). 익스텐션에서는
+    ///    `loadThumbnail(fileName:maxPixel:)`(그리기) 과 `imageData(fileName:)`(클립보드)
+    ///    을 쓴다. 자세한 것은 `docs/postmortem/KEYBOARD_IMAGE_MEMORY.md`.
     func loadImage(fileName: String) -> UIImage? {
-        guard let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: AppGroup.identifier
-        ) else { return nil }
+        guard let fileURL = imageURL(fileName: fileName) else { return nil }
+        return UIImage(contentsOfFile: fileURL.path)
+    }
 
+    /// App Group 안의 이미지 파일 자리. 없으면 nil.
+    func imageURL(fileName: String) -> URL? {
+        guard !fileName.isEmpty,
+              let containerURL = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: AppGroup.identifier
+              ) else { return nil }
         let fileURL = containerURL.appendingPathComponent("Images").appendingPathComponent(fileName)
         guard FileManager.default.fileExists(atPath: fileURL.path) else { return nil }
-        return UIImage(contentsOfFile: fileURL.path)
+        return fileURL
+    }
+
+    /// 파일 바이트 그대로. **펼치지 않는다.**
+    ///
+    /// 클립보드에 사진을 얹을 때 `UIImage` 를 거치면 원본을 한 번 펼치고(24MB) 다시
+    /// 인코딩해서(또 한 벌) 두 벌이 동시에 잡힌다. 바이트를 그대로 건네면 그 둘이 다 없다.
+    /// 메모리 매핑이라 실제로 읽는 만큼만 올라온다.
+    func imageData(fileName: String) -> Data? {
+        guard let fileURL = imageURL(fileName: fileName) else { return nil }
+        return try? Data(contentsOf: fileURL, options: .mappedIfSafe)
+    }
+
+    /// 파일 이름에서 클립보드용 타입을 고른다. 모르는 것은 png 로 본다(저장이 png 라서).
+    func imagePasteboardType(fileName: String) -> String {
+        let ext = (fileName as NSString).pathExtension.lowercased()
+        guard !ext.isEmpty, let type = UTType(filenameExtension: ext), type.conforms(to: .image) else {
+            return UTType.png.identifier
+        }
+        return type.identifier
+    }
+
+    /// 긴 변이 `maxPixel` 이 되도록 **파일에서 바로** 줄여 읽는다.
+    ///
+    /// `UIImage(contentsOfFile:)` 로 읽고 나서 줄이면 이미 원본만큼 펼친 뒤다. ImageIO 는
+    /// 디코드 단계에서 줄여 주므로 원본 크기의 버퍼가 아예 안 생긴다.
+    func loadThumbnail(fileName: String, maxPixel: CGFloat) -> UIImage? {
+        guard let fileURL = imageURL(fileName: fileName),
+              let source = CGImageSourceCreateWithURL(fileURL as CFURL, nil) else { return nil }
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            // 사진의 회전 정보를 반영해서 만든다. 안 그러면 세로 사진이 눕는다.
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixel,
+        ]
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
     }
 
     func deleteImage(fileName: String) throws {

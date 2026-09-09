@@ -20,7 +20,14 @@ cd "$ROOT" || exit 1
 
 EM="$(printf '\342\200\224')"   # U+2014
 EN="$(printf '\342\200\223')"   # U+2013
-PATTERN="$EM$EN"
+
+# ⚠️ 대괄호 표현("[$EM$EN]") 으로 찾지 않는다.
+#    C 로케일에서 grep 은 그걸 글자 묶음이 아니라 **바이트 묶음**으로 읽는다.
+#    그러면 0x80 같은 이어짐 바이트가 한국어·중국어 글자 안에 흔하게 들어 있어서
+#    멀쩡한 본문이 전부 걸린다. 실제로 그 일이 있었다.
+#    DeployBar 처럼 GUI 로 띄운 도구는 LANG 을 물려주지 않아 C 로케일로 돈다.
+#    사람이 터미널에서 돌리면 통과하고 배포에서만 막히는, 재현되지 않는 실패였다.
+#    -e 로 문자열 두 개를 따로 주면 어느 로케일에서도 그 글자만 정확히 찾는다.
 
 HITS=""
 
@@ -33,13 +40,13 @@ if [ "$1" = "--staged" ]; then
       .git/*|build/*|*/build/*|DerivedData/*|scripts/check_dashes.sh) continue ;;
     esac
     # -I: 바이너리는 건너뛴다
-    if grep -Iq "[$PATTERN]" "$f" 2>/dev/null; then
-      HITS="$HITS$(grep -In "[$PATTERN]" "$f" | sed "s|^|$f:|")
+    if grep -Iq -e "$EM" -e "$EN" "$f" 2>/dev/null; then
+      HITS="$HITS$(grep -In -e "$EM" -e "$EN" "$f" | sed "s|^|$f:|")
 "
     fi
   done
 else
-  HITS="$(grep -rIn "[$PATTERN]" . \
+  HITS="$(grep -rIn -e "$EM" -e "$EN" . \
     --exclude-dir=.git --exclude-dir=build --exclude-dir=DerivedData \
     --exclude-dir=.build --exclude-dir=Pods \
     --exclude=check_dashes.sh 2>/dev/null)"

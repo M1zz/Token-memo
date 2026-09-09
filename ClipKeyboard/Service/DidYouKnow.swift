@@ -213,6 +213,20 @@ extension DidYouKnow {
             action: .openSettings
         ),
         DidYouKnow(
+            id: "return-key",
+            title: NSLocalizedString("넣고 나서 그 자리에서 보낼 수 있어요", comment: "DYK title: return key"),
+            body: NSLocalizedString("키보드 위줄에 보내기 키가 생겼어요. 단축어를 넣고 키보드를 바꾸러 나갈 일이 없습니다. 키 이름은 앱이 정해요, 메시지 앱에서는 보내기로 보입니다.", comment: "DYK body: return key"),
+            symbol: AppSymbol.returnLeft,
+            action: .openStage
+        ),
+        DidYouKnow(
+            id: "secure-combo-pick",
+            title: NSLocalizedString("잠근 단축어도 값을 골라서 넣어요", comment: "DYK title: secure combo pick"),
+            body: NSLocalizedString("값이 여러 개인 단축어를 잠가 두었어도, 오른쪽 화살표로 원하는 값을 고른 다음 왼쪽을 눌러 인증하면 그 값만 들어갑니다.", comment: "DYK body: secure combo pick"),
+            symbol: "lock.open",
+            action: .openStage
+        ),
+        DidYouKnow(
             id: "share-sheet",
             title: NSLocalizedString("다른 앱에서 바로 저장할 수 있어요", comment: "DYK title: share sheet"),
             body: NSLocalizedString("어떤 앱에서든 글을 고르고 공유에서 ClipKeyboard 를 누르면 단축어가 됩니다. 앱을 열지 않아도 돼요.", comment: "DYK body: share sheet"),
