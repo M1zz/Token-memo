@@ -150,6 +150,20 @@ final class ClipKeyboardListViewModel: ObservableObject {
     @Published private(set) var hasLoadedMemos = false
     @Published var loadedData: [Memo] = []
 
+    /// ⚠️ **첫 화면이 그려지기 전에** 단축어를 읽어 둔다.
+    ///
+    /// 예전에는 목록의 `.task` 에서 처음 읽었다. 그러면 첫 몇 프레임은 빈 페이지(스크롤뷰 없음)가
+    /// 그려지고, 읽고 나서야 격자(스크롤뷰)로 갈렸다. 네비게이션 바가 **새로 생긴 스크롤뷰**를
+    /// 잡으면서 큰 제목이 접혔다 펼쳐졌고, 그 사이 카드가 통째로 위로 튀었다가 아래로
+    /// 미끄러져 내려왔다. 앱을 켤 때마다 보이던 "단축어가 위에서 내려오는" 움직임이 이것이다(실측).
+    ///
+    /// 필터를 먼저 읽는 순서는 화면의 onAppear(필터) → task(단축어) 와 같게 맞춘 것이다.
+    /// `.task` 의 다시 읽기는 그대로 둔다 - 탭을 오갈 때 새로 읽는 길이다.
+    init() {
+        loadSavedFilter()
+        loadMemos()
+    }
+
     // MARK: - Search & Filter
 
     @Published var searchQueryString = ""

@@ -364,6 +364,11 @@ struct KeyboardView: View {
         self.hostKind = hostKind
         self.highlightedMemoId = highlightedMemoId
         self.highlightedComboPart = highlightedComboPart
+        // ⚠️ 키는 **만들어질 때부터** 채워 둔다. 예전에는 빈 채로 시작해 onAppear 에서 채웠는데,
+        //    앱의 무대가 아래에서 올라오는 도중에 빈 화면이 격자로 갈리면서 키만 제자리에
+        //    먼저 나타났다. 머리말·입력창은 아직 올라오는 중이라 둘이 따로 움직였다(실측).
+        //    onAppear 의 다시 읽기는 그대로 둔다 - 그 사이 바뀐 것이 있으면 거기서 따라온다.
+        _allMemos = State(initialValue: ProFeatureManager.memosWithinLimit(clipMemos))
     }
 
     // 동적 그리드 레이아웃 (열 개수에 따라 변경)
@@ -375,6 +380,13 @@ struct KeyboardView: View {
     /// **한 값을 둘이 같이 본다** - 어긋나면 그 차이만큼 물결이 잘린다.
     /// 가로 여백(12pt)보다 크지 않게 둔다. 가로는 늘릴 수 없다(키가 좁아진다).
     private static let gridRippleReach: CGFloat = 12
+
+    /// 격자 **위쪽** 여백. 바로 위 버튼 줄과 키 첫 줄 사이가 이만큼만 빈다.
+    ///
+    /// ⚠️ 예전에는 위아래 모두 `gridRippleReach`(12pt)였다. 버튼 줄 아래 빈자리와 합쳐져
+    ///    키 첫 줄이 20pt 가까이 떨어져 떠 보였다. 위만 줄이고, 첫 줄 물결이 넘칠 만큼은
+    ///    자르는 선을 위로 올려 준다(`TopBleedClip`).
+    private static let gridTopInset: CGFloat = 4
 
     // 데이터 상태
     @State private var allMemos: [Memo] = []
@@ -987,8 +999,13 @@ struct KeyboardView: View {
                         //    넘치는 것을 잘라내므로, 여기가 물결보다 좁으면 첫 줄·끝 줄 키의
                         //    물결이 위아래로 싹둑 잘린다(예전 6pt, 물결 14pt).
                         //    가로 12pt 는 그대로 둔다 - 늘리면 키가 그만큼 좁아진다.
-                        .padding(.vertical, Self.gridRippleReach)
+                        .padding(.top, Self.gridTopInset)
+                        .padding(.bottom, Self.gridRippleReach)
                     }
+                    // 위 여백을 줄인 만큼 첫 줄 물결이 스크롤뷰 위로 넘친다. 잘리지 않게 자르는 선만
+                    // 그만큼 위로 올린다. 넘치는 자리는 버튼 줄 아래의 빈 곳이라 버튼을 덮지 않는다.
+                    .scrollClipDisabled()
+                    .clipShape(TopBleedClip(bleed: Self.gridRippleReach - Self.gridTopInset))
                     // v4.1.0: 좌우 swipe로 카테고리 페이지 전환
                     .simultaneousGesture(
                         DragGesture(minimumDistance: 40)
@@ -3077,5 +3094,18 @@ private struct ReorderCellFrameKey: PreferenceKey {
     static let defaultValue: [UUID: CGRect] = [:]
     static func reduce(value: inout [UUID: CGRect], nextValue: () -> [UUID: CGRect]) {
         value.merge(nextValue()) { _, new in new }
+    }
+}
+
+// MARK: - 위로만 조금 넘치게 자르기
+
+/// 제 틀보다 **위로만** `bleed` 만큼 더 보여 주는 자르기 모양.
+/// 키 격자의 첫 줄 물결이 스크롤뷰 위 끝에서 잘리지 않게 할 때 쓴다.
+struct TopBleedClip: Shape {
+    let bleed: CGFloat
+
+    func path(in rect: CGRect) -> Path {
+        Path(CGRect(x: rect.minX, y: rect.minY - bleed,
+                    width: rect.width, height: rect.height + bleed))
     }
 }

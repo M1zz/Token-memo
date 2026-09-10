@@ -812,77 +812,124 @@ struct InAppKeyboardStage: View {
     private static var composerRadius: CGFloat { (composerLineHeight + composerVerticalPadding * 2) / 2 }
 
     private var composerField: some View {
-        Group {
-            if host.text.isEmpty {
-                // 빈칸일 때도 캐럿은 서 있어야 "여기로 들어간다"가 읽힌다.
-                placeholderText
-            } else {
-                composedText
-            }
-        }
-        .font(.callout)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        // ⚠️ 한 줄짜리 칸이다. 예전에는 46pt(높이 34 + 위아래 6)라 글 한 줄에 비해
-        //    빈 위아래가 넓어, 아래 키보드와 나란히 놓으면 이 칸만 부풀어 보였다.
-        //    반경은 높이의 절반이라 값이 바뀌어도 늘 알약 모양이 된다.
-        .frame(minHeight: Self.composerLineHeight, alignment: .center)
-        .padding(.horizontal, 12)
-        .padding(.vertical, Self.composerVerticalPadding)
-        .background(theme.bg)
-        .clipShape(RoundedRectangle(cornerRadius: Self.composerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: Self.composerRadius, style: .continuous)
-                .strokeBorder(theme.divider.opacity(0.6), lineWidth: 0.5)
-        )
-        .accessibilityLabel(NSLocalizedString("입력창", comment: "Composer field accessibility label"))
-        .accessibilityValue(host.text)
+        ComposerField(host: host)
     }
 
-    /// 캐럿을 사이에 낀 본문. 깜빡이지 않는다
-    /// 하루에도 여러 번 여는 화면에서 상시 타이머는 소음이고 배터리다.
+    /// 입력창 한 칸. **캐럿이 깜빡이고, 칸을 누르면 안내 글이 비켜선다.**
     ///
-    /// ⚠️ `{변수}` 는 여기서도 **칩으로** 보여야 한다. 이 앱의 규칙은
-    ///    "플레이스홀더는 어디서든 원문 중괄호가 아닌 하이라이트로 보인다" 인데,
-    ///    이 입력창만 원문을 그대로 그려서 미리보기에 `{이름}` 이 노출됐다.
-    private var composedText: Text {
-        let chars = Array(host.text)
-        let cut = min(max(host.caret, 0), chars.count)
-        // 캐럿이 `{…}` **안쪽**에 들어가면 거기서 문자열이 잘려 중괄호가 도로 드러난다.
-        // 보이기만 옮긴다 - host.caret 자체는 건드리지 않는다(입력 위치는 그대로여야 한다).
-        let safe = caretCutOutsidePlaceholder(chars: chars, cut: cut)
+    /// ⚠️ 한때 캐럿을 일부러 세워만 두었다(하루에 여러 번 여는 화면에서 상시 타이머는
+    ///    소음이고 배터리라고 봤다). 그랬더니 칸이 살아 있는 입력창이 아니라 그림으로 읽혔다.
+    ///    진짜 입력창은 깜빡인다. 타이머는 이 칸이 화면에 있을 때만 돈다(`TimelineView`).
+    ///
+    /// ⚠️ 글이 바뀐 직후에는 깜빡이지 않는다. 시스템 입력창도 그렇다. 치는 동안 캐럿이
+    ///    사라졌다 나타나면 글이 어디로 들어가는지 눈이 놓친다.
+    ///
+    /// ⚠️ 깜빡임은 색만 바꾼다(보이는 색 ↔ 투명). 글자를 뺐다 넣으면 캐럿 폭만큼
+    ///    뒤의 글이 좌우로 흔들린다.
+    private struct ComposerField: View {
+        @ObservedObject var host: InAppKeyboardHost
+        @Environment(\.appTheme) private var theme
+        /// 칸을 눌렀는가. 누르면 "여기에 입력돼요" 가 사라지고 캐럿만 남는다
+        /// (진짜 입력창에 손을 대면 안내 글이 비켜서는 것과 같다).
+        @State private var touched = false
+        /// 마지막으로 글이 바뀐 시각 - 이 뒤 잠깐은 캐럿을 켠 채로 둔다.
+        @State private var lastEditAt = Date.distantPast
 
-        var out = String(chars[0..<safe]).templateAwareAttributed(theme: theme, font: .callout)
-        out += caretGlyph
-        out += String(chars[safe...]).templateAwareAttributed(theme: theme, font: .callout)
-        return Text(out)
-    }
+        /// 시스템 입력창과 같은 박자.
+        private static let blinkInterval: TimeInterval = 0.53
 
-    /// 캐럿이 `{…}` 안이면 그 칸의 끝으로 밀어 낸다(그리기용).
-    private func caretCutOutsidePlaceholder(chars: [Character], cut: Int) -> Int {
-        var openedAt: Int?
-        for (i, c) in chars.enumerated() {
-            if c == "{" { openedAt = i }
-            else if c == "}" {
-                if let open = openedAt, cut > open, cut <= i { return i + 1 }
-                openedAt = nil
+        var body: some View {
+            TimelineView(.periodic(from: .now, by: Self.blinkInterval)) { context in
+                let caretOn = caretVisible(at: context.date)
+                Group {
+                    if host.text.isEmpty {
+                        if touched {
+                            Text(caretGlyph(on: caretOn))
+                        } else {
+                            placeholderText(caretOn: caretOn)
+                        }
+                    } else {
+                        composedText(caretOn: caretOn)
+                    }
+                }
             }
+            .font(.callout)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            // ⚠️ 한 줄짜리 칸이다. 예전에는 46pt(높이 34 + 위아래 6)라 글 한 줄에 비해
+            //    빈 위아래가 넓어, 아래 키보드와 나란히 놓으면 이 칸만 부풀어 보였다.
+            //    반경은 높이의 절반이라 값이 바뀌어도 늘 알약 모양이 된다.
+            .frame(minHeight: InAppKeyboardStage.composerLineHeight, alignment: .center)
+            .padding(.horizontal, 12)
+            .padding(.vertical, InAppKeyboardStage.composerVerticalPadding)
+            .background(theme.bg)
+            .clipShape(RoundedRectangle(cornerRadius: InAppKeyboardStage.composerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: InAppKeyboardStage.composerRadius, style: .continuous)
+                    .strokeBorder(theme.divider.opacity(0.6), lineWidth: 0.5)
+            )
+            // 칸 전체가 눌리는 자리다 - 글씨 위만 눌리면 빈 오른쪽을 누른 사람은 반응이 없다.
+            .contentShape(RoundedRectangle(cornerRadius: InAppKeyboardStage.composerRadius, style: .continuous))
+            .onTapGesture {
+                guard !touched else { return }
+                touched = true
+                lastEditAt = Date()
+            }
+            .onChange(of: host.text) { _, _ in lastEditAt = Date() }
+            .accessibilityLabel(NSLocalizedString("입력창", comment: "Composer field accessibility label"))
+            .accessibilityValue(host.text)
         }
-        return cut
-    }
 
-    /// 캐럿 한 획. 그리는 곳이 두 군데(빈칸일 때 · 글자가 있을 때)라 모양을 여기 한 곳에 둔다.
-    private var caretGlyph: AttributedString {
-        var caret = AttributedString("\u{258F}")
-        caret.foregroundColor = .accentColor
-        return caret
-    }
+        /// 지금 캐럿이 보여야 하는가. 글이 바뀐 뒤 한 박자 동안은 늘 켠다.
+        private func caretVisible(at date: Date) -> Bool {
+            if date.timeIntervalSince(lastEditAt) < Self.blinkInterval { return true }
+            return Int(date.timeIntervalSinceReferenceDate / Self.blinkInterval) % 2 == 0
+        }
 
-    /// 빈칸 안내. 캐럿 뒤에 흐린 글씨로 붙는다.
-    private var placeholderText: Text {
-        var hint = AttributedString(NSLocalizedString("여기에 입력돼요",
-                                                      comment: "In-app keyboard composer placeholder"))
-        hint.foregroundColor = theme.textMuted
-        return Text(caretGlyph + hint)
+        /// 캐럿을 사이에 낀 본문.
+        ///
+        /// ⚠️ `{변수}` 는 여기서도 **칩으로** 보여야 한다. 이 앱의 규칙은
+        ///    "플레이스홀더는 어디서든 원문 중괄호가 아닌 하이라이트로 보인다" 인데,
+        ///    이 입력창만 원문을 그대로 그려서 미리보기에 `{이름}` 이 노출됐다.
+        private func composedText(caretOn: Bool) -> Text {
+            let chars = Array(host.text)
+            let cut = min(max(host.caret, 0), chars.count)
+            // 캐럿이 `{…}` **안쪽**에 들어가면 거기서 문자열이 잘려 중괄호가 도로 드러난다.
+            // 보이기만 옮긴다 - host.caret 자체는 건드리지 않는다(입력 위치는 그대로여야 한다).
+            let safe = caretCutOutsidePlaceholder(chars: chars, cut: cut)
+
+            var out = String(chars[0..<safe]).templateAwareAttributed(theme: theme, font: .callout)
+            out += caretGlyph(on: caretOn)
+            out += String(chars[safe...]).templateAwareAttributed(theme: theme, font: .callout)
+            return Text(out)
+        }
+
+        /// 캐럿이 `{…}` 안이면 그 칸의 끝으로 밀어 낸다(그리기용).
+        private func caretCutOutsidePlaceholder(chars: [Character], cut: Int) -> Int {
+            var openedAt: Int?
+            for (i, c) in chars.enumerated() {
+                if c == "{" { openedAt = i }
+                else if c == "}" {
+                    if let open = openedAt, cut > open, cut <= i { return i + 1 }
+                    openedAt = nil
+                }
+            }
+            return cut
+        }
+
+        /// 캐럿 한 획. 그리는 곳이 세 군데(안내 글 앞 · 빈칸 · 본문 사이)라 모양을 여기 한 곳에 둔다.
+        private func caretGlyph(on: Bool) -> AttributedString {
+            var caret = AttributedString("\u{258F}")
+            caret.foregroundColor = on ? .accentColor : .clear
+            return caret
+        }
+
+        /// 빈칸 안내. 캐럿 뒤에 흐린 글씨로 붙는다.
+        private func placeholderText(caretOn: Bool) -> Text {
+            var hint = AttributedString(NSLocalizedString("여기에 입력돼요",
+                                                          comment: "In-app keyboard composer placeholder"))
+            hint.foregroundColor = theme.textMuted
+            return Text(caretGlyph(on: caretOn) + hint)
+        }
     }
 
 }

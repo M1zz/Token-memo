@@ -291,11 +291,14 @@ struct SnippetsTab: View {
     ///    갈수록 느려지며 목표에 스며드는 곡선이라, 자리에 안착할 때는 좋지만
     ///    화면 밖으로 나가는 데 쓰면 마지막 몇 pt 를 질질 끈다. 다 사라진 줄 알았는데
     ///    아직 조금 남아 기어가는 그림이 된다.
-    ///    나가는 것은 **가속해서** 나가야 한다(`easeIn`) - 눈이 끝을 기다리지 않는다.
+    ///
+    /// ⚠️ 그렇다고 `easeIn` 으로 끝까지 가속하면 **최고 속도로 화면 끝에 부딪혀 툭 끊긴다.**
+    ///    한동안 그렇게 두었더니 "자연스럽게 내려가지 않는다"는 말을 들었다. 내려갈 때는
+    ///    부드럽게 떠나 부드럽게 빠지는 `easeInOut` 을 쓴다. 스프링처럼 꼬리를 끌지 않는다.
     private var screenSwapAnimation: Animation? {
         guard !reduceMotion else { return nil }
         // `styleRaw` 가 이미 새 값이라, 여기 `style` 은 **가려는 곳**이다.
-        return style == .keyboard ? .smooth(duration: 0.36) : .easeIn(duration: 0.24)
+        return style == .keyboard ? .smooth(duration: 0.36) : .easeInOut(duration: 0.3)
     }
 
     private var style: SnippetsTabStyle { SnippetsTabStyle(rawValue: styleRaw) ?? .list }

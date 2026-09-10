@@ -86,7 +86,12 @@ struct AnimatedTip<T: Tip, Content: View>: View {
         .task {
             // 팁의 상태를 계속 듣는다. 다시 조건이 맞아 떠야 할 때도 같은 흐름으로 온다.
             for await status in tip.statusUpdates {
-                isShowing = (status == .available)
+                let showing = (status == .available)
+                guard showing != isShowing else { continue }
+                // ⚠️ 상태를 **애니메이션 안에서** 바꾼다. 위 `.animation` 은 이 그릇 안만 움직여서,
+                //    팁이 끼어들 때 아래 카드들은 한 번에 툭 밀려 내려갔다(앱을 켜고 1초 남짓, 실측).
+                //    바꾸는 순간을 감싸야 밀려나는 카드들도 같은 곡선으로 따라 내려간다.
+                withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) { isShowing = showing }
             }
         }
     }

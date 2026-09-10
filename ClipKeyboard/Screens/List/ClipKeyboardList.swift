@@ -135,6 +135,8 @@ struct ClipKeyboardList: View {
     private let ghostSuggestionsOffKey = "ghostSuggestionsOff_v1"
     // X로 닫으면 이번 앱 실행(세션) 동안은 다음 제안을 띄우지 않는다.
     private static var ghostSuppressedThisSession = false
+    /// 이번 실행에서 목록이 한 번이라도 화면에 올라왔는가 - 배경 제안을 켠 순간에 띄우지 않으려고.
+    private static var listAppearedThisLaunch = false
 
     /// 만들기 시트를 여는 동안 격자에 먼저 서는 빈 자리.
     ///
@@ -204,20 +206,28 @@ struct ClipKeyboardList: View {
     /// 스크롤이 내려간 상태인지 - 타이틀 표시 모드 전환·상단 여백 측정 가드용.
     @State private var showsInlineNavTitle = false
 
-    /// 타이틀 표시 모드. inlineLarge는 등장 시 접힌 채 시작하는 시스템 동작이 있어(실측)
-    /// 항상 펼쳐지는 .large로 시작한 뒤 등장 직후 .inlineLarge로 전환한다.
-    @State private var titleDisplayMode: ToolbarTitleDisplayMode = .large
+    /// 사람이 지금 페이지를 굴리고 있는가. 제목 접기·펼치기는 **이때만** 스크롤을 따라간다.
+    @State private var isPageScrolling = false
 
-    /// 등장 후 inlineLarge로 정착했는지 - 이때부터만 상단 시작점을 측정한다.
-    /// (.large 시작 단계의 더 높은 바가 측정되면 여백이 커짐, 실측)
+    /// 갈래 스와이프를 **시작한 순간**의 자리와 그때의 갈래. 경계 순환 판단에 쓴다.
+    @State private var swipeStart: (location: CGPoint, index: Int)?
+
+    /// 타이틀 표시 모드. **처음부터 inlineLarge 로 시작한다.**
+    ///
+    /// ⚠️ 예전에는 .large 로 시작해 등장 직후 .inlineLarge 로 바꿨다. inlineLarge 가 접힌 채
+    ///    시작한다고 봤기 때문인데, 그건 첫 프레임에 스크롤뷰가 없어서(단축어를 늦게 읽어
+    ///    빈 페이지가 먼저 그려졌다) 생긴 일이었다. 지금은 뷰모델이 먼저 읽어 첫 프레임부터
+    ///    격자가 있다. 그 상태에서 모드를 바꾸면 **바꾸는 순간 제목이 접혔다 펼쳐지며 카드가
+    ///    위로 튀었다 내려왔다**(실측). 바꿀 일을 만들지 않는다.
+    @State private var titleDisplayMode: ToolbarTitleDisplayMode = .inlineLarge
+
+    /// 등장 후 바가 자리를 잡았는지 - 이때부터만 상단 시작점을 측정한다.
+    /// (등장 도중의 바 높이가 측정되면 여백이 커짐, 실측)
     @State private var titleBarSettled = false
 
-    /// 등장 직후 .large → .inlineLarge 전환(펼침 상태 유지 확인용).
+    /// 등장 직후 한 호흡 쉬고 측정을 연다.
     private func expandTitleOnAppear() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            if !showsInlineNavTitle {
-                titleDisplayMode = .inlineLarge
-            }
             titleBarSettled = true
         }
     }
@@ -231,10 +241,20 @@ struct ClipKeyboardList: View {
     @ViewBuilder
     private func trackPageScroll<V: View>(_ view: V) -> some View {
         if #available(iOS 18.0, *) {
-            view.onScrollGeometryChange(for: Bool.self) { geo in
+            view
+                .onScrollPhaseChange { _, phase in
+                    isPageScrolling = phase != .idle
+                }
+                .onScrollGeometryChange(for: Bool.self) { geo in
                 geo.contentOffset.y + geo.contentInsets.top > 44
             } action: { _, scrolled in
                 guard scrolled != showsInlineNavTitle else { return }
+                // ⚠️ **손이 굴린 것만 스크롤로 친다.** 단축어가 채워질 때, 팁·배너가 늦게 끼어들 때
+                //    페이지가 다시 만들어지며 오프셋이 한 번 출렁이는데, 그걸 스크롤로 읽으면
+                //    제목이 접혔다가 도로 펼쳐지면서 카드가 통째로 위에서 아래로 미끄러져
+                //    내려왔다(실측, 0.2초쯤 140pt, 앱을 켤 때마다). 바는 UIKit 이 그려서
+                //    `settling` 의 transaction 으로도 안 막힌다 - 여기서 아예 안 받는다.
+                guard isPageScrolling else { return }
                 withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
                     showsInlineNavTitle = scrolled
                     titleDisplayMode = scrolled ? .inline : .inlineLarge
@@ -880,6 +900,10 @@ struct ClipKeyboardList: View {
             .onAppear {
                 beginSettling()
                 viewModel.onAppear()
+                // ⚠️ 제안 카드("눌러서 추가해보기")의 자리를 **첫 프레임 전에** 정한다. `.task` 에서만
+                //    정하면 격자가 한 번 그려진 뒤 맨 앞에 카드가 끼어들어, 모든 카드가 한 칸씩
+                //    밀리며 앱을 켤 때마다 덜컹했다(실측). 단축어는 뷰모델이 이미 읽어 두었다.
+                refreshGhostSuggestion()
                 fontSize = UserDefaults.standard.object(forKey: DefaultsKey.fontSize) as? CGFloat ?? 20.0
                 // v4.1.0: 카테고리 기능 마이그레이션 - 기존 사용자 자동 활성
                 CategoryStore.shared.migrateFeatureEnabledIfNeeded(
@@ -1116,8 +1140,14 @@ struct ClipKeyboardList: View {
                 }
                 .onAppear {
                     loadPerTabBackgrounds()
+                    // ⚠️ **앱을 켠 그 화면에서는 묻지 않는다.** 켜고 1초 만에 판이 덮이면 화면이
+                    //    자리를 잡는 움직임과 겹쳐 앱이 켜지면서 덜컹이는 것으로 읽혔다.
+                    //    다른 탭에 한 번 다녀와 목록으로 돌아온 때 묻는다.
+                    let isLaunchAppearance = !Self.listAppearedThisLaunch
+                    Self.listAppearedThisLaunch = true
+                    guard !isLaunchAppearance else { return }
                     guard !backgroundOfferResolved, isReadyForBackgroundOffer else { return }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                         showBackgroundOffer = true
                     }
                 }
@@ -1699,12 +1729,24 @@ struct ClipKeyboardList: View {
         // 마지막 탭에서 왼쪽(더 이상 없는 방향) → 카테고리 생성 제안.
         .simultaneousGesture(
             DragGesture(minimumDistance: 60)
+                .onChanged { value in
+                    // ⚠️ **손을 대던 순간의 갈래**를 쥐어 둔다. 손을 뗄 때 읽으면 페이저가 이미
+                    //    옆 갈래로 넘어가 있다. 즐겨찾기에서 기본으로 넘기면 손을 뗄 때는
+                    //    "첫 갈래에서 오른쪽으로 민 것" 으로 읽혀, 멀쩡히 도착한 기본을 두고
+                    //    마지막 갈래로 툭 튀었다(실측). 시작 자리로 짝을 맞춰, 끊긴 제스처가
+                    //    남긴 낡은 값을 다음 스와이프가 물려받지 않게 한다.
+                    if swipeStart?.location != value.startLocation {
+                        swipeStart = (value.startLocation, viewModel.selectedCategoryIndex)
+                    }
+                }
                 .onEnded { value in
+                    let started = swipeStart?.location == value.startLocation ? swipeStart?.index : nil
+                    swipeStart = nil
                     let h = value.translation.width
                     let v = value.translation.height
                     guard abs(h) > abs(v) * 1.5, abs(h) > 80 else { return }
                     let tabs = viewModel.allCategoryTabs
-                    let idx = viewModel.selectedCategoryIndex
+                    let idx = started ?? viewModel.selectedCategoryIndex
                     if h > 0, idx == 0 {
                         // 첫 탭에서 오른쪽 스와이프 → 마지막 탭으로
                         HapticManager.shared.light()
