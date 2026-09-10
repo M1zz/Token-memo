@@ -35,6 +35,21 @@ enum ChangelogData {
     /// ⚠️ 사용자에게 보이는 문장이므로 전부 NSLocalizedString 을 거친다.
     static let entries: [ChangelogEntry] = [
         ChangelogEntry(
+            version: "5.1.1",
+            released: nil,
+            highlights: [
+                // 설정
+                NSLocalizedString("설정을 키보드, 단축어, 화면과 표시처럼 갈래로 나눴어요. 한 칸 들어가면 바로 찾아요", comment: "Changelog 5.1.1 settings groups"),
+                NSLocalizedString("Pro 활성화됨을 누르면 어떤 혜택을 얼마나 누리고 있는지 보여요", comment: "Changelog 5.1.1 pro benefits"),
+                // 움직임
+                NSLocalizedString("앱을 켤 때 단축어가 위에서 내려오거나 흔들리던 것을 없앴어요", comment: "Changelog 5.1.1 smooth launch"),
+                NSLocalizedString("키보드 미리보기가 한 번에 부드럽게 오르내리고, 입력창 캐럿이 깜빡여요", comment: "Changelog 5.1.1 keyboard preview"),
+                NSLocalizedString("갈래를 옆으로 넘기다 마지막 갈래로 튀던 것을 고쳤어요", comment: "Changelog 5.1.1 category swipe"),
+                // 앱 소개
+                NSLocalizedString("함께 쓰는 앱에 실제 앱 아이콘이 보여요", comment: "Changelog 5.1.1 family app icons"),
+            ]
+        ),
+        ChangelogEntry(
             version: "5.1.0",
             released: nil,
             highlights: [

@@ -2261,6 +2261,12 @@
     "comment": "Pro activated\nPro active",
     "h": "7e5d04446f"
   },
+  "Pro 활성화됨을 누르면 어떤 혜택을 얼마나 누리고 있는지 보여요": {
+    "ko": "Pro 활성화됨을 누르면 어떤 혜택을 얼마나 누리고 있는지 보여요",
+    "en": "Tap Pro Activated to see which benefits you get and how much you use them",
+    "comment": "Changelog 5.1.1 pro benefits",
+    "h": "e51b6be2dd"
+  },
   "Professional English": {
     "ko": "프로페셔널 영어",
     "en": "Professional English",
@@ -3227,6 +3233,12 @@
     "comment": "Interval label\nInterval picker label",
     "h": "b134af45a9"
   },
+  "갈래를 옆으로 넘기다 마지막 갈래로 튀던 것을 고쳤어요": {
+    "ko": "갈래를 옆으로 넘기다 마지막 갈래로 튀던 것을 고쳤어요",
+    "en": "Fixed swiping between categories jumping to the last one",
+    "comment": "Changelog 5.1.1 category swipe",
+    "h": "41a18705e5"
+  },
   "갈래를 하나만 쓰셔도 지구본이 사라지지 않아요": {
     "ko": "갈래를 하나만 쓰셔도 지구본이 사라지지 않아요",
     "en": "The globe stays put even if you keep just one category",
@@ -3470,8 +3482,8 @@
   "검색": {
     "ko": "검색",
     "en": "Search",
-    "comment": "Search",
-    "h": "54b7273232"
+    "comment": "Return key label: search\nSearch",
+    "h": "af1caf3dcf"
   },
   "검색 결과 없음": {
     "ko": "검색 결과 없음",
@@ -4616,8 +4628,8 @@
   "다음": {
     "ko": "다음",
     "en": "Next",
-    "comment": "Next button",
-    "h": "3f9cf4ad0d"
+    "comment": "Next button\nReturn key label: next",
+    "h": "ffa2132e34"
   },
   "다음 주": {
     "ko": "다음 주",
@@ -6446,8 +6458,8 @@
   "보내기": {
     "ko": "보내기",
     "en": "Send",
-    "comment": "Send composed message",
-    "h": "577a0cd871"
+    "comment": "Return key label: send\nSend composed message",
+    "h": "99d64fa263"
   },
   "보내기 키": {
     "ko": "보내기 키",
@@ -7955,6 +7967,12 @@
     "comment": "Merged setup page subtitle",
     "h": "3ab4c510ff"
   },
+  "설정을 키보드, 단축어, 화면과 표시처럼 갈래로 나눴어요. 한 칸 들어가면 바로 찾아요": {
+    "ko": "설정을 키보드, 단축어, 화면과 표시처럼 갈래로 나눴어요. 한 칸 들어가면 바로 찾아요",
+    "en": "Settings are now grouped into Keyboard, Snippets, Appearance and more. Tap one to find what you need",
+    "comment": "Changelog 5.1.1 settings groups",
+    "h": "13e742ed82"
+  },
   "설정을 하려는 일로 묶어 16개에서 8개로 정리했어요. 첫 화면은 한 줄로 접히고 현재 값이 보여요": {
     "ko": "설정을 하려는 일로 묶어 16개에서 8개로 정리했어요. 첫 화면은 한 줄로 접히고 현재 값이 보여요",
     "en": "Settings is grouped by what you want to do: sixteen sections became eight. The first screen folds into one row and shows your current choice.",
@@ -8777,6 +8795,12 @@
     "comment": "Changelog 4.4.4 item 1",
     "h": "282a67625c"
   },
+  "앱을 켤 때 단축어가 위에서 내려오거나 흔들리던 것을 없앴어요": {
+    "ko": "앱을 켤 때 단축어가 위에서 내려오거나 흔들리던 것을 없앴어요",
+    "en": "Snippets no longer drop in or jolt when the app opens",
+    "comment": "Changelog 5.1.1 smooth launch",
+    "h": "3e208a2bde"
+  },
   "앱이 미리 만들어 둔 카테고리예요. 켜면 목록 상단 탭에 나타나 해당 종류의 단축어만 모아 볼 수 있어요.": {
     "ko": "앱이 미리 만들어 둔 카테고리예요. 켜면 목록 상단 탭에 나타나 해당 종류의 단축어만 모아 볼 수 있어요.",
     "en": "Categories we've prepared for you. Turn one on to show a tab at the top that gathers only that kind of snippet.",
@@ -9302,8 +9326,8 @@
   "완료": {
     "ko": "완료",
     "en": "Done",
-    "comment": "Done\nDone bundling\nDone button\nKeyboard reorder mode: done",
-    "h": "4f8c8d88c4"
+    "comment": "Done\nDone bundling\nDone button\nKeyboard reorder mode: done\nReturn key label: done",
+    "h": "040e0a44be"
   },
   "완료 표시": {
     "ko": "완료 표시",
@@ -12413,6 +12437,12 @@
     "comment": "In-app keyboard stage title",
     "h": "ee7baeb07f"
   },
+  "키보드 미리보기가 한 번에 부드럽게 오르내리고, 입력창 캐럿이 깜빡여요": {
+    "ko": "키보드 미리보기가 한 번에 부드럽게 오르내리고, 입력창 캐럿이 깜빡여요",
+    "en": "The keyboard preview now slides up and down smoothly as one, and the cursor blinks",
+    "comment": "Changelog 5.1.1 keyboard preview",
+    "h": "463c2763a0"
+  },
   "키보드 버튼 문구": {
     "ko": "키보드 버튼 문구",
     "en": "Insert keyword",
@@ -13624,6 +13654,12 @@
     "en": "Pick the values you use together and they become a single key. The orange number is how many steps that key has.",
     "comment": "Bulk import: bundling mode footer",
     "h": "220e01d8eb"
+  },
+  "함께 쓰는 앱에 실제 앱 아이콘이 보여요": {
+    "ko": "함께 쓰는 앱에 실제 앱 아이콘이 보여요",
+    "en": "Apps that work together now show each app's real icon",
+    "comment": "Changelog 5.1.1 family app icons",
+    "h": "6c5f60a1c3"
   },
   "함께 쓸 것들을 눌러 고르세요": {
     "ko": "함께 쓸 것들을 눌러 고르세요",
