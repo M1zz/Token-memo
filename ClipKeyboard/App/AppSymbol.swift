@@ -66,6 +66,7 @@ enum AppSymbol {
     static let eraserFill = "eraser.fill"
     static let exclamationmarkCircleFill = "exclamationmark.circle.fill"
     static let exclamationmarkTriangleFill = "exclamationmark.triangle.fill"
+    static let externaldrive = "externaldrive"
     static let eyeFill = "eye.fill"
     static let eyes = "eyes"
     static let figureRun = "figure.run"
@@ -112,6 +113,7 @@ enum AppSymbol {
     static let menubarRectangle = "menubar.rectangle"   // 맥 메뉴바 앱 안내
     static let minusCircleFill = "minus.circle.fill"
     static let number = "number"
+    static let paintbrush = "paintbrush"
     static let paperplaneFill = "paperplane.fill"
     static let pawprintFill = "pawprint.fill"
     static let pencil = "pencil"
@@ -149,6 +151,7 @@ enum AppSymbol {
     static let textAlignleft = "text.alignleft"
     /// 문질러 담기 - 줄이 바뀐 자리를 줄바꿈으로 살릴지.
     static let textJustify = "text.justify"
+    static let textQuote = "text.quote"
     /// 사진 속 글자를 읽어 값으로 넣는 자리에 쓴다(일괄 가져오기·단축어 내용).
     static let textViewfinder = "text.viewfinder"
     static let cameraViewfinder = "camera.viewfinder"

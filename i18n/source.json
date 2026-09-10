@@ -2183,6 +2183,12 @@
     "comment": "Event label: pro nudge shown",
     "h": "27bf3dd44a"
   },
+  "Pro 기능이 모두 열려 있어요": {
+    "ko": "Pro 기능이 모두 열려 있어요",
+    "en": "All Pro features are unlocked",
+    "comment": "Pro benefits summary: nothing beyond the free limits yet",
+    "h": "3feced0f21"
+  },
   "Pro 를 열었어요. 기본 기능은 그대로 무료예요": {
     "ko": "Pro 를 열었어요. 기본 기능은 그대로 무료예요",
     "en": "Pro is here. The basics stay free",
@@ -2266,6 +2272,12 @@
     "en": "Proposal follow-up (3 days silent)",
     "comment": "Scenario title: proposal follow-up",
     "h": "6ebffa6321"
+  },
+  "Pro로 열린 기능": {
+    "ko": "Pro로 열린 기능",
+    "en": "Unlocked with Pro",
+    "comment": "Pro benefits section: features unlocked by Pro",
+    "h": "5d21f24ddd"
   },
   "QWERTY 스타일 (표준)": {
     "ko": "QWERTY 스타일 (표준)",
@@ -4187,6 +4199,12 @@
     "comment": "Suggested memo title: My <type>",
     "h": "1cc78149cf"
   },
+  "내 Pro 혜택": {
+    "ko": "내 Pro 혜택",
+    "en": "My Pro Benefits",
+    "comment": "Pro benefits screen title",
+    "h": "1d716f11a4"
+  },
   "내 것을 저장해보세요": {
     "ko": "내 것을 저장해보세요",
     "en": "Save your own",
@@ -4658,8 +4676,8 @@
   "단축어": {
     "ko": "단축어",
     "en": "Snippet",
-    "comment": "Copy value control: memo parameter\nCopy value intent: memo parameter\nDefault snippet title\nSettings section: shortcuts\nShare destination: save as a shortcut right away\nSnippet (saved key-value item) display name",
-    "h": "e5f8dadd0c"
+    "comment": "Copy value control: memo parameter\nCopy value intent: memo parameter",
+    "h": "8c10487a02"
   },
   "단축어 %1$d개 추가, %2$d개 갱신 (총 %3$d개).\n콤보 %4$d개, 이미지 %5$d개, 카테고리 %6$d개를 가져왔습니다.": {
     "ko": "단축어 %1$d개 추가, %2$d개 갱신 (총 %3$d개).\n콤보 %4$d개, 이미지 %5$d개, 카테고리 %6$d개를 가져왔습니다.",
@@ -5879,6 +5897,12 @@
     "comment": "Free",
     "h": "78f8612778"
   },
+  "무료 %1$d개 · 지금 %2$d개": {
+    "ko": "무료 %1$d개 · 지금 %2$d개",
+    "en": "Free: %1$d · Now: %2$d",
+    "comment": "Pro benefits row: the free limit, then how many the user has now",
+    "h": "5d017ebee9"
+  },
   "무료 단축어 %d칸 남았어요. Pro로 무제한": {
     "ko": "무료 단축어 %d칸 남았어요. Pro로 무제한",
     "en": "%d free snippet slots left, go Pro for unlimited",
@@ -5920,6 +5944,18 @@
     "en": "Free plan",
     "comment": "Auto-registered",
     "h": "9cd3e0308c"
+  },
+  "무료 한도를 넘어 %d개를 더 쓰고 있어요": {
+    "ko": "무료 한도를 넘어 %d개를 더 쓰고 있어요",
+    "en": "You're using %d more than the free plan allows",
+    "comment": "Pro benefits summary: how many items go beyond the free limits",
+    "h": "b82d821ad5"
+  },
+  "무료 한도와 비교": {
+    "ko": "무료 한도와 비교",
+    "en": "Compared with Free",
+    "comment": "Pro benefits section: usage compared with the free limits",
+    "h": "1cc6d10caa"
   },
   "무료로 쓸 수 있는 단축어를 5개에서 10개로 늘렸어요": {
     "ko": "무료로 쓸 수 있는 단축어를 5개에서 10개로 늘렸어요",

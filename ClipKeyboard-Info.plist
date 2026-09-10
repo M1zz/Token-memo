@@ -31,5 +31,10 @@
 	<array>
 		<string>com.Ysoup.TokenMemo.beacon-flush</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
 </dict>
 </plist>

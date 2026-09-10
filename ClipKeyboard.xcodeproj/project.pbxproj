@@ -77,6 +77,13 @@
 		58C473432A109F0E009D87BC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58C473422A109F0E009D87BC /* Preview Assets.xcassets */; };
 		58C473692A10C9A0009D87BC /* ClipKeyboardList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C473682A10C9A0009D87BC /* ClipKeyboardList.swift */; };
 		58C7ACB52A2CF1A3003F791F /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C7ACB42A2CF1A3003F791F /* SettingView.swift */; };
+		5AAE55B3A09146619D7A38A7 /* ProBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C7CC7878D04F4491D10BC2 /* ProBenefitsView.swift */; };
+		7B2B6CBDF5BB46AB8A6A9926 /* KeyboardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCD344C5E0F419B90144643 /* KeyboardSettingsView.swift */; };
+		CF493815B00448E38477E06A /* ShortcutsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC201306E1F4FE094DC76F4 /* ShortcutsSettingsView.swift */; };
+		AF4C3A056C3F419A9EAC8892 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A69055FDB74D70A07714CB /* AppearanceSettingsView.swift */; };
+		2BFAE403E90D4B4EAE9DC1DF /* MyDataSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8789BB34EE8F45ECB57252A8 /* MyDataSettingsView.swift */; };
+		337439DDE9BE4555BC06FBEF /* HelpSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2465A38EC2AA4F69B0B94FE2 /* HelpSettingsView.swift */; };
+		29286DCE58A54049B2D11C5B /* AppInfoSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3649F2CC2F3B4033A66504C0 /* AppInfoSettingsView.swift */; };
 		58CK00012B5E1A2100000001 /* CloudKitBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58CK00002B5E1A2100000001 /* CloudKitBackupService.swift */; };
 		58CK00032B5E1A2100000002 /* CloudBackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58CK00022B5E1A2100000002 /* CloudBackupView.swift */; };
 		58CK00072B5E1A2100000005 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58CK00062B5E1A2100000005 /* MenuBarManager.swift */; };
@@ -404,6 +411,13 @@
 		58C473422A109F0E009D87BC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		58C473682A10C9A0009D87BC /* ClipKeyboardList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipKeyboardList.swift; sourceTree = "<group>"; };
 		58C7ACB42A2CF1A3003F791F /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		63C7CC7878D04F4491D10BC2 /* ProBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProBenefitsView.swift; sourceTree = "<group>"; };
+		4CCD344C5E0F419B90144643 /* KeyboardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSettingsView.swift; sourceTree = "<group>"; };
+		FDC201306E1F4FE094DC76F4 /* ShortcutsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsSettingsView.swift; sourceTree = "<group>"; };
+		C7A69055FDB74D70A07714CB /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
+		8789BB34EE8F45ECB57252A8 /* MyDataSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDataSettingsView.swift; sourceTree = "<group>"; };
+		2465A38EC2AA4F69B0B94FE2 /* HelpSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpSettingsView.swift; sourceTree = "<group>"; };
+		3649F2CC2F3B4033A66504C0 /* AppInfoSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoSettingsView.swift; sourceTree = "<group>"; };
 		58CK00002B5E1A2100000001 /* CloudKitBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitBackupService.swift; sourceTree = "<group>"; };
 		58CK00022B5E1A2100000002 /* CloudBackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudBackupView.swift; sourceTree = "<group>"; };
 		58CK00062B5E1A2100000005 /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
@@ -941,6 +955,13 @@
 				AIV0FILE0000000000000003 /* AISettingsView.swift */,
 				TOKENFMT0FILE00000000001 /* TokenFormatSettingsView.swift */,
 				58C7ACB42A2CF1A3003F791F /* SettingView.swift */,
+				63C7CC7878D04F4491D10BC2 /* ProBenefitsView.swift */,
+				4CCD344C5E0F419B90144643 /* KeyboardSettingsView.swift */,
+				FDC201306E1F4FE094DC76F4 /* ShortcutsSettingsView.swift */,
+				C7A69055FDB74D70A07714CB /* AppearanceSettingsView.swift */,
+				8789BB34EE8F45ECB57252A8 /* MyDataSettingsView.swift */,
+				2465A38EC2AA4F69B0B94FE2 /* HelpSettingsView.swift */,
+				3649F2CC2F3B4033A66504C0 /* AppInfoSettingsView.swift */,
 				AA00000600000001F3B00002 /* UsageGuideView.swift */,
 				AA00000800000001F3B00002 /* PersonaGuideData.swift */,
 				DYK0FILE0000000000000002 /* DidYouKnowView.swift */,
@@ -1452,6 +1473,13 @@
 				US00002B2F0000000000000004 /* UsageReportingService.swift in Sources */,
 				FB00002A2F0000000000000002 /* FeedbackView.swift in Sources */,
 				58C7ACB52A2CF1A3003F791F /* SettingView.swift in Sources */,
+				5AAE55B3A09146619D7A38A7 /* ProBenefitsView.swift in Sources */,
+				7B2B6CBDF5BB46AB8A6A9926 /* KeyboardSettingsView.swift in Sources */,
+				CF493815B00448E38477E06A /* ShortcutsSettingsView.swift in Sources */,
+				AF4C3A056C3F419A9EAC8892 /* AppearanceSettingsView.swift in Sources */,
+				2BFAE403E90D4B4EAE9DC1DF /* MyDataSettingsView.swift in Sources */,
+				337439DDE9BE4555BC06FBEF /* HelpSettingsView.swift in Sources */,
+				29286DCE58A54049B2D11C5B /* AppInfoSettingsView.swift in Sources */,
 				AA00000500000001F3B00002 /* UsageGuideView.swift in Sources */,
 				AA00000700000001F3B00002 /* PersonaGuideData.swift in Sources */,
 				58MA00012F0000000000000001 /* MacAppIntroView.swift in Sources */,
@@ -2023,7 +2051,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "보안 메모에 접근하기 위해 Face ID가 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -2063,7 +2091,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "보안 메모에 접근하기 위해 Face ID가 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
