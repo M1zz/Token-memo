@@ -455,6 +455,12 @@
     "comment": "Equivalent unit: songs",
     "h": "0a99f40fba"
   },
+  "%d단계": {
+    "ko": "%d단계",
+    "en": "Step %d",
+    "comment": "Stack item fallback name by position",
+    "h": "0b72fb0796"
+  },
   "%d단계 중 %d단계": {
     "ko": "%1$d단계 중 %2$d단계",
     "en": "Step %2$d of %1$d",
@@ -3965,6 +3971,18 @@
     "comment": "Protected category lock icon",
     "h": "9ddab4e3ff"
   },
+  "기본 키보드보다 윗줄 하나만큼 높아요. 단축어가 더 보입니다.": {
+    "ko": "기본 키보드보다 윗줄 하나만큼 높아요. 단축어가 더 보입니다.",
+    "en": "One row taller than the standard keyboard, so more snippets fit.",
+    "comment": "Keyboard height preset description: standard",
+    "h": "958c677986"
+  },
+  "기본 키보드와 높이가 같아요. 키보드를 바꿔도 화면이 움직이지 않습니다. 단축어는 굴려서 봅니다.": {
+    "ko": "기본 키보드와 높이가 같아요. 키보드를 바꿔도 화면이 움직이지 않습니다. 단축어는 굴려서 봅니다.",
+    "en": "The same height as the standard keyboard, so nothing shifts when you switch keyboards. Scroll to see more snippets.",
+    "comment": "Keyboard height preset description: compact",
+    "h": "10c63a3678"
+  },
   "기본값으로 되돌리기": {
     "ko": "기본값으로 되돌리기",
     "en": "Reset to Default",
@@ -4241,6 +4259,12 @@
     "comment": "Background: my photo",
     "h": "82d045242e"
   },
+  "내 손에 맞는 키보드 크기": {
+    "ko": "내 손에 맞는 키보드 크기",
+    "en": "A keyboard size that fits your hand",
+    "comment": "Welcome: choosing the keyboard size",
+    "h": "2937dab534"
+  },
   "내 주소": {
     "ko": "내 주소",
     "en": "My address",
@@ -4336,6 +4360,12 @@
     "en": "Tomorrow",
     "comment": "Date option: tomorrow",
     "h": "c85ae14422"
+  },
+  "넉넉하게": {
+    "ko": "넉넉하게",
+    "en": "Roomy",
+    "comment": "Keyboard height preset name: roomy",
+    "h": "c8cdbdba3f"
   },
   "넣고 나서 그 자리에서 보낼 수 있어요": {
     "ko": "넣고 나서 그 자리에서 보낼 수 있어요",
@@ -4816,6 +4846,12 @@
     "en": "Snippet height",
     "comment": "Memo cell height",
     "h": "555a6e8532"
+  },
+  "단축어 높이는 문구가 적힌 키, 조작 키는 맨 윗줄의 지우기·보내기·지구본이에요. 키보드 전체 높이는 맨 위에서 정합니다.": {
+    "ko": "단축어 높이는 문구가 적힌 키, 조작 키는 맨 윗줄의 지우기·보내기·지구본이에요. 키보드 전체 높이는 맨 위에서 정합니다.",
+    "en": "Snippet height is the keys with your text on them; control keys are delete, send and the globe in the top row. The overall keyboard height is set at the top.",
+    "comment": "Grid section footer: which height is which",
+    "h": "67cec9a8c4"
   },
   "단축어 마트": {
     "ko": "단축어 마트",
@@ -5597,6 +5633,12 @@
     "comment": "Repair hint when business number checksum fails",
     "h": "b5180eae9c"
   },
+  "마지막으로 키보드 크기만 정하면 끝이에요.": {
+    "ko": "마지막으로 키보드 크기만 정하면 끝이에요.",
+    "en": "One last thing: pick the keyboard size.",
+    "comment": "Coach line: choose the keyboard size",
+    "h": "6d05f875c9"
+  },
   "마지막은 콤보예요. 여러 개가 순서대로 들어가요.": {
     "ko": "마지막은 콤보예요. 여러 개가 순서대로 들어가요.",
     "en": "Last one is a combo. Several values go in, one after another.",
@@ -5902,6 +5944,12 @@
     "en": "The list shows a line of content under each title, with sensitive values masked",
     "comment": "Changelog 4.0.1 item 2",
     "h": "13e35b9625"
+  },
+  "목록의 단축어 높이를 원하는 만큼 조절해요. 세 칸 중 고르는 대신 자유롭게요": {
+    "ko": "목록의 단축어 높이를 원하는 만큼 조절해요. 세 칸 중 고르는 대신 자유롭게요",
+    "en": "Adjust snippet height in the list as much as you like, instead of picking one of three.",
+    "comment": "Changelog 5.1.2 snippet height slider",
+    "h": "b5f2d452fd"
   },
   "무료": {
     "ko": "무료",
@@ -8231,6 +8279,12 @@
     "comment": "Larger Text feature description",
     "h": "7ec19c76e3"
   },
+  "시스템과 같게": {
+    "ko": "시스템과 같게",
+    "en": "Match System",
+    "comment": "Keyboard height preset name: match system keyboard",
+    "h": "199e3aa665"
+  },
   "시작을 누르고 끝을 누르세요": {
     "ko": "시작을 누르고 끝을 누르세요",
     "en": "Tap the start, then the end",
@@ -8452,6 +8506,12 @@
     "en": "No thanks",
     "comment": "Decline the edit-pattern suggestion",
     "h": "b5a8fe4049"
+  },
+  "아래 키보드가 바로 따라 바뀝니다. 나중에 설정에서 언제든 다시 바꿀 수 있어요.": {
+    "ko": "아래 키보드가 바로 따라 바뀝니다. 나중에 설정에서 언제든 다시 바꿀 수 있어요.",
+    "en": "The keyboard below changes as you go. You can always change it later in Settings.",
+    "comment": "Layout step: body",
+    "h": "1b81c2526e"
   },
   "아래 키보드에서 단축어를 눌러 보세요.": {
     "ko": "아래 키보드에서 단축어를 눌러 보세요.",
@@ -8956,6 +9016,12 @@
     "en": "This one",
     "comment": "Tutorial pointer in action sheet",
     "h": "6b83f5788f"
+  },
+  "여러 값을 담은 단축어가 단축어 스택이 됐어요. 칸마다 이름을 붙여 지금 무엇이 들어갈지 보여요": {
+    "ko": "여러 값을 담은 단축어가 단축어 스택이 됐어요. 칸마다 이름을 붙여 지금 무엇이 들어갈지 보여요",
+    "en": "Snippets holding several values are now snippet stacks. Each slot gets a name, so you can see what goes in next.",
+    "comment": "Changelog 5.1.2 snippet stack",
+    "h": "e54c92d1e1"
   },
   "여러 값을 순서대로 넣는 콤보": {
     "ko": "여러 값을 순서대로 넣는 콤보",
@@ -9748,6 +9814,12 @@
     "en": "This one",
     "comment": "Persona prompt apply button",
     "h": "c2e9755ca1"
+  },
+  "이대로 할게요": {
+    "ko": "이대로 할게요",
+    "en": "Looks good",
+    "comment": "Layout step: confirm button",
+    "h": "88890b4e87"
   },
   "이동": {
     "ko": "이동",
@@ -11021,6 +11093,12 @@
     "comment": "Token format editor: field chips section",
     "h": "239600ff40"
   },
+  "조작 키 크기": {
+    "ko": "조작 키 크기",
+    "en": "Control Key Size",
+    "comment": "Control key size label",
+    "h": "867f1acd4e"
+  },
   "종류별로 모아 보는 카테고리를 준비해 뒀어요": {
     "ko": "종류별로 모아 보는 카테고리를 준비해 뒀어요",
     "en": "Categories that gather by kind are ready to switch on",
@@ -11219,6 +11297,18 @@
     "comment": "Trial upsell",
     "h": "5d3b360a39"
   },
+  "지금 기본 키보드보다 %dpt 낮아요.": {
+    "ko": "지금 기본 키보드보다 %dpt 낮아요.",
+    "en": "Right now it is %dpt shorter than the standard keyboard.",
+    "comment": "Keyboard height comparison: shorter",
+    "h": "888832d0ef"
+  },
+  "지금 기본 키보드보다 %dpt 높아요.": {
+    "ko": "지금 기본 키보드보다 %dpt 높아요.",
+    "en": "Right now it is %dpt taller than the standard keyboard.",
+    "comment": "Keyboard height comparison: taller",
+    "h": "732fa02323"
+  },
   "지금 말고 다음에 할래요": {
     "ko": "지금 말고 다음에 할래요",
     "en": "Not now, later",
@@ -11236,6 +11326,12 @@
     "en": "No rush. You can buy from Settings later.",
     "comment": "Discount offer: no pressure notice",
     "h": "dd7c1cdc39"
+  },
+  "지금 이 기기의 기본 키보드와 높이가 같아요.": {
+    "ko": "지금 이 기기의 기본 키보드와 높이가 같아요.",
+    "en": "Right now it is the same height as this device's standard keyboard.",
+    "comment": "Keyboard height comparison: same as system",
+    "h": "886a262802"
   },
   "지금까지 만드신 걸 보고 여쭤봐요. 고르시면 추천만 그쪽으로 맞춰져요. 지금 안 고르셔도 괜찮아요.": {
     "ko": "지금까지 만드신 걸 보고 여쭤봐요. 고르시면 추천만 그쪽으로 맞춰져요. 지금 안 고르셔도 괜찮아요.",
@@ -11278,6 +11374,12 @@
     "en": "Delete",
     "comment": "Clear sample button",
     "h": "4f5f463022"
+  },
+  "지우기·보내기 같은 조작 키 크기도 정할 수 있어요": {
+    "ko": "지우기·보내기 같은 조작 키 크기도 정할 수 있어요",
+    "en": "You can set the size of control keys like delete and send.",
+    "comment": "Changelog 5.1.2 control key size",
+    "h": "dd773283fb"
   },
   "지운 문구": {
     "ko": "지운 문구",
@@ -11470,6 +11572,12 @@
     "en": "Processing",
     "comment": "Purchase loading state",
     "h": "fdcb099d60"
+  },
+  "처음 시작할 때 키보드 크기를 한 번 정하고 넘어가요": {
+    "ko": "처음 시작할 때 키보드 크기를 한 번 정하고 넘어가요",
+    "en": "Pick your keyboard size once when you first start out.",
+    "comment": "Changelog 5.1.2 onboarding size step",
+    "h": "b571655d26"
   },
   "처음 실행에서 쓰임새를 고르면 자주 쓰는 갈래를 미리 만들어 드려요": {
     "ko": "처음 실행에서 쓰임새를 고르면 자주 쓰는 갈래를 미리 만들어 드려요",
@@ -12365,6 +12473,18 @@
     "comment": "Settings: key color",
     "h": "15eaab3734"
   },
+  "키 크기와 개수": {
+    "ko": "키 크기와 개수",
+    "en": "Key Size and Count",
+    "comment": "Section: key size and count",
+    "h": "6c6975fd5f"
+  },
+  "키 하나의 크기예요. 키보드 전체 높이는 맨 위에서 정합니다.": {
+    "ko": "키 하나의 크기예요. 키보드 전체 높이는 맨 위에서 정합니다.",
+    "en": "This sets the size of a single key. The overall keyboard height is set at the top.",
+    "comment": "Grid section footer: button height is not keyboard height",
+    "h": "7dd4ba5e1f"
+  },
   "키가 도톰해지고 누르면 내려앉아요.": {
     "ko": "키가 도톰해지고 누르면 내려앉아요.",
     "en": "Keys gain depth and sink when pressed.",
@@ -12401,11 +12521,23 @@
     "comment": "Changelog 4.4.1 item 3",
     "h": "99c7398b9c"
   },
+  "키보드 높이": {
+    "ko": "키보드 높이",
+    "en": "Keyboard Height",
+    "comment": "Keyboard height section title",
+    "h": "077ebe5d55"
+  },
   "키보드 높이를 기기의 기본 키보드에 맞췄어요. 올라올 때 높이가 튀던 것도 함께 없앴어요": {
     "ko": "키보드 높이를 기기의 기본 키보드에 맞췄어요. 올라올 때 높이가 튀던 것도 함께 없앴어요",
     "en": "The keyboard is the height of your device's default keyboard, and the jump as it comes up is gone",
     "comment": "Changelog 5.0.6 keyboard height",
     "h": "139133aad3"
+  },
+  "키보드 높이를 기본 키보드와 같게 맞출 수 있어요. 키보드를 바꿔도 화면이 움직이지 않아요": {
+    "ko": "키보드 높이를 기본 키보드와 같게 맞출 수 있어요. 키보드를 바꿔도 화면이 움직이지 않아요",
+    "en": "You can match the keyboard height to your system keyboard, so nothing shifts when you switch keyboards.",
+    "comment": "Changelog 5.1.2 keyboard height",
+    "h": "bc11287db2"
   },
   "키보드 레이아웃": {
     "ko": "키보드 레이아웃",
@@ -12550,6 +12682,12 @@
     "en": "Turn on the keyboard",
     "comment": "Mascot help: turn on the keyboard",
     "h": "1d5c88ebac"
+  },
+  "키보드 크기를 정해 볼까요": {
+    "ko": "키보드 크기를 정해 볼까요",
+    "en": "Let's pick your keyboard size",
+    "comment": "Layout step: headline",
+    "h": "1faac4c86e"
   },
   "키보드 화면": {
     "ko": "키보드 화면",
@@ -13349,6 +13487,12 @@
     "comment": "Emoji category: smileys/faces",
     "h": "4076a5c567"
   },
+  "표준": {
+    "ko": "표준",
+    "en": "Standard",
+    "comment": "Keyboard height preset name: standard",
+    "h": "997ec1db42"
+  },
   "프로페셔널 영어 템플릿을 마음껏: 비원어민도 유창하게": {
     "ko": "프로페셔널 영어 템플릿을 마음껏: 비원어민도 유창하게",
     "en": "Unlimited professional English templates: sound fluent, even as a non-native",
@@ -13576,6 +13720,12 @@
     "en": "Split into one snippet per line so you can pull each one up separately on the keyboard.",
     "comment": "Explanation for splitting a pasted list",
     "h": "b34847d054"
+  },
+  "한 줄을 더 얹어요. 단축어를 굴리지 않고 보고 싶을 때.": {
+    "ko": "한 줄을 더 얹어요. 단축어를 굴리지 않고 보고 싶을 때.",
+    "en": "Adds one more row, for when you would rather not scroll.",
+    "comment": "Keyboard height preset description: roomy",
+    "h": "b39f71bab5"
   },
   "한 줄을 지키면서 글자를 조금 줄여요.": {
     "ko": "한 줄을 지키면서 글자를 조금 줄여요.",

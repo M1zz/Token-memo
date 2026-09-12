@@ -255,7 +255,7 @@ struct MemoCardSurface: View {
         }
         if memo.isSecure { parts.append(NSLocalizedString("보안 단축어", comment: "VoiceOver: secure memo badge")) }
         if memo.isTemplate { parts.append(NSLocalizedString("템플릿", comment: "VoiceOver: template badge")) }
-        if memo.isCombo { parts.append(NSLocalizedString("콤보", comment: "VoiceOver: combo badge")) }
+        if memo.isStack { parts.append(NSLocalizedString("콤보", comment: "VoiceOver: combo badge")) }
         if CategoryStore.shared.isFeatureEnabled, categories.contains(memo.category) {
             parts.append(NSLocalizedString(memo.category, comment: "Category name"))
         }

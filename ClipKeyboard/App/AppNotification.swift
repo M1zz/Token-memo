@@ -16,8 +16,8 @@ extension Notification.Name {
     /// (익스텐션에는 이미지를 넣을 자리가 없어 클립보드 복사로 끝난다. 앱 무대에는
     ///  입력창이 우리 것이라 붙여넣은 모습까지 보여줄 수 있다)
     static let addImageEntry = Notification.Name("addImageEntry")
-    static let comboCompleted = Notification.Name("comboCompleted")
-    static let comboItemExecuted = Notification.Name("comboItemExecuted")
+    static let stackCompleted = Notification.Name("comboCompleted")
+    static let stackItemExecuted = Notification.Name("comboItemExecuted")
     /// iCloud에서 데이터를 복원(자동/수동)한 뒤 열려 있는 화면을 새로고침.
     static let dataRestored = Notification.Name("dataRestored")
     /// 기존 사용자가 데모 샘플 체험을 수락해 샘플이 삽입됨 → 리스트 리로드 트리거
@@ -50,7 +50,7 @@ extension Notification.Name {
     /// 빠른 메모 입력 시트를 연다(Control Center 컨트롤의 clipkeyboard://quicknote 딥링크).
     static let openQuickNoteAdd = Notification.Name("openQuickNoteAdd")
     static let reviewTriggerClipSaved = Notification.Name("reviewTriggerClipSaved")
-    static let reviewTriggerComboCompleted = Notification.Name("reviewTriggerComboCompleted")
+    static let reviewTriggerStackCompleted = Notification.Name("reviewTriggerComboCompleted")
     /// 사용 기록 탭을 연다. 새 단장 안내가 "내가 아낀 시간 보기"로 데려갈 때 쓴다.
     ///
     /// ⚠️ 탭 선택은 `MainTabView` 안에만 있는 상태라, 시트를 띄우는 쪽에서 직접 못 바꾼다.
@@ -65,7 +65,7 @@ extension Notification.Name {
     /// ⚠️ 콤보를 가르치는 데 이게 꼭 필요하다. 콤보 키는 왼쪽(값 넣기)과 오른쪽(다음 값)이
     ///    서로 다른 일을 하는데, 오른쪽은 **글이 하나도 안 들어간다** - 값만 바뀐다.
     ///    그래서 `.memoUsed` 로는 눌렀는지 알 길이 없어, 튜토리얼이 그 걸음에서 멈춰 있었다.
-    static let comboValueAdvanced = Notification.Name("comboValueAdvanced")
+    static let stackValueAdvanced = Notification.Name("comboValueAdvanced")
     /// 키컬러를 바꿨다. 테마를 들고 있는 루트가 이걸 듣고 다시 그린다.
     ///
     /// ⚠️ 고른 값은 App Group UserDefaults 에 있고 `@AppStorage` 가 아닌 곳에서도

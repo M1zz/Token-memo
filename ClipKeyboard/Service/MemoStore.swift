@@ -18,7 +18,7 @@ enum MemoType: Hashable {
     case memo
     case clipboardHistory
     case smartClipboardHistory
-    case combo
+    case stack
 }
 
 // MARK: - 파일 신원표
@@ -101,7 +101,7 @@ class MemoStore: ObservableObject {
             return containerURL.appendingPathComponent(StorageFile.clipboardHistory)
         case .smartClipboardHistory:
             return containerURL.appendingPathComponent(StorageFile.smartClipboardHistory)
-        case .combo:
+        case .stack:
             return containerURL.appendingPathComponent(StorageFile.combos)
         }
     }
@@ -815,41 +815,41 @@ class MemoStore: ObservableObject {
 
     func saveCombos(_ combos: [Combo]) throws {
         let data = try JSONEncoder().encode(combos)
-        guard let outfile = try Self.fileURL(type: .combo) else { return }
+        guard let outfile = try Self.fileURL(type: .stack) else { return }
         try data.write(to: outfile, options: .atomic)
         DispatchQueue.main.async { [weak self] in self?.combos = combos }
         Self.postDataChanged()
     }
 
     func loadCombos() throws -> [Combo] {
-        guard let fileURL = try Self.fileURL(type: .combo) else { return [] }
+        guard let fileURL = try Self.fileURL(type: .stack) else { return [] }
         guard let data = try? Data(contentsOf: fileURL) else { return [] }
         guard let combos = try? JSONDecoder().decode([Combo].self, from: data) else { return [] }
         DispatchQueue.main.async { [weak self] in self?.combos = combos }
         return combos
     }
 
-    func addCombo(_ combo: Combo) throws {
+    func addStack(_ stack: Combo) throws {
         var combos = try loadCombos()
-        combos.insert(combo, at: 0)
+        combos.insert(stack, at: 0)
         try saveCombos(combos)
     }
 
-    func updateCombo(_ combo: Combo) throws {
+    func updateStack(_ stack: Combo) throws {
         var combos = try loadCombos()
-        if let index = combos.firstIndex(where: { $0.id == combo.id }) {
-            combos[index] = combo
+        if let index = combos.firstIndex(where: { $0.id == stack.id }) {
+            combos[index] = stack
             try saveCombos(combos)
         }
     }
 
-    func deleteCombo(id: UUID) throws {
+    func deleteStack(id: UUID) throws {
         var combos = try loadCombos()
         combos.removeAll { $0.id == id }
         try saveCombos(combos)
     }
 
-    func incrementComboUseCount(id: UUID) throws {
+    func incrementStackUseCount(id: UUID) throws {
         var combos = try loadCombos()
         if let index = combos.firstIndex(where: { $0.id == id }) {
             combos[index].useCount += 1
@@ -858,7 +858,7 @@ class MemoStore: ObservableObject {
         }
     }
 
-    func getComboItemValue(_ item: ComboItem) throws -> String? {
+    func getStackItemValue(_ item: ComboItem) throws -> String? {
         switch item.type {
         case .memo:
             return try load(type: .memo).first(where: { $0.id == item.referenceId })?.value
@@ -870,7 +870,7 @@ class MemoStore: ObservableObject {
         }
     }
 
-    func validateComboItem(_ item: ComboItem) throws -> Bool {
+    func validateStackItem(_ item: ComboItem) throws -> Bool {
         switch item.type {
         case .memo:
             return try load(type: .memo).contains(where: { $0.id == item.referenceId && !$0.isTemplate })
@@ -881,15 +881,15 @@ class MemoStore: ObservableObject {
         }
     }
 
-    func cleanupCombo(_ combo: Combo) throws -> Combo {
+    func cleanupStack(_ stack: Combo) throws -> Combo {
         var validItems: [ComboItem] = []
-        for item in combo.items {
-            if try validateComboItem(item) {
+        for item in stack.items {
+            if try validateStackItem(item) {
                 validItems.append(item)
             }
         }
 
-        var cleaned = combo
+        var cleaned = stack
         cleaned.items = validItems.enumerated().map { index, item in
             var updated = item
             updated.order = index

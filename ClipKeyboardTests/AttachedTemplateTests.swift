@@ -131,22 +131,22 @@ final class AttachedTemplateTests: XCTestCase {
     func testMemo_ChildMemoIds_DefaultsToEmpty() {
         let memo = Memo(title: "테스트", value: "값")
         XCTAssertTrue(memo.childMemoIds.isEmpty)
-        XCTAssertFalse(memo.isCombo)
+        XCTAssertFalse(memo.isStack)
     }
 
-    func testMemo_Combo_PersistsViaCodable() throws {
-        // 통합 모델: 콤보 판정은 comboValues 기반(childMemoIds 아님).
-        var memo = Memo(title: "콤보", value: "1단계", comboValues: ["1단계", "2단계"])
-        memo.comboInterval = 3.0
+    func testMemo_Stack_PersistsViaCodable() throws {
+        // 통합 모델: 콤보 판정은 stackValues 기반(childMemoIds 아님).
+        var memo = Memo(title: "콤보", value: "1단계", stackValues: ["1단계", "2단계"])
+        memo.stackInterval = 3.0
 
         let decoded = try JSONDecoder().decode(Memo.self, from: JSONEncoder().encode(memo))
-        XCTAssertEqual(decoded.comboValues, ["1단계", "2단계"])
-        XCTAssertEqual(decoded.comboInterval, 3.0)
-        XCTAssertTrue(decoded.isCombo)
+        XCTAssertEqual(decoded.stackValues, ["1단계", "2단계"])
+        XCTAssertEqual(decoded.stackInterval, 3.0)
+        XCTAssertTrue(decoded.isStack)
     }
 
     func testMemo_LegacyJSONWithRemovedKeys_DecodesAndIgnores() throws {
-        // 구버전 JSON(isCombo/comboValues/attachedTemplateId 키 포함)도 신 모델로 디코딩되며
+        // 구버전 JSON(isStack/stackValues/attachedTemplateId 키 포함)도 신 모델로 디코딩되며
         // 해당 키들은 무시되고 childMemoIds는 기본 빈 배열.
         let legacyJSON = """
         {"id":"\(UUID().uuidString)","title":"기존","value":"값","isChecked":false,"lastEdited":"2026-05-06T00:00:00Z","isFavorite":false,"clipCount":0,"category":"기본","isSecure":false,"isTemplate":false,"templateVariables":[],"placeholderValues":{},"isCombo":false,"comboValues":[],"currentComboIndex":0,"attachedTemplateId":"\(UUID().uuidString)","imageFileNames":[],"contentType":"text"}
@@ -161,6 +161,6 @@ final class AttachedTemplateTests: XCTestCase {
 
         let memo = try decoder.decode(Memo.self, from: legacyJSON)
         XCTAssertTrue(memo.childMemoIds.isEmpty)
-        XCTAssertFalse(memo.isCombo)
+        XCTAssertFalse(memo.isStack)
     }
 }

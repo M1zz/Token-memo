@@ -140,14 +140,14 @@ final class ReviewManagerTests: XCTestCase {
         XCTAssertFalse(UserDefaults.standard.bool(forKey: "hasRequestedReview"))
     }
 
-    func testComboTrigger_DoesNotBurnFlagBeforeFirstPaste() {
+    func testStackTrigger_DoesNotBurnFlagBeforeFirstPaste() {
         AppGroup.defaults?.removeObject(forKey: DefaultsKey.keyboardPasteCount)
-        sut.trackComboCompleted()
+        sut.trackStackCompleted()
         // 아직 자격이 없으므로 플래그도 세우지 않는다 (나중에 기회가 남아 있어야 한다)
         XCTAssertFalse(UserDefaults.standard.bool(forKey: "hasRequestedReview_combo"))
 
         sut.trackKeyboardPaste()
-        sut.trackComboCompleted()
+        sut.trackStackCompleted()
         XCTAssertTrue(UserDefaults.standard.bool(forKey: "hasRequestedReview_combo"))
     }
 
@@ -163,9 +163,9 @@ final class ReviewManagerTests: XCTestCase {
         XCTAssertTrue(UserDefaults.standard.bool(forKey: "hasRequestedReview_firstPaste"))
     }
 
-    func testTrackComboCompleted_MarksFlag() {
+    func testTrackStackCompleted_MarksFlag() {
         sut.trackKeyboardPaste()  // 리뷰 요청의 전제 조건
-        sut.trackComboCompleted()
+        sut.trackStackCompleted()
         XCTAssertTrue(UserDefaults.standard.bool(forKey: "hasRequestedReview_combo"))
     }
 

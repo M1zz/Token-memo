@@ -35,6 +35,19 @@ enum ChangelogData {
     /// ⚠️ 사용자에게 보이는 문장이므로 전부 NSLocalizedString 을 거친다.
     static let entries: [ChangelogEntry] = [
         ChangelogEntry(
+            version: "5.1.2",
+            released: nil,
+            highlights: [
+                // 크기
+                NSLocalizedString("키보드 높이를 기본 키보드와 같게 맞출 수 있어요. 키보드를 바꿔도 화면이 움직이지 않아요", comment: "Changelog 5.1.2 keyboard height"),
+                NSLocalizedString("지우기·보내기 같은 조작 키 크기도 정할 수 있어요", comment: "Changelog 5.1.2 control key size"),
+                NSLocalizedString("목록의 단축어 높이를 원하는 만큼 조절해요. 세 칸 중 고르는 대신 자유롭게요", comment: "Changelog 5.1.2 snippet height slider"),
+                NSLocalizedString("처음 시작할 때 키보드 크기를 한 번 정하고 넘어가요", comment: "Changelog 5.1.2 onboarding size step"),
+                // 스택
+                NSLocalizedString("여러 값을 담은 단축어가 단축어 스택이 됐어요. 칸마다 이름을 붙여 지금 무엇이 들어갈지 보여요", comment: "Changelog 5.1.2 snippet stack"),
+            ]
+        ),
+        ChangelogEntry(
             version: "5.1.1",
             released: nil,
             highlights: [

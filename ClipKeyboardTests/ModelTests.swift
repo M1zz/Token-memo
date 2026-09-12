@@ -111,7 +111,7 @@ final class ModelTests: XCTestCase {
 
     // MARK: - Combo Tests
 
-    func testComboCreation() {
+    func testStackCreation() {
         // Given
         let title = "회원가입 정보"
         let items = [
@@ -121,17 +121,17 @@ final class ModelTests: XCTestCase {
         ]
 
         // When
-        let combo = Combo(title: title, items: items, interval: 2.0)
+        let stack = Combo(title: title, items: items, interval: 2.0)
 
         // Then
-        XCTAssertEqual(combo.title, title)
-        XCTAssertEqual(combo.items.count, 3)
-        XCTAssertEqual(combo.interval, 2.0)
-        XCTAssertEqual(combo.useCount, 0)
-        XCTAssertFalse(combo.isFavorite)
+        XCTAssertEqual(stack.title, title)
+        XCTAssertEqual(stack.items.count, 3)
+        XCTAssertEqual(stack.interval, 2.0)
+        XCTAssertEqual(stack.useCount, 0)
+        XCTAssertFalse(stack.isFavorite)
     }
 
-    func testComboItemsAreSorted() {
+    func testStackItemsAreSorted() {
         // Given
         let items = [
             ComboItem(type: .memo, referenceId: UUID(), order: 2),
@@ -140,49 +140,49 @@ final class ModelTests: XCTestCase {
         ]
 
         // When
-        let combo = Combo(title: "정렬 테스트", items: items)
+        let stack = Combo(title: "정렬 테스트", items: items)
 
         // Then
-        XCTAssertEqual(combo.items[0].order, 0)
-        XCTAssertEqual(combo.items[1].order, 1)
-        XCTAssertEqual(combo.items[2].order, 2)
+        XCTAssertEqual(stack.items[0].order, 0)
+        XCTAssertEqual(stack.items[1].order, 1)
+        XCTAssertEqual(stack.items[2].order, 2)
     }
 
-    func testComboEncodingDecoding() throws {
+    func testStackEncodingDecoding() throws {
         // Given
         let items = [
             ComboItem(type: .memo, referenceId: UUID(), order: 0, displayTitle: "이름"),
             ComboItem(type: .template, referenceId: UUID(), order: 1, displayTitle: "이메일")
         ]
-        let combo = Combo(title: "테스트 Combo", items: items, interval: 1.5)
+        let stack = Combo(title: "테스트 Combo", items: items, interval: 1.5)
 
         // When
-        let encoded = try JSONEncoder().encode(combo)
+        let encoded = try JSONEncoder().encode(stack)
         let decoded = try JSONDecoder().decode(Combo.self, from: encoded)
 
         // Then
-        XCTAssertEqual(decoded.id, combo.id)
-        XCTAssertEqual(decoded.title, combo.title)
-        XCTAssertEqual(decoded.items.count, combo.items.count)
-        XCTAssertEqual(decoded.interval, combo.interval)
+        XCTAssertEqual(decoded.id, stack.id)
+        XCTAssertEqual(decoded.title, stack.title)
+        XCTAssertEqual(decoded.items.count, stack.items.count)
+        XCTAssertEqual(decoded.interval, stack.interval)
         XCTAssertEqual(decoded.items[0].displayTitle, "이름")
     }
 
-    func testComboSortItems() {
+    func testStackSortItems() {
         // Given
-        var combo = Combo(title: "정렬 테스트", items: [
+        var stack = Combo(title: "정렬 테스트", items: [
             ComboItem(type: .memo, referenceId: UUID(), order: 3),
             ComboItem(type: .memo, referenceId: UUID(), order: 1),
             ComboItem(type: .memo, referenceId: UUID(), order: 2)
         ])
 
         // When
-        combo.sortItems()
+        stack.sortItems()
 
         // Then
-        XCTAssertEqual(combo.items[0].order, 1)
-        XCTAssertEqual(combo.items[1].order, 2)
-        XCTAssertEqual(combo.items[2].order, 3)
+        XCTAssertEqual(stack.items[0].order, 1)
+        XCTAssertEqual(stack.items[1].order, 2)
+        XCTAssertEqual(stack.items[2].order, 3)
     }
 
     // MARK: - ClipboardItemType Tests

@@ -137,6 +137,23 @@ enum DefaultsKey {
     /// 첫 흐름에서 **키보드 켜기 안내까지** 지나왔는가(끝냈든 건너뛰었든).
     /// 없으면 첫 단축어를 만든 직후 키보드 설치 안내가 곧바로 이어진다.
     static let keyboardSetupTutorialDone = "keyboardSetupTutorialDone.v1"
+    /// 조작 키(지우기 · 보내기 · 클립보드 · 지구본 · 갈래 · 전체삭제) 한 칸의 높이(pt).
+    /// 값이 없거나 0 이면 28. App Group - 익스텐션이 그릴 때 읽는다.
+    ///
+    /// ⚠️ 단축어 키(`keyboardButtonHeight`)와 **다른 것이다.** 저쪽은 문구가 적힌 키,
+    ///    이쪽은 맨 윗줄의 기능 키다. 둘이 한 값을 쓰면 키를 크게 쓰는 사람의 윗줄이
+    ///    화면 절반을 먹는다.
+    /// ⚠️ 이 값이 바뀌면 머리 줄 높이가 바뀌므로 판 전체 높이도 따라 움직인다
+    ///    (`KeyboardHeightBook.ContentMetrics.headerHeight`).
+    static let keyboardControlKeySize = "keyboardControlKeySize.v1"
+    /// 키보드 판이 얼마나 높을지(KeyboardHeightPreset rawValue). 값이 없으면 `.standard`.
+    ///
+    /// App Group - 익스텐션이 입력 뷰 높이를 세울 때 읽는다.
+    /// 왜 따로 두는가: `버튼 높이`는 키 하나의 크기지 판의 높이가 아니다. 요즘 아이폰에서는
+    /// 판 높이가 시스템 키보드에서 따라오므로, 슬라이더를 끝까지 내려도 키보드는 그대로였다.
+    /// 높이를 정하고 싶은 사람에게는 높이를 정하는 자리가 따로 있어야 한다.
+    /// 자세한 이유: ClipKeyboard/Service/KeyboardHeightBook.swift
+    static let keyboardHeightPreset = "keyboardHeightPreset.v1"
     /// 키캡 물성 프리셋(KeyboardSkin rawValue). 값이 없으면 `.standard`.
     /// App Group - 익스텐션이 렌더에 쓴다. 색은 건드리지 않는다(테마·커스텀 색이 담당).
     static let keyboardSkin = "keyboardSkin.v1"
@@ -313,13 +330,20 @@ enum DefaultsKey {
     /// 준비된 템플릿을 한 번 써 봤는지.
     static let tutorialTemplateDone = "tutorial.template.done.v1"
     /// 준비된 콤보를 한 번 써 봤는지.
-    static let tutorialComboDone = "tutorial.combo.done.v1"
+    static let tutorialStackDone = "tutorial.combo.done.v1"
+    /// 키보드 크기를 한 번 정해 봤는지(또는 그대로 두기를 골랐는지).
+    ///
+    /// ⚠️ 왜 튜토리얼에 이 장이 있나: 크기 설정은 설정 세 단계 안쪽에 있어서
+    ///    "키보드가 너무 크다"는 리뷰를 남긴 사람도 그 자리를 못 찾았다. 만드는 법보다
+    ///    먼저 눈에 띄는 것이 크기라, 셋을 눌러 본 **직후**에 한 번 물어 본다.
+    ///    여기서 고르지 않아도 설정에 그대로 있다 - 막는 문이 아니라 지나가는 자리다.
+    static let tutorialLayoutDone = "tutorial.layout.done.v1"
     /// 콤보 장 **안쪽**의 어느 걸음에 서 있는가(`ComboTutorialStep.rawValue`). 빈 값이면 그 장이 아니다.
     ///
     /// ⚠️ 저장해 두어야 한다. 콤보 장은 다섯 걸음이라 그 중간에 앱을 끄는 일이 실제로 생기는데,
     ///    기억해 두지 않으면 다시 열었을 때 가리키는 키는 그대로인데 걸음만 사라져
     ///    **눌러도 아무 일이 안 일어나는 화면**이 된다.
-    static let tutorialComboStep = "tutorial.combo.step.v1"
+    static let tutorialStackStep = "tutorial.combo.step.v1"
     /// 목록과 키보드를 오가는 법을 한 번 알려 줬는지.
     ///
     /// ⚠️ 이 앱의 단축어 탭은 **화면이 둘**(목록 · 키보드 무대)인데, 그걸 아무도 안 알려 줬다.

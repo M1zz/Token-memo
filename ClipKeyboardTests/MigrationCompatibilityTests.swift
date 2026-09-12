@@ -41,7 +41,7 @@ final class MigrationCompatibilityTests: XCTestCase {
         XCTAssertFalse(memos[0].isTemplate)   // templateVariables 가 비었으므로 false
         XCTAssertEqual(memos[0].clipCount, 0)
         XCTAssertEqual(memos[0].childMemoIds, [])
-        XCTAssertEqual(memos[0].comboValues, [])
+        XCTAssertEqual(memos[0].stackValues, [])
         XCTAssertEqual(memos[0].imageFileNames, [])
         XCTAssertEqual(memos[0].contentType, .text)
         XCTAssertTrue(memos[0].hintShownOnKeyboard)   // 없던 필드의 기본값은 true
@@ -55,12 +55,12 @@ final class MigrationCompatibilityTests: XCTestCase {
         XCTAssertEqual(memos[0].title, "인사")
     }
 
-    /// 콤보 필드(childMemoIds/comboInterval)가 없던 버전.
-    /// comboInterval 기본값 2.0이 유지돼야 콤보 실행이 0초 간격으로 폭주하지 않는다.
-    func testDecodesMemoWithoutComboFields() throws {
+    /// 콤보 필드(childMemoIds/stackInterval)가 없던 버전.
+    /// stackInterval 기본값 2.0이 유지돼야 콤보 실행이 0초 간격으로 폭주하지 않는다.
+    func testDecodesMemoWithoutStackFields() throws {
         let memos = try decodeMemos(#"[{"title":"a","value":"b","isTemplate":false}]"#)
 
-        XCTAssertEqual(memos[0].comboInterval, 2.0)
+        XCTAssertEqual(memos[0].stackInterval, 2.0)
         XCTAssertTrue(memos[0].childMemoIds.isEmpty)
     }
 

@@ -27,9 +27,9 @@ struct ClipboardList: View {
     @State private var isCheckingClipboard: Bool = false
 
     // Combo 생성 (Phase 2)
-    @State private var isSelectingForCombo: Bool = false
-    @State private var selectedForCombo: Set<UUID> = []
-    @State private var showComboCreation: Bool = false
+    @State private var isSelectingForStack: Bool = false
+    @State private var selectedForStack: Set<UUID> = []
+    @State private var showStackCreation: Bool = false
 
     // 인지 장애 접근성: 파괴적 작업 전 확인 알림
     @State private var showClearAllConfirm: Bool = false
@@ -85,8 +85,8 @@ struct ClipboardList: View {
                             ForEach(filteredHistory) { item in
                                 HStack(spacing: 12) {
                                     // 선택 모드 체크박스
-                                    if isSelectingForCombo {
-                                        let isChecked = selectedForCombo.contains(item.id)
+                                    if isSelectingForStack {
+                                        let isChecked = selectedForStack.contains(item.id)
                                         Button {
                                             toggleSelection(item.id)
                                         } label: {
@@ -107,24 +107,24 @@ struct ClipboardList: View {
                                         item: item,
                                         isHighlighted: item.id == recentlyAddedId,
                                         onTap: {
-                                            if isSelectingForCombo {
+                                            if isSelectingForStack {
                                                 toggleSelection(item.id)
                                             } else {
                                                 copyToPasteboard(item)
                                             }
                                         },
                                         onSave: {
-                                            if !isSelectingForCombo {
+                                            if !isSelectingForStack {
                                                 prepareToSave(item)
                                             }
                                         },
                                         onTypeChange: { newType in
-                                            if !isSelectingForCombo {
+                                            if !isSelectingForStack {
                                                 updateItemType(item: item, newType: newType)
                                             }
                                         },
                                         onTranslate: {
-                                            if !isSelectingForCombo {
+                                            if !isSelectingForStack {
                                                 itemToTranslate = item
                                             }
                                         }
@@ -135,7 +135,7 @@ struct ClipboardList: View {
                                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                                 .listRowSeparator(.hidden)
                             }
-                            .onDelete(perform: isSelectingForCombo ? nil : deleteItems)
+                            .onDelete(perform: isSelectingForStack ? nil : deleteItems)
                         }
                     }
                     .listStyle(.plain)
@@ -154,32 +154,32 @@ struct ClipboardList: View {
             }
             // 붙여넣기 안내 배너 닫힘 애니메이션 - 배너 transition과 함께 컨테이너 레이아웃도 부드럽게.
             .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: showPasteTip)
-            .navigationTitle(isSelectingForCombo
+            .navigationTitle(isSelectingForStack
                 ? NSLocalizedString("Combo 생성", comment: "Clipboard list: combo creation mode title")
                 : NSLocalizedString("클립보드 히스토리", comment: "Clipboard list navigation title")
             )
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    if isSelectingForCombo {
+                    if isSelectingForStack {
                         Button(NSLocalizedString("취소", comment: "Cancel combo selection")) {
-                            isSelectingForCombo = false
-                            selectedForCombo.removeAll()
+                            isSelectingForStack = false
+                            selectedForStack.removeAll()
                         }
                     }
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if isSelectingForCombo {
-                        Button(String(format: NSLocalizedString("생성 (%d)", comment: ""), selectedForCombo.count)) {
-                            if !selectedForCombo.isEmpty {
-                                showComboCreation = true
+                    if isSelectingForStack {
+                        Button(String(format: NSLocalizedString("생성 (%d)", comment: ""), selectedForStack.count)) {
+                            if !selectedForStack.isEmpty {
+                                showStackCreation = true
                             }
                         }
-                        .disabled(selectedForCombo.isEmpty)
+                        .disabled(selectedForStack.isEmpty)
                     } else {
                         Menu {
                             Button {
-                                isSelectingForCombo = true
+                                isSelectingForStack = true
                             } label: {
                                 Label(NSLocalizedString("Combo 생성", comment: "Create combo from clipboard items"), systemImage: AppSymbol.arrowTriangle2CirclepathCircle)
                             }
@@ -272,12 +272,12 @@ struct ClipboardList: View {
                 saveTranslationAsMemo(original: item, translated: translated)
             }
         }
-        .sheet(isPresented: $showComboCreation) {
-            CreateComboSheet(itemCount: selectedForCombo.count) { title, interval in
-                createComboFromSelection(title: title, interval: interval)
-                showComboCreation = false
+        .sheet(isPresented: $showStackCreation) {
+            CreateStackSheet(itemCount: selectedForStack.count) { title, interval in
+                createStackFromSelection(title: title, interval: interval)
+                showStackCreation = false
             } onCancel: {
-                showComboCreation = false
+                showStackCreation = false
             }
         }
         .solidNavBar(theme.bg)
@@ -521,15 +521,15 @@ struct ClipboardList: View {
     // MARK: - Combo 관련 함수
 
     private func toggleSelection(_ id: UUID) {
-        if selectedForCombo.contains(id) {
-            selectedForCombo.remove(id)
+        if selectedForStack.contains(id) {
+            selectedForStack.remove(id)
         } else {
-            selectedForCombo.insert(id)
+            selectedForStack.insert(id)
         }
     }
 
-    private func createComboFromSelection(title: String, interval: TimeInterval) {
-        let selectedItems = clipboardHistory.filter { selectedForCombo.contains($0.id) }
+    private func createStackFromSelection(title: String, interval: TimeInterval) {
+        let selectedItems = clipboardHistory.filter { selectedForStack.contains($0.id) }
 
         // 순서 보장: 리스트 순서대로
         let sortedItems = selectedItems.sorted { first, second in
@@ -540,7 +540,7 @@ struct ClipboardList: View {
             return firstIndex < secondIndex
         }
 
-        let comboItems = sortedItems.enumerated().map { index, item in
+        let stackItems = sortedItems.enumerated().map { index, item in
             ComboItem(
                 type: .clipboardHistory,
                 referenceId: item.id,
@@ -550,19 +550,19 @@ struct ClipboardList: View {
             )
         }
 
-        let combo = Combo(
+        let stack = Combo(
             title: title,
-            items: comboItems,
+            items: stackItems,
             interval: interval
         )
 
         do {
-            try MemoStore.shared.addCombo(combo)
+            try MemoStore.shared.addStack(stack)
             showToast(message: String(format: NSLocalizedString("Combo '%@' 생성됨", comment: ""), title))
 
             // 선택 모드 종료
-            isSelectingForCombo = false
-            selectedForCombo.removeAll()
+            isSelectingForStack = false
+            selectedForStack.removeAll()
         } catch {
             showToast(message: String(format: NSLocalizedString("Combo 생성 실패: %@", comment: ""), error.localizedDescription))
         }
@@ -897,7 +897,7 @@ struct SaveToMemoSheet: View {
 
 // MARK: - Create Combo Sheet
 
-struct CreateComboSheet: View {
+struct CreateStackSheet: View {
     let itemCount: Int
     let onCreate: (String, TimeInterval) -> Void
     let onCancel: () -> Void

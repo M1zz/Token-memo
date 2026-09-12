@@ -778,7 +778,7 @@ class CloudKitBackupService: ObservableObject {
 
             let memos = try fetchMemos(from: record)
             let smartClipboard = fetchSmartClipboardHistory(from: record)
-            let combos = fetchCombos(from: record)
+            let combos = fetchStacks(from: record)
 
             // 메모 본문을 저장하기 전에 첨부 이미지를 Images/에 먼저 복원(깨진 참조 방지).
             restoreImages(from: record)
@@ -865,7 +865,7 @@ class CloudKitBackupService: ObservableObject {
         return []
     }
 
-    private func fetchCombos(from record: CKRecord) -> [Combo] {
+    private func fetchStacks(from record: CKRecord) -> [Combo] {
         if let asset = record["combosAsset"] as? CKAsset,
            let data = try? readAsset(asset),
            let decoded = try? JSONDecoder().decode([Combo].self, from: data) {
@@ -899,7 +899,7 @@ class CloudKitBackupService: ObservableObject {
             AppLog.info(.backup, "✅ [CloudKit] Combo \(combos.count)개 저장 완료")
         }
 
-        // 옛 백업을 복원하면 레거시 포맷(combos.data / isCombo / attachedTemplateId)이 되살아날 수 있다.
+        // 옛 백업을 복원하면 레거시 포맷(combos.data / isStack / attachedTemplateId)이 되살아날 수 있다.
         // 콤보 통합 마이그레이션 플래그를 리셋해 다음 실행 시 신 모델(childMemoIds)로 재변환되게 한다.
         // (마이그레이션은 hasLegacyComboData()로도 자동 감지하지만, 플래그 리셋으로 명시 보장.)
         AppGroup.defaults?

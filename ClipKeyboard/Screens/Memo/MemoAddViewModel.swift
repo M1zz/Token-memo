@@ -88,7 +88,7 @@ final class MemoAddViewModel: ObservableObject {
     @Published var continuations: [ContinuationStep] = []
 
     /// 저장용 콤보 단계 = [본문] + 비어있지 않은 이어지는 단계들. 이어지는 단계가 없으면 빈 배열(=일반 메모).
-    private var resolvedComboValues: [String] {
+    private var resolvedStackValues: [String] {
         let extra = continuations
             .map { $0.text.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
@@ -230,8 +230,8 @@ final class MemoAddViewModel: ObservableObject {
         insertedCategory: String = "텍스트",
         insertedIsTemplate: Bool = false,
         insertedIsSecure: Bool = false,
-        insertedIsCombo: Bool = false,
-        insertedComboValues: [String] = [],
+        insertedIsStack: Bool = false,
+        insertedStackValues: [String] = [],
         insertedHint: String = "",
         insertedIsFavorite: Bool = false
     ) {
@@ -306,9 +306,9 @@ final class MemoAddViewModel: ObservableObject {
         if let existing = editingMemo {
             hint = existing.hint ?? ""
             hintShownOnKeyboard = existing.hintShownOnKeyboard
-            if !existing.comboValues.isEmpty {
+            if !existing.stackValues.isEmpty {
                 // 보안 콤보면 단계 값이 암호문 - 편집용으로 복호화해 보여준다.
-                let steps = SecureMemoCrypto.decryptSteps(existing.comboValues)
+                let steps = SecureMemoCrypto.decryptSteps(existing.stackValues)
                 continuations = steps.dropFirst().map(ContinuationStep.init(text:))
                 if value.isEmpty { value = steps.first ?? "" }
             }
@@ -656,13 +656,13 @@ final class MemoAddViewModel: ObservableObject {
         // 보안 단축어는 저장 시점에 값·콤보 단계를 암호화한다(편집 화면은 평문으로 다룸).
         // 보안 해제 상태면 남아있을 수 있는 암호문을 평문으로 되돌린다. 모두 idempotent.
         let storedValue: String
-        let storedComboValues: [String]
+        let storedStackValues: [String]
         if isSecure {
             storedValue = SecureMemoCrypto.encrypt(value) ?? value
-            storedComboValues = SecureMemoCrypto.encryptSteps(resolvedComboValues)
+            storedStackValues = SecureMemoCrypto.encryptSteps(resolvedStackValues)
         } else {
             storedValue = SecureMemoCrypto.isEncrypted(value) ? (SecureMemoCrypto.decrypt(value) ?? value) : value
-            storedComboValues = SecureMemoCrypto.decryptSteps(resolvedComboValues)
+            storedStackValues = SecureMemoCrypto.decryptSteps(resolvedStackValues)
         }
 
         if let existing = editingMemo,
@@ -676,7 +676,7 @@ final class MemoAddViewModel: ObservableObject {
             updatedMemo.category = finalCategory
             updatedMemo.isSecure = isSecure
             updatedMemo.templateVariables = variables   // isTemplate은 계산형(변수 있으면 자동)
-            updatedMemo.comboValues = storedComboValues   // isCombo는 계산형(이어지는 단계 있으면 자동)
+            updatedMemo.setStackValues(storedStackValues)   // isCombo는 계산형(이어지는 단계 있으면 자동)
             updatedMemo.placeholderValues = placeholderValues
             updatedMemo.imageFileNames = imageFileNames
             updatedMemo.contentType = contentType
@@ -699,7 +699,7 @@ final class MemoAddViewModel: ObservableObject {
                 isSecure: isSecure,
                 templateVariables: variables,   // isTemplate은 계산형(변수 있으면 자동)
                 placeholderValues: placeholderValues,
-                comboValues: storedComboValues,
+                stackValues: storedStackValues,
                 imageFileNames: imageFileNames,
                 contentType: contentType,
                 hint: hint.isEmpty ? nil : hint,

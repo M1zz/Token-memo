@@ -63,7 +63,7 @@ private enum PersonaGuideCatalog {
                     pain: "\"Send me your banking details\" 한 줄에, IBAN·SWIFT를 은행 앱에서 다시 찾아 헤맵니다.",
                     example: "Name: {영문 이름}\nIBAN: {IBAN}\nSWIFT/BIC: {SWIFT}\nBank address: {은행 주소}\nWise: {Wise 이메일}",
                     impact: "송금 요청이 올 때마다 30초 검색이 탭 한 번으로. 자릿수 틀릴 걱정도 사라집니다.",
-                    feature: .combo
+                    feature: .stack
                 ),
                 PersonaScenario(
                     title: "시차 안내 한 줄",
@@ -119,7 +119,7 @@ private enum PersonaGuideCatalog {
                     pain: "계약 직후 캘린들리·슬랙·결제·진행 방식을 매번 순서대로 안내합니다.",
                     example: "환영합니다, {클라이언트}님! 진행은 이렇게 해요:\n1. 첫 미팅 캘린들리: {링크}\n2. 결제(원할 시 송금 정보 첨부)\n3. 슬랙 초대 24시간 내 발송\n4. 매주 목요일 진행 데모\n\n잘 부탁드려요!",
                     impact: "Combo로 여러 단축어를 순서대로 자동 입력, 온보딩 메일이 5분에서 5초로.",
-                    feature: .combo
+                    feature: .stack
                 ),
                 PersonaScenario(
                     title: "하루 마감·오프라인 전환",
@@ -382,7 +382,7 @@ private enum PersonaGuideCatalog {
                     pain: "One line from a client sends you digging through your bank app for the IBAN and SWIFT again.",
                     example: "Name: {your name}\nIBAN: {IBAN}\nSWIFT/BIC: {SWIFT}\nBank address: {bank address}\nWise: {Wise email}",
                     impact: "A 30-second hunt becomes one tap, and no more transposed digits.",
-                    feature: .combo
+                    feature: .stack
                 ),
                 PersonaScenario(
                     title: "Timezone reply",
@@ -438,7 +438,7 @@ private enum PersonaGuideCatalog {
                     pain: "Right after signing, you walk every client through Calendly, Slack, payment, cadence.",
                     example: "Welcome aboard, {client}! Here's how we'll work:\n1. First sync: Calendly: {link}\n2. Payment (banking info attached if needed)\n3. Slack invite within 24h\n4. Progress demos every Thursday\n\nExcited to get started!",
                     impact: "A Combo pastes several snippets in order, onboarding drops from 5 minutes to 5 seconds.",
-                    feature: .combo
+                    feature: .stack
                 ),
                 PersonaScenario(
                     title: "Signing off for the night",
@@ -701,7 +701,7 @@ private enum PersonaGuideCatalog {
                     pain: "Satu baris \"Send your banking details\" bikin kamu bongkar app bank lagi cari IBAN dan SWIFT.",
                     example: "Name: {nama}\nIBAN: {IBAN}\nSWIFT/BIC: {SWIFT}\nBank address: {alamat bank}\nWise: {email Wise}",
                     impact: "Pencarian 30 detik jadi satu ketukan, tanpa risiko salah digit.",
-                    feature: .combo
+                    feature: .stack
                 ),
                 PersonaScenario(
                     title: "Menjelaskan zona waktu",
@@ -757,7 +757,7 @@ private enum PersonaGuideCatalog {
                     pain: "Sesudah deal, kamu memandu tiap klien soal Calendly, Slack, pembayaran, ritme kerja.",
                     example: "Selamat bergabung, {klien}! Beginilah kita bekerja:\n1. Sinkron pertama. Calendly: {tautan}\n2. Pembayaran (info rekening menyusul bila perlu)\n3. Undangan Slack dalam 24 jam\n4. Demo progres tiap Kamis\n\nSemangat mulai!",
                     impact: "Combo menempel beberapa snippet berurutan, onboarding dari 5 menit jadi 5 detik.",
-                    feature: .combo
+                    feature: .stack
                 ),
                 PersonaScenario(
                     title: "Pamit di malam hari",

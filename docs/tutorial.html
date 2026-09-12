@@ -489,8 +489,140 @@
             .tutorial-hero { padding: 3.5rem 1.5rem 2rem; }
             main { padding: 1.5rem 1rem 4rem; }
             .toc-wrap { padding: 1.5rem 1rem 0.5rem; }
-            .lang-toggle { top: 0.5rem; right: 0.5rem; }
+            /* 언어가 다섯이 되면서 좁은 화면에서 오른쪽이 잘렸다.
+               왼쪽 끝까지 자리를 내주고, 글자 여백을 줄여 다섯이 한 줄에 서게 한다. */
+            .lang-toggle { top: 0.5rem; right: 0.5rem; left: 0.5rem; justify-content: center; }
+            .lang-btn { padding: 0.5rem 0.7rem; }
         }
+
+        /* ─────────────────────────────────────────────────────────────
+           실습판 - 내려받지 않고 여기서 그냥 써 보는 자리.
+           이 페이지의 나머지는 "이렇게 하세요" 이고, 이 판은 **해 보는 곳**이다.
+           읽고 나서 받는 것과, 써 보고 받는 것은 다른 결심이다.
+
+           ⚠️ 색·모서리·그림자는 전부 위 :root 토큰을 쓴다. 여기서 새 색을 만들면
+              어두울 때 이 판만 남의 집처럼 보인다.
+           ───────────────────────────────────────────────────────────── */
+        .play-wrap { max-width: 980px; margin: 0 auto 56px; padding: 0 20px; }
+        .play-head { text-align: center; margin-bottom: 22px; }
+        .play-head h2 { font-size: 1.8rem; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .play-head p { color: var(--text-secondary); max-width: 560px; margin: 0 auto; line-height: 1.65; }
+        .play-badge {
+            display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+            color: var(--primary); background: rgba(0,122,255,0.1);
+            padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;
+        }
+        .play-grid { display: grid; grid-template-columns: minmax(0,320px) minmax(0,1fr); gap: 32px; align-items: start; }
+        @media (max-width: 820px) { .play-grid { grid-template-columns: 1fr; } }
+
+        /* 폰 */
+        .play-phone {
+            background: #1b1b1d; border-radius: 40px; padding: 10px;
+            box-shadow: 0 18px 46px rgba(0,0,0,0.22); margin: 0 auto; width: 320px; max-width: 100%;
+        }
+        .play-screen {
+            background: var(--card-bg); border-radius: 31px; overflow: hidden;
+            display: flex; flex-direction: column; height: 580px; position: relative;
+        }
+        .play-island {
+            width: 86px; height: 22px; background: #1b1b1d; border-radius: 999px;
+            position: absolute; top: 6px; left: 50%; transform: translateX(-50%); z-index: 5;
+        }
+        .play-appbar {
+            padding: 34px 16px 10px; border-bottom: 1px solid var(--border);
+            font-weight: 700; font-size: 0.95rem; background: var(--card-bg);
+        }
+        .play-convo { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--paper-1); }
+        .play-bubble {
+            max-width: 82%; padding: 9px 13px; border-radius: 17px; font-size: 0.86rem; line-height: 1.45;
+            white-space: pre-wrap; word-break: break-word;
+        }
+        .play-bubble.them { background: var(--surface-alt); color: var(--text); align-self: flex-start; border-bottom-left-radius: 5px; }
+        .play-bubble.me { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 5px; }
+        .play-composer { display: flex; gap: 8px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--border); background: var(--card-bg); }
+        .play-field {
+            flex: 1; min-height: 34px; border-radius: 17px; background: var(--surface-alt);
+            padding: 8px 12px; font-size: 0.85rem; color: var(--text); white-space: pre-wrap; word-break: break-word;
+        }
+        .play-field.empty { color: var(--text-secondary); }
+        .play-send {
+            width: 32px; height: 32px; border-radius: 50%; border: 0; flex: 0 0 32px; cursor: pointer;
+            background: var(--primary); color: #fff; font-size: 1rem; line-height: 1;
+        }
+        .play-send:disabled { background: var(--surface-alt); color: var(--text-secondary); cursor: default; }
+
+        /* 키보드 */
+        .play-kb { background: var(--paper-2); padding: 6px; display: flex; flex-direction: column; gap: 6px; }
+        .play-kbrow { display: flex; gap: 5px; align-items: center; }
+        .play-ctl {
+            border: 0; border-radius: 7px; background: var(--card-bg); color: var(--text-secondary);
+            height: 28px; min-width: 32px; padding: 0 7px; font-size: 0.78rem; cursor: pointer;
+        }
+        .play-ctl.on { background: var(--primary); color: #fff; }
+        .play-ctl:disabled { opacity: 0.4; cursor: default; }
+        /* 칸 높이를 줄에 고정한다. 안 그러면 글 높이만큼만 서서 키가 아니라 줄처럼 보인다.
+           높이를 바꾸면 보이는 줄 수가 달라지는 것이 이 판의 요점이라, 남는 자리는 굴린다. */
+        .play-keys { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; align-content: start; grid-auto-rows: 44px; }
+        .play-key {
+            display: flex; align-items: center; gap: 6px; text-align: left;
+            border: 0; border-radius: 9px; background: var(--card-bg); color: var(--text);
+            padding: 0 9px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.12); overflow: hidden;
+        }
+        .play-key:active { transform: translateY(1px); }
+        .play-key .pos { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); flex: 0 0 auto; margin-left: auto; }
+        .play-key .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .play-key .nx {
+            flex: 0 0 auto; border-left: 1px solid var(--border);
+            padding-left: 8px; margin-left: 6px; color: var(--primary); font-weight: 700;
+        }
+        .play-kbhint { flex: 1; font-size: 0.72rem; color: var(--text-secondary); padding-left: 3px; }
+        .play-empty { grid-column: 1 / -1; text-align: center; color: var(--text-secondary); font-size: 0.8rem; padding: 18px 8px; }
+
+        /* 오른쪽 안내·조작 */
+        .play-side { display: flex; flex-direction: column; gap: 14px; }
+        .play-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+        .play-card h3 { font-size: 0.98rem; margin-bottom: 6px; }
+        .play-card p { color: var(--text-secondary); font-size: 0.87rem; line-height: 1.6; }
+        .play-coach { border-color: var(--primary); background: rgba(0,122,255,0.06); }
+        .play-coach h3 { color: var(--primary); }
+        .play-size { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+        .play-size button {
+            flex: 1 1 auto; border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+            border-radius: 9px; padding: 7px 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+        }
+        .play-size button.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+        .play-note { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; }
+        .play-form { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .play-form input, .play-form textarea {
+            width: 100%; border: 1px solid var(--border); border-radius: 9px; background: var(--bg);
+            color: var(--text); padding: 9px 11px; font-size: 0.87rem; font-family: inherit;
+        }
+        .play-form textarea { min-height: 62px; resize: vertical; }
+        .play-form .row { display: flex; gap: 8px; }
+        .play-form button {
+            border: 0; border-radius: 9px; background: var(--primary); color: #fff;
+            padding: 9px 14px; font-weight: 700; font-size: 0.87rem; cursor: pointer;
+        }
+        .play-form button.ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+
+        /* 빈칸 채우기 시트 */
+        .play-sheet {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.34); z-index: 9;
+            display: flex; align-items: flex-end;
+        }
+        .play-sheet-inner { background: var(--card-bg); width: 100%; border-radius: 18px 18px 0 0; padding: 16px; }
+        .play-sheet-inner h4 { font-size: 0.92rem; margin-bottom: 4px; }
+        .play-sheet-inner p { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 10px; }
+        .play-sheet-inner input {
+            width: 100%; border: 1px solid var(--border); border-radius: 9px; background: var(--bg);
+            color: var(--text); padding: 9px 11px; font-size: 0.87rem; margin-bottom: 10px; font-family: inherit;
+        }
+        .play-sheet-inner .row { display: flex; gap: 8px; }
+        .play-sheet-inner button { flex: 1; border: 0; border-radius: 9px; padding: 9px; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
+        .play-sheet-inner .go { background: var(--primary); color: #fff; }
+        .play-sheet-inner .no { background: var(--surface-alt); color: var(--text); }
+
     </style>
 </head>
 <body>
@@ -499,6 +631,7 @@
         <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
         <button class="lang-btn" data-lang="zh-Hans" onclick="setLanguage('zh-Hans')">简体</button>
         <button class="lang-btn" data-lang="zh-Hant" onclick="setLanguage('zh-Hant')">繁體</button>
+        <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
     </div>
 
     <nav class="top-nav">
@@ -518,10 +651,68 @@
         <p data-i18n="heroSubtitle">키보드 설정부터 고급 기능까지, 한 페이지에 다 담았습니다.</p>
     </section>
 
+
+    <!-- ── 실습판 ───────────────────────────────────────────────────
+         내려받지 않고 여기서 그냥 써 보는 자리. 목차 **앞**에 둔다.
+         아래 일곱 단계는 "이렇게 하세요" 이고, 이 판은 해 보는 곳이라
+         읽기 전에 한 번 만져 보는 쪽이 순서가 맞다.
+         ───────────────────────────────────────────────────────────── -->
+    <div class="play-wrap" id="playground">
+        <div class="play-head">
+            <span class="play-badge" data-i18n="playBadge">받기 전에</span>
+            <h2 data-i18n="playTitle">여기서 그냥 써 보세요</h2>
+            <p data-i18n="playLead">내려받지 않아도 됩니다. 아래 키보드는 진짜처럼 움직여요. 눌러서 넣고, 빈칸을 채우고, 직접 하나 만들어 보세요.</p>
+        </div>
+
+        <div class="play-grid">
+            <div class="play-phone">
+                <div class="play-screen" id="play-screen">
+                    <div class="play-island"></div>
+                    <div class="play-appbar" id="play-appbar">ClipKeyboard</div>
+                    <div class="play-convo" id="play-convo"></div>
+                    <div class="play-composer">
+                        <div class="play-field empty" id="play-field"></div>
+                        <button class="play-send" id="play-send" disabled aria-label="send">&#8593;</button>
+                    </div>
+                    <div class="play-kb" id="play-kb"></div>
+                </div>
+            </div>
+
+            <div class="play-side">
+                <div class="play-card play-coach">
+                    <h3 id="play-coach-title" data-i18n="playCoachTitle">눌러 보세요</h3>
+                    <p id="play-coach-body" data-i18n="playCoachStart">키 하나를 누르면 위 입력창에 그대로 들어갑니다.</p>
+                </div>
+
+                <div class="play-card">
+                    <h3 data-i18n="playSizeTitle">키보드 높이</h3>
+                    <p data-i18n="playSizeBody">앱에서 고를 수 있는 그 설정입니다. 눌러 보면 아래 키보드가 바로 바뀝니다.</p>
+                    <div class="play-size" id="play-size"></div>
+                </div>
+
+                <div class="play-card">
+                    <h3 data-i18n="playAddTitle">직접 하나 만들기</h3>
+                    <p data-i18n="playAddBody">이름과 내용을 적으면 키보드에 키가 하나 생깁니다. 내용에 {이름} 처럼 중괄호를 쓰면 템플릿이 되어, 누를 때마다 빈칸을 채워 넣습니다.</p>
+                    <div class="play-form">
+                        <input id="play-new-key" maxlength="24" data-i18n-ph="playKeyPh" placeholder="이름 (예: 계좌번호)">
+                        <textarea id="play-new-val" maxlength="400" data-i18n-ph="playValPh" placeholder="내용 (예: 신한 110-123-456789 홍길동)"></textarea>
+                        <div class="row">
+                            <button id="play-add" data-i18n="playAddBtn">키보드에 넣기</button>
+                            <button id="play-reset" class="ghost" data-i18n="playResetBtn">처음으로</button>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="play-note" data-i18n="playPrivacy">이 실습판은 브라우저 안에서만 돌아갑니다. 적으신 것은 어디로도 보내지지 않고, 이 기기에만 남습니다. 앱도 같은 방식입니다.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="toc-wrap">
         <div class="toc">
             <h3 data-i18n="tocTitle">목차</h3>
             <ol>
+                <li><a href="#playground" data-i18n="tocPlay">직접 해보기</a></li>
                 <li><a href="#setup" data-i18n="tocSetup">시작하기</a></li>
                 <li><a href="#memo" data-i18n="tocMemo">메모 저장·편집</a></li>
                 <li><a href="#template" data-i18n="tocTemplate">템플릿 & 플레이스홀더</a></li>
@@ -839,6 +1030,54 @@
     <script>
         const translations = {
             ko: {
+                "playKbHint": "단축어를 눌러 보세요",
+                "playClear": "지우기",
+                "tocPlay": "직접 해보기",
+                // ── 실습판 (받기 전에 여기서 써 보는 자리) ──
+                "playBadge": "받기 전에",
+                "playTitle": "여기서 그냥 써 보세요",
+                "playLead": "내려받지 않아도 됩니다. 아래 키보드는 진짜처럼 움직여요. 눌러서 넣고, 빈칸을 채우고, 직접 하나 만들어 보세요.",
+                "playCoachTitle": "눌러 보세요",
+                "playCoachStart": "키 하나를 누르면 위 입력창에 그대로 들어갑니다.",
+                "playCoachSend": "들어갔어요. 오른쪽 위 화살표를 눌러 보내 보세요.",
+                "playCoachStack": "스택이에요. 칸마다 이름이 따로 있어서, 오른쪽 화살표로 다음 칸(이름)으로 넘어갑니다.",
+                "playCoachSize": "키보드 높이가 바뀌었죠. 앱에서도 같은 자리에서 고릅니다.",
+                "playCoachAdd": "보냈어요. 이번엔 오른쪽에서 직접 하나 만들어 보세요.",
+                "playCoachMade": "키가 생겼어요. 키보드에서 눌러 보세요.",
+                "playCoachMadeTemplate": "중괄호가 있어서 템플릿이 됐어요. 누르면 빈칸부터 물어봅니다.",
+                "playCoachNeedBoth": "이름과 내용을 모두 적어 주세요.",
+                "playSizeTitle": "키보드 높이",
+                "playSizeBody": "앱에서 고를 수 있는 그 설정입니다. 눌러 보면 아래 키보드가 바로 바뀝니다.",
+                "playSize_same": "시스템과 같게",
+                "playSize_standard": "표준",
+                "playSize_roomy": "넉넉하게",
+                "playAddTitle": "직접 하나 만들기",
+                "playAddBody": "이름과 내용을 적으면 키보드에 키가 하나 생깁니다. 내용에 {이름} 처럼 중괄호를 쓰면 템플릿이 되어, 누를 때마다 빈칸을 채워 넣습니다.",
+                "playKeyPh": "이름 (예: 계좌번호)",
+                "playValPh": "내용 (예: 신한 110-123-456789 홍길동)",
+                "playAddBtn": "키보드에 넣기",
+                "playResetBtn": "처음으로",
+                "playPrivacy": "이 실습판은 브라우저 안에서만 돌아갑니다. 적으신 것은 어디로도 보내지지 않고, 이 기기에만 남습니다. 앱도 같은 방식입니다.",
+                "playAppbar": "메시지",
+                "playThem": "오늘 회비 보낼게! 계좌 어디야?",
+                "playFieldPh": "여기에 입력돼요",
+                "playNoKeys": "키가 하나도 없어요. 오른쪽에서 만들어 보세요.",
+                "playFillTitle": "빈칸을 채워 주세요",
+                "playFillGo": "넣기",
+                "playFillCancel": "그만",
+                "playSeedBankKey": "계좌번호",
+                "playSeedBankVal": "신한 110-123-456789 홍길동",
+                "playSeedLateKey": "늦어요",
+                "playSeedLateVal": "죄송해요, 10분 정도 늦을 것 같아요.",
+                "playSeedHelloKey": "문의 답장",
+                "playSeedHelloVal": "{이름}님 안녕하세요, 문의 주셔서 감사합니다.",
+                "playSeedStackKey": "출근 보고",
+                "playSeedStack1Key": "이름",
+                "playSeedStack1Val": "홍길동",
+                "playSeedStack2Key": "부서",
+                "playSeedStack2Val": "개발팀",
+                "playSeedStack3Key": "오늘 할 일",
+                "playSeedStack3Val": "배포 점검",
                 pageTitle: "ClipKeyboard 사용 가이드",
                 navHome: "홈", navStore: "App Store",
                 heroTitle: '5분 안에 배우는 <span>ClipKeyboard</span>',
@@ -984,6 +1223,54 @@
                 appStoreUrl: "https://apps.apple.com/kr/app/clip-keyboard-quick-phrases/id1543660502"
             },
             en: {
+                "playKbHint": "Tap a snippet",
+                "playClear": "Clear",
+                "tocPlay": "Try it here",
+                // ── 실습판 (받기 전에 여기서 써 보는 자리) ──
+                "playBadge": "Before you download",
+                "playTitle": "Just try it right here",
+                "playLead": "No download needed. The keyboard below really works. Tap to type, fill in a blank, and make one of your own.",
+                "playCoachTitle": "Give it a tap",
+                "playCoachStart": "Tap any key and it lands in the field above.",
+                "playCoachSend": "There it is. Hit the arrow to send it.",
+                "playCoachStack": "This one is a stack. Each slot has its own name, and the arrow on the right moves to the next one.",
+                "playCoachSize": "The keyboard changed height. You pick the same thing inside the app.",
+                "playCoachAdd": "Sent. Now make one of your own on the right.",
+                "playCoachMade": "Your key is on the keyboard. Give it a tap.",
+                "playCoachMadeTemplate": "The braces make it a template. It will ask you to fill the blank first.",
+                "playCoachNeedBoth": "Please fill in both the name and the content.",
+                "playSizeTitle": "Keyboard height",
+                "playSizeBody": "The same setting you get in the app. Tap one and the keyboard below changes.",
+                "playSize_same": "Match system",
+                "playSize_standard": "Standard",
+                "playSize_roomy": "Roomy",
+                "playAddTitle": "Make one of your own",
+                "playAddBody": "Give it a name and content, and a key appears on the keyboard. Put braces in the content, like {name}, and it becomes a template that asks you to fill the blank each time.",
+                "playKeyPh": "Name (e.g. Bank details)",
+                "playValPh": "Content (e.g. Chase 110-123-456789 John Doe)",
+                "playAddBtn": "Add to keyboard",
+                "playResetBtn": "Start over",
+                "playPrivacy": "This sandbox runs entirely in your browser. Nothing you type is sent anywhere; it stays on this device. The app works the same way.",
+                "playAppbar": "Messages",
+                "playThem": "Sending my share today! What is your account?",
+                "playFieldPh": "Your text lands here",
+                "playNoKeys": "No keys yet. Make one on the right.",
+                "playFillTitle": "Fill in the blank",
+                "playFillGo": "Insert",
+                "playFillCancel": "Cancel",
+                "playSeedBankKey": "Bank details",
+                "playSeedBankVal": "Chase 110-123-456789 John Doe",
+                "playSeedLateKey": "Running late",
+                "playSeedLateVal": "Sorry, I am going to be about 10 minutes late.",
+                "playSeedHelloKey": "Reply to inquiry",
+                "playSeedHelloVal": "Hello {name}, thank you for reaching out.",
+                "playSeedStackKey": "Daily check-in",
+                "playSeedStack1Key": "Name",
+                "playSeedStack1Val": "John Doe",
+                "playSeedStack2Key": "Team",
+                "playSeedStack2Val": "Engineering",
+                "playSeedStack3Key": "Today",
+                "playSeedStack3Val": "Release check",
                 pageTitle: "ClipKeyboard User Guide",
                 navHome: "Home", navStore: "App Store",
                 heroTitle: 'Master <span>ClipKeyboard</span> in 5 Minutes',
@@ -1128,6 +1415,54 @@
                 appStoreUrl: "https://apps.apple.com/app/clip-keyboard-quick-phrases/id1543660502"
             },
             'zh-Hans': {
+                "playKbHint": "点一个短语试试",
+                "playClear": "清空",
+                "tocPlay": "先试一试",
+                // ── 실습판 (받기 전에 여기서 써 보는 자리) ──
+                "playBadge": "下载之前",
+                "playTitle": "就在这里试一试",
+                "playLead": "不用下载。下面的键盘是真的能用的。点一下输入，填一下空格，再自己做一个。",
+                "playCoachTitle": "点点看",
+                "playCoachStart": "点任意一个键，内容就会进到上面的输入框。",
+                "playCoachSend": "进去了。点右上角的箭头发送看看。",
+                "playCoachStack": "这是一个短语堆。每一格都有自己的名字，点右边的箭头就切到下一格。",
+                "playCoachSize": "键盘高度变了吧。在 App 里也是在同一个地方选。",
+                "playCoachAdd": "发送好了。这次在右边自己做一个吧。",
+                "playCoachMade": "键做好了，在键盘上点点看。",
+                "playCoachMadeTemplate": "有大括号，所以它成了模板。点的时候会先问你填什么。",
+                "playCoachNeedBoth": "名字和内容都要填。",
+                "playSizeTitle": "键盘高度",
+                "playSizeBody": "和 App 里能选的是同一个设置。点一下，下面的键盘立刻就变。",
+                "playSize_same": "与系统一致",
+                "playSize_standard": "标准",
+                "playSize_roomy": "宽松",
+                "playAddTitle": "自己做一个",
+                "playAddBody": "写上名字和内容，键盘上就会多一个键。内容里像 {名字} 这样加大括号，它就成了模板，每次点的时候会让你填空。",
+                "playKeyPh": "名字（例：银行账号）",
+                "playValPh": "内容（例：招商 110-123-456789 张三）",
+                "playAddBtn": "加到键盘",
+                "playResetBtn": "重新开始",
+                "playPrivacy": "这个体验区完全在你的浏览器里运行。你输入的内容不会发到任何地方，只留在这台设备上。App 也是一样的做法。",
+                "playAppbar": "信息",
+                "playThem": "今天把份子钱转给你！账号是多少？",
+                "playFieldPh": "内容会出现在这里",
+                "playNoKeys": "还没有键。在右边做一个吧。",
+                "playFillTitle": "填一下空格",
+                "playFillGo": "插入",
+                "playFillCancel": "取消",
+                "playSeedBankKey": "银行账号",
+                "playSeedBankVal": "招商 110-123-456789 张三",
+                "playSeedLateKey": "会晚点",
+                "playSeedLateVal": "抱歉，我大概会晚十分钟。",
+                "playSeedHelloKey": "回复咨询",
+                "playSeedHelloVal": "{名字} 您好，感谢您的咨询。",
+                "playSeedStackKey": "上班报到",
+                "playSeedStack1Key": "姓名",
+                "playSeedStack1Val": "张三",
+                "playSeedStack2Key": "部门",
+                "playSeedStack2Val": "研发部",
+                "playSeedStack3Key": "今天要做的",
+                "playSeedStack3Val": "发布检查",
              "pageTitle": "剪贴键盘 使用指南",
              "navHome": "首页",
              "navStore": "App Store",
@@ -1287,6 +1622,54 @@
              "appStoreUrl": "https://apps.apple.com/app/clip-keyboard-quick-phrases/id1543660502"
             },
             'zh-Hant': {
+                "playKbHint": "點一個短語試試",
+                "playClear": "清空",
+                "tocPlay": "先試一試",
+                // ── 실습판 (받기 전에 여기서 써 보는 자리) ──
+                "playBadge": "下載之前",
+                "playTitle": "就在這裡試一試",
+                "playLead": "不用下載。下面的鍵盤是真的能用的。點一下輸入，填一下空格，再自己做一個。",
+                "playCoachTitle": "點點看",
+                "playCoachStart": "點任意一個键，內容就會進到上面的輸入框。",
+                "playCoachSend": "進去了。點右上角的箭頭發送看看。",
+                "playCoachStack": "這是一個短語堆。每一格都有自己的名字，點右邊的箭頭就切到下一格。",
+                "playCoachSize": "鍵盤高度變了吧。在 App 裡也是在同一個地方選。",
+                "playCoachAdd": "發送好了。這次在右邊自己做一個吧。",
+                "playCoachMade": "键做好了，在鍵盤上點點看。",
+                "playCoachMadeTemplate": "有大括號，所以它成了模板。點的時候會先問你填什麼。",
+                "playCoachNeedBoth": "名字和內容都要填。",
+                "playSizeTitle": "鍵盤高度",
+                "playSizeBody": "和 App 裡能選的是同一個設置。點一下，下面的鍵盤立刻就變。",
+                "playSize_same": "與系統一致",
+                "playSize_standard": "標準",
+                "playSize_roomy": "寬鬆",
+                "playAddTitle": "自己做一個",
+                "playAddBody": "寫上名字和內容，鍵盤上就會多一個键。內容裡像 {名字} 這樣加大括號，它就成了模板，每次點的時候會讓你填空。",
+                "playKeyPh": "名字（例：銀行賬號）",
+                "playValPh": "內容（例：招商 110-123-456789 張三）",
+                "playAddBtn": "加到鍵盤",
+                "playResetBtn": "重新開始",
+                "playPrivacy": "這個體驗區完全在你的瀏覽器裡運行。你輸入的內容不會發到任何地方，只留在這台設備上。App 也是一樣的做法。",
+                "playAppbar": "訊息",
+                "playThem": "今天把份子錢轉給你！賬號是多少？",
+                "playFieldPh": "內容會出現在這裡",
+                "playNoKeys": "還沒有键。在右邊做一個吧。",
+                "playFillTitle": "填一下空格",
+                "playFillGo": "插入",
+                "playFillCancel": "取消",
+                "playSeedBankKey": "銀行賬號",
+                "playSeedBankVal": "招商 110-123-456789 張三",
+                "playSeedLateKey": "會晚點",
+                "playSeedLateVal": "抱歉，我大概會晚十分鐘。",
+                "playSeedHelloKey": "回覆諮詢",
+                "playSeedHelloVal": "{名字} 您好，感謝您的諮詢。",
+                "playSeedStackKey": "上班報到",
+                "playSeedStack1Key": "姓名",
+                "playSeedStack1Val": "張三",
+                "playSeedStack2Key": "部門",
+                "playSeedStack2Val": "研發部",
+                "playSeedStack3Key": "今天要做的",
+                "playSeedStack3Val": "發布檢查",
  "pageTitle": "剪貼鍵盤 使用指南",
  "navHome": "首頁",
  "navStore": "App Store",
@@ -1444,7 +1827,213 @@
  "footerHome": "回首頁",
  "footerPrivacy": "隱私權政策",
  "appStoreUrl": "https://apps.apple.com/app/clip-keyboard-quick-phrases/id1543660502"
-}
+},
+            'ru': {
+                "playKbHint": "Нажмите на фразу",
+                "playClear": "Очистить",
+                "tocPlay": "Попробовать здесь",
+                "playBadge": "Перед загрузкой",
+                "playTitle": "Просто попробуйте прямо здесь",
+                "playLead": "Загружать ничего не нужно. Клавиатура ниже работает по-настоящему. Нажимайте, чтобы вводить текст, заполняйте поле и создайте свою фразу.",
+                "playCoachTitle": "Нажмите",
+                "playCoachStart": "Нажмите любую клавишу, и текст появится в поле выше.",
+                "playCoachSend": "Готово. Нажмите стрелку вверху справа, чтобы отправить.",
+                "playCoachStack": "Это стопка. У каждого поля своё имя, а стрелка справа переводит к следующему полю.",
+                "playCoachSize": "Высота клавиатуры изменилась. В приложении вы выбираете её точно так же.",
+                "playCoachAdd": "Отправлено. Теперь создайте свою фразу справа.",
+                "playCoachMade": "Клавиша появилась на клавиатуре. Нажмите на неё.",
+                "playCoachMadeTemplate": "Фигурные скобки делают её шаблоном. При нажатии сначала попросит заполнить поле.",
+                "playCoachNeedBoth": "Заполните и имя, и содержимое.",
+                "playSizeTitle": "Высота клавиатуры",
+                "playSizeBody": "Та же настройка, что и в приложении. Нажмите на вариант, и клавиатура ниже сразу изменится.",
+                "playSize_same": "Как в системе",
+                "playSize_standard": "Стандартный",
+                "playSize_roomy": "Просторный",
+                "playAddTitle": "Создать свою",
+                "playAddBody": "Укажите название и текст, и на клавиатуре появится клавиша. Добавьте в текст фигурные скобки, например {имя}, и он станет шаблоном: при каждом нажатии он попросит заполнить поле для заполнения.",
+                "playKeyPh": "Название (например: реквизиты счета)",
+                "playValPh": "Текст (например: Тинькофф 110-123-456789 Иван Иванов)",
+                "playAddBtn": "Добавить на клавиатуру",
+                "playResetBtn": "Начать заново",
+                "playPrivacy": "Эта песочница работает полностью в браузере. Ничего из того, что вы вводите, никуда не отправляется, это остается только на этом устройстве. Приложение работает так же.",
+                "playAppbar": "Сообщения",
+                "playThem": "Сегодня отправлю свою часть! Какие у тебя реквизиты?",
+                "playFieldPh": "Текст появится здесь",
+                "playNoKeys": "Пока нет ни одной клавиши. Создайте ее справа.",
+                "playFillTitle": "Заполните поле",
+                "playFillGo": "Вставить",
+                "playFillCancel": "Отмена",
+                "playSeedBankKey": "Реквизиты счета",
+                "playSeedBankVal": "Тинькофф 110-123-456789 Иван Иванов",
+                "playSeedLateKey": "Опаздываю",
+                "playSeedLateVal": "Извините, я опоздаю примерно на 10 минут.",
+                "playSeedHelloKey": "Ответ на вопрос",
+                "playSeedHelloVal": "Здравствуйте, {name}, спасибо за ваш вопрос.",
+                "playSeedStackKey": "Утренний отчёт",
+                "playSeedStack1Key": "Имя",
+                "playSeedStack1Val": "Иван Иванов",
+                "playSeedStack2Key": "Отдел",
+                "playSeedStack2Val": "Разработка",
+                "playSeedStack3Key": "Сегодня",
+                "playSeedStack3Val": "Проверка релиза",
+                "pageTitle": "Руководство пользователя ClipKeyboard",
+                "navHome": "Главная",
+                "navStore": "App Store",
+                "heroTitle": "Изучите <span>ClipKeyboard</span> за 5 минут",
+                "heroSubtitle": "От настройки клавиатуры до продвинутых функций, всё на одной странице.",
+                "tocTitle": "Содержание",
+                "tocSetup": "Начало работы",
+                "tocMemo": "Сохранение и редактирование заметок",
+                "tocTemplate": "Шаблоны и поля для заполнения",
+                "tocSmart": "Умный буфер обмена",
+                "tocCombo": "Комбо (последовательный ввод)",
+                "tocMac": "Приложение в строке меню macOS",
+                "tocBackup": "Резервное копирование iCloud",
+                "tocFaq": "Вопросы и решение проблем",
+                "stepLabel": "ШАГ 01",
+                "stepLabel2": "ШАГ 02",
+                "stepLabel3": "ШАГ 03",
+                "stepLabel4": "ШАГ 04",
+                "stepLabel5": "ШАГ 05",
+                "stepLabel6": "ШАГ 06",
+                "stepLabel7": "ШАГ 07",
+                "stepLabel8": "FAQ",
+                "setupTitle": "Начало работы. Добавление клавиатуры и полный доступ",
+                "setupLead": "Из соображений безопасности iOS клавиатуру нужно включить самостоятельно. Это займет около минуты.",
+                "setupAddTitle": "Добавление клавиатуры",
+                "setupAdd1": "Настройки iOS → Основные → Клавиатура → Клавиатуры → Добавить новую клавиатуру…",
+                "setupAdd2": "Выберите <strong>ClipKeyboard</strong> из списка",
+                "setupAccessTitle": "Разрешить полный доступ",
+                "setupAccess1": "На этом же экране нажмите на только что добавленный <strong>ClipKeyboard</strong>",
+                "setupAccess2": "Включите переключатель <strong>Разрешить полный доступ</strong>",
+                "setupWhyAccess": "Полный доступ нужен, чтобы клавиатура могла читать заметки, сохранённые в основном приложении. Ваши данные хранятся только на вашем устройстве.",
+                "setupSwitchTitle": "Переключение клавиатуры",
+                "setupSwitch": "В любом приложении откройте клавиатуру и удерживайте значок 🌐 внизу слева, чтобы выбрать <strong>ClipKeyboard</strong>.",
+                "memoTitle": "Сохранение и редактирование заметок",
+                "memoLead": "Сохраните часто используемые фразы, и вы сможете вставлять их прямо из клавиатуры.",
+                "memoAddTitle": "Добавление заметки",
+                "memoAdd1": "На главном экране приложения нажмите кнопку <strong>＋</strong> в правом верхнем углу",
+                "memoAdd2": "Введите заголовок и текст (текст будет вставлен при использовании)",
+                "memoAdd3": "При необходимости выберите <strong>категорию</strong> для сортировки",
+                "memoAdd4": "После сохранения заметка сразу появится в клавиатуре",
+                "memoUseTitle": "Использование в клавиатуре",
+                "memoUse1": "Нажмите на карточку заметки, и текст сразу вставится в позицию курсора",
+                "memoUse2": "Удерживайте для меню копирования и редактирования",
+                "memoUse3": "Используйте строку поиска сверху, чтобы быстро найти нужное",
+                "memoTip": "Эмодзи, переносы строк и разметка markdown вводятся как есть. Длинный текст, например подпись для email, тоже не проблема.",
+                "memoKeyboardLook": "Клавиатура выглядит так же, как приложение: избранные заметки показаны розовым цветом, у защищенных заметок перед названием стоит замок, а категория, которую вы просматриваете, отображается крупным заголовком сверху.",
+                "memoImageTitle": "Заметки с изображениями и распознавание текста",
+                "memoImage": "Нажатие на заметку с прикрепленным фото копирует его в буфер обмена как изображение. Удобно для визиток и чеков. Также можно извлечь из фото только нужный текст с помощью <strong>распознавания текста (OCR)</strong>. <strong>В бесплатной версии доступно до 5 заметок с изображениями</strong>, в Pro ограничения нет.",
+                "smearTitle": "Выбор текста с фото проведением пальца",
+                "smearLead": "Не переписывайте номера счетов и телефонов с бумаги вручную. Сделайте фото, затем <strong>проведите пальцем только по нужной части</strong>, и значением станет только этот текст.",
+                "smear1": "При создании фразы нажмите <strong>Сканировать текст</strong> над полем содержимого и выберите <strong>Снять фото</strong> или <strong>Из галереи</strong>",
+                "smear2": "Проведите пальцем по тексту на фото. Все, над чем пройдет палец, будет выделено желтым",
+                "smear3": "Выбрали что-то по ошибке? Проведите по этому месту еще раз инструментом <strong>Ластик</strong>. Чтобы увеличить мелкий текст, разведите два пальца",
+                "smear4": "Нажмите <strong>Использовать этот текст</strong>, и выбранный текст попадет в содержимое фразы",
+                "smearTip": "Включите кнопку переноса строк для значений, которые занимают несколько строк, например адрес из двух строк. Если оставить ее выключенной, номер счета, разбитый на две строки, соединится в одну.",
+                "smearNote": "Фото никогда не сохраняется. Текст извлекается, а фото удаляется. Распознавание происходит полностью на вашем устройстве, поэтому ни фото, ни текст никуда не отправляются. Если проводить пальцем неудобно, воспользуйтесь функцией Выбор по строкам в правом верхнем углу, чтобы выбрать нужную строку из списка распознанного текста.",
+                "memoSecureTitle": "Защищенные заметки (блокировка)",
+                "memoSecure": "Защищайте важные заметки блокировкой. Нажмите и удерживайте заметку, затем выберите <strong>Заблокировать как защищенную заметку</strong>: она будет храниться на устройстве в зашифрованном виде (ключ надежно синхронизируется через ваш iCloud Keychain), а для открытия и разблокировки потребуется <strong>Face ID или Touch ID</strong>. Заблокированные заметки отмечены только замком перед названием в списке и на клавиатуре, цвет карточки остается прежним. Это функция <strong>Pro</strong>.",
+                "tmplTitle": "Шаблоны и поля для заполнения",
+                "tmplLead": "Оставляйте немного изменяющиеся части в виде <code>{переменная}</code> и заполняйте их при использовании.",
+                "tmplSyntaxTitle": "Синтаксис",
+                "tmplSyntax": "Если написать имя переменной в фигурных скобках <code>{ }</code>, получится поле для заполнения. Например:",
+                "tmplUseTitle": "Как использовать",
+                "tmplUse1": "Нажмите на Заметку с Шаблоном, и снизу плавно поднимется лист для ввода значений",
+                "tmplUse2": "Заполните поля и нажмите кнопку копирования в правом верхнем углу, готовое предложение скопируется",
+                "tmplUse3": "Введённые значения запоминаются автоматически, и в следующий раз выбрать их будет проще (например, список часто используемых имён для поля \"имя\")",
+                "tmplMakeTitle": "Превратить обычную заметку в шаблон",
+                "tmplMake": "Нажмите и удержите обычную Заметку, выберите <strong>Сделать шаблоном</strong>, и оригинал останется как есть, а откроется новая Заметка-Шаблон с тем же содержимым. Вставьте <code>{переменная}</code> в нужном месте текста и сохраните. После добавления переменной курсор сразу встанет за ней, чтобы можно было продолжить печатать.",
+                "tmplDateNote": "Для автоматических переменных даты и времени можно выбрать <strong>Сегодня, Завтра, На следующей неделе, Через две недели или свою дату</strong>. При нажатии переменная заменяется настоящей датой и копируется.",
+                "tmplTip": "Переменные с одинаковым именем используются во всех шаблонах вместе. Значение, введённое для <code>{имя}</code>, будет предложено и в других шаблонах с <code>{имя}</code>.",
+                "smartTitle": "Умный Буфер обмена",
+                "smartLead": "Скопированный текст распознаётся автоматически, чтобы вы могли найти его снова в любой момент.",
+                "smartTypesTitle": "15 автоматически распознаваемых типов",
+                "smartType1": "Email",
+                "smartType2": "Телефон",
+                "smartType3": "Адрес",
+                "smartType4": "URL",
+                "smartType5": "Номер карты",
+                "smartType6": "IBAN / счёт",
+                "smartType7": "SWIFT / BIC",
+                "smartType8": "НДС / Налоговый номер",
+                "smartType9": "Сумма и валюта",
+                "smartType10": "Номер отслеживания",
+                "smartType11": "PayPal / Wise",
+                "smartType12": "Число",
+                "smartType13": "Обычный текст",
+                "smartType14": "Изображение",
+                "smartType15": "Другое",
+                "smartHowTitle": "Как это работает",
+                "smartHow1": "Каждое копирование запускает классификацию по регулярным выражениям с оценкой достоверности",
+                "smartHow2": "В истории хранится до 100 элементов",
+                "smartHow3": "Временные элементы удаляются автоматически через 7 дней",
+                "smartHow4": "Закрепите (📌) важные элементы, чтобы они хранились всегда",
+                "smartNote": "Конфиденциальные данные (карта, IBAN, налоговый номер) отображаются скрытыми. Настоящее значение копируется только при нажатии.",
+                "comboTitle": "Комбо: несколько заметок сразу",
+                "comboLead": "Функция вроде макроса, которая вводит имя, email и телефон по порядку.",
+                "comboWhenTitle": "Когда это полезно",
+                "comboWhen1": "Заполнение форм регистрации: имя, email, телефон",
+                "comboWhen2": "Заказ: адрес, пожелания и код скидки за один раз",
+                "comboWhen3": "Ответы поддержки: приветствие + текст ответа + подпись",
+                "comboMakeTitle": "Создание комбо",
+                "comboMakeIntro": "Теперь комбо создаётся не на отдельном экране, а <strong>прямо в списке заметок</strong>. Добавьте к заметке продолжение, и она станет комбо.",
+                "comboMake1": "На главном экране нажмите <strong>＋</strong>, чтобы создать заметку, и введите первый текст",
+                "comboMake2": "Добавьте <strong>следующие заметки</strong> с содержимым, которое будет вводиться по порядку",
+                "comboMake3": "Задайте паузу (в секундах) между шагами",
+                "comboMake4": "После сохранения комбо появится в списке заметок, а при нажатии в клавиатуре шаги введутся по порядку",
+                "comboPreviewNote": "При нажатии на комбо заметка сразу копируется, а значения шагов, которые будут введены по порядку, показываются в нижней панели предпросмотра. Уже созданные комбо, категории и заметки сохраняются без изменений после обновления.",
+                "comboTip": "Пауза меньше 0,3 секунды может быть слишком короткой для системы. Рекомендуется 0,5-1 секунда.",
+                "macTitle": "Приложение в строке меню macOS",
+                "macLead": "Те же заметки, буфер обмена и комбо на Mac (через Mac Catalyst).",
+                "macInstallTitle": "Установка",
+                "macInstall": "Входит в ту же покупку в App Store. Найдите <strong>ClipKeyboard</strong> в Mac App Store. Войдите с тем же Apple ID, чтобы данные синхронизировались через iCloud автоматически.",
+                "macFeaturesTitle": "Функции только для Mac",
+                "macF1": "Открытие панели одним щелчком по значку в строке меню",
+                "macF2": "Быстрый вызов через глобальные сочетания клавиш, например <kbd>⌃</kbd>+<kbd>⇧</kbd>+<kbd>V</kbd>",
+                "macF3": "Мониторинг буфера обмена: умная классификация сразу при копировании",
+                "macF4": "Плавающая панель поверх других приложений",
+                "macNote": "Сохраните фразу на Mac, и она сразу появится в клавиатуре iPhone, и наоборот.",
+                "backupTitle": "Резервное копирование и восстановление iCloud",
+                "backupLead": "Резервируйте данные в iCloud, чтобы не потерять заметки при смене устройства или переустановке приложения.",
+                "backupHowTitle": "Резервное копирование",
+                "backupHow1": "<strong>Настройки</strong> приложения → <strong>Резервное копирование iCloud</strong>",
+                "backupHow2": "Нажмите <strong>Создать резервную копию</strong>: ручное резервное копирование",
+                "backupHow3": "Включите <strong>Автоматическое резервное копирование</strong>: сохранение каждые 5 минут при изменениях",
+                "backupRestoreTitle": "Восстановление",
+                "backupRestore1": "Установите приложение на новом устройстве и войдите с тем же Apple ID",
+                "backupRestore2": "Настройки → Резервное копирование iCloud → <strong>Восстановить</strong>",
+                "backupWarn": "При восстановлении все текущие заметки, буфер обмена и комбо будут заменены данными из резервной копии. Это действие нельзя отменить.",
+                "backupTip": "Объём хранилища не ограничен. Заметки с изображениями также включены в резервную копию.",
+                "faqTitle": "Часто задаваемые вопросы и решение проблем",
+                "faq1Q": "Клавиатура не показывает мои заметки",
+                "faq1A": "<p>Скорее всего, отключён пункт «Полный доступ». Проверьте iOS: Настройки → Основные → Клавиатура → ClipKeyboard → <strong>Полный доступ</strong>.</p>",
+                "faq2Q": "Скопированный текст не появляется в истории",
+                "faq2A": "<p>iOS по умолчанию ограничивает автоматическое чтение буфера обмена другими приложениями. Откройте приложение один раз, затем переключитесь на клавиатуру, чтобы данные синхронизировались.</p>",
+                "faq3Q": "IBAn определился как номер карты",
+                "faq3A": "<p>Похожие числовые шаблоны могут привести к неверному определению типа. Нажмите и удерживайте элемент, чтобы изменить тип вручную, или скопируйте номер заново с пробелами или дефисами (например, <code>1234-5678-...</code>).</p>",
+                "faq4Q": "Как удалить сохранённые значения шаблона?",
+                "faq4A": "<p>На экране редактирования шаблона нажмите на поле для заполнения, чтобы увидеть список \"сохранённых значений\". Проведите по нужному значению, чтобы удалить его.</p>",
+                "faq5Q": "Комбо обрывается или вводится не полностью",
+                "faq5A": "<p>Попробуйте увеличить время ожидания между шагами (рекомендуется 0,5-1 секунда). У разных приложений разная допустимая скорость ввода, поэтому при быстром выполнении часть символов может потеряться.</p>",
+                "faq6Q": "Данные на Mac и iPhone не синхронизируются",
+                "faq6A": "<p>Проверьте, что оба устройства вошли в один и тот же Apple ID и что iCloud Drive включён. Также можно синхронизировать вручную: в приложении нажмите <strong>Резервное копирование iCloud → Создать резервную копию сейчас</strong>.</p>",
+                "faq7Q": "Где хранятся мои данные?",
+                "faq7A": "<p>Все заметки хранятся только на вашем устройстве (в контейнере App Group). Если включено резервное копирование iCloud, они хранятся в зашифрованном виде в вашем собственном iCloud. Разработчик не собирает содержимое заметок, только анонимную статистику использования (например, как часто используются функции) для улучшения приложения.</p>",
+                "faq9Q": "В чём разница между бесплатной версией и Pro?",
+                "faq9A": "<p>В бесплатной версии доступны 10 заметок, 3 комбо, 3 шаблона, 50 записей буфера обмена, 5 заметок с изображениями и настройка темы. Pro (разовая покупка) снимает все ограничения и добавляет резервное копирование iCloud и блокировку по биометрии.</p>",
+                "faq10Q": "Как начать 7-дневный бесплатный пробный период?",
+                "faq10A": "<p>На экране перехода на Pro в приложении есть кнопка <strong>Начать 7-дневный пробный период</strong>. Нажмите её один раз, и все функции Pro откроются на 7 дней (только один раз). По окончании приложение автоматически вернётся к бесплатной версии, без каких-либо последствий, если вы не оформите покупку.</p>",
+                "faq11Q": "Как заблокировать защищённую заметку?",
+                "faq11A": "<p>Нажмите и удерживайте заметку, затем выберите <strong>Заблокировать как защищённую заметку</strong>. Заблокированные заметки хранятся на устройстве в зашифрованном виде, а ключ надёжно синхронизируется через Связку ключей iCloud. Для открытия или снятия блокировки нужна проверка Face ID или Touch ID. (Функция Pro)</p>",
+                "faq8Q": "Моей проблемы нет в этом руководстве",
+                "faq8A": "<p>Напишите разработчику напрямую: <a href=\"mailto:leeo@kakao.com\">leeo@kakao.com</a>. Обычно отвечаем в течение дня.</p>",
+                "bottomCta": "Загрузить в App Store",
+                "footerContact": "Связаться",
+                "footerHome": "Главная",
+                "footerPrivacy": "Политика конфиденциальности",
+                "appStoreUrl": "https://apps.apple.com/app/clip-keyboard-quick-phrases/id1543660502",
+            }
         };
 
         /// 브라우저 언어 태그·저장값·?lang= 을 이 페이지가 아는 언어로 옮긴다.
@@ -1455,6 +2044,7 @@
             if (!t) return '';
             if (t.indexOf('ko') === 0) return 'ko';
             if (t.indexOf('en') === 0) return 'en';
+            if (t.indexOf('ru') === 0) return 'ru';
             if (t.indexOf('zh') === 0) {
                 if (t.indexOf('hant') >= 0 || t.indexOf('-tw') >= 0 ||
                     t.indexOf('-hk') >= 0 || t.indexOf('-mo') >= 0) return 'zh-Hant';
@@ -1485,6 +2075,13 @@
                 if (t[key] !== undefined) el.innerHTML = t[key];
             });
 
+            // 실습판의 안내 글(placeholder)과, 판 자체를 그 말로 다시 그린다.
+            document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+                var key = el.getAttribute('data-i18n-ph');
+                if (t[key] !== undefined) el.placeholder = t[key];
+            });
+            if (window.__playRender) window.__playRender();
+
             // Update App Store links
             var url = t.appStoreUrl;
             var navCta = document.getElementById('nav-appstore');
@@ -1512,6 +2109,257 @@
             }
             applyLanguage(normalizeLang(navigator.language || navigator.userLanguage || '') || 'en');
         })();
+
+        /* ─────────────────────────────────────────────────────────────
+           실습판
+           ─────────────────────────────────────────────────────────────
+           왜 있나: 이 페이지의 나머지는 전부 "이렇게 하세요" 다. 그런데 이 앱의 값어치는
+           **키보드에서 꺼내 쓰는 그 순간**에 있어서, 글로는 좀처럼 안 옮겨진다.
+           받아서 설치하고 키보드를 켜야 비로소 알게 되는 것을, 받기 전에 한 번 만져 보게 한다.
+
+           ⚠️ 적은 것은 이 브라우저를 벗어나지 않는다(localStorage). 앱이 "서버가 없다" 고
+              말하는데 소개 페이지가 입력을 어디로 보내면, 그 말이 거짓이 된다.
+
+           ⚠️ 스택은 **칸마다 이름이 있다.** 값만 스쳐 지나가면 지금 몇 번째 무엇인지
+              알 수 없다는 것이 앱에서 고친 것이고, 여기서도 같은 모양이어야 한다.
+           ───────────────────────────────────────────────────────────── */
+        (function () {
+            var STORE = 'clipkb-play-v1';
+            var SIZES = ['same', 'standard', 'roomy'];
+            // 키보드 높이. 이름은 앱의 설정과 같은 뜻이고, 숫자는 이 판의 몫이다.
+            var SIZE_PX = { same: 168, standard: 208, roomy: 262 };
+
+            var state = { text: '', sent: [], mine: [], size: 'standard', step: {}, fill: null, coach: 'playCoachStart' };
+
+            function t(key) {
+                var lang = document.documentElement.lang || 'en';
+                var table = translations[lang] || translations.en;
+                return table[key] !== undefined ? table[key] : (translations.en[key] || '');
+            }
+            function esc(v) {
+                return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+            /// 빈칸({이름})을 찾는다. 앱의 템플릿 판정과 같은 규칙이다.
+            function slotsOf(v) {
+                var found = String(v).match(/\{[^{}\n]{1,24}\}/g) || [];
+                return found.filter(function (x, i) { return found.indexOf(x) === i; });
+            }
+
+            /// 넣어 둔 보기들. **지우지 않는다** - 실습판에 아무것도 없으면 무엇을 눌러야
+            /// 할지 모른 채로 시작하게 된다.
+            function seeded() {
+                return [
+                    { id: 's1', key: t('playSeedBankKey'), value: t('playSeedBankVal') },
+                    { id: 's2', key: t('playSeedLateKey'), value: t('playSeedLateVal') },
+                    { id: 's3', key: t('playSeedHelloKey'), value: t('playSeedHelloVal') },
+                    { id: 's4', key: t('playSeedStackKey'), stack: [
+                        { key: t('playSeedStack1Key'), value: t('playSeedStack1Val') },
+                        { key: t('playSeedStack2Key'), value: t('playSeedStack2Val') },
+                        { key: t('playSeedStack3Key'), value: t('playSeedStack3Val') }
+                    ] }
+                ];
+            }
+            function allKeys() { return seeded().concat(state.mine); }
+
+            function load() {
+                try {
+                    var raw = JSON.parse(localStorage.getItem(STORE) || '{}');
+                    if (Array.isArray(raw.mine)) state.mine = raw.mine;
+                    if (SIZES.indexOf(raw.size) >= 0) state.size = raw.size;
+                } catch (e) { /* 저장이 막힌 브라우저여도 실습은 돌아가야 한다 */ }
+            }
+            function save() {
+                try { localStorage.setItem(STORE, JSON.stringify({ mine: state.mine, size: state.size })); }
+                catch (e) { /* 사생활 보호 모드 등 - 저장만 못 할 뿐이다 */ }
+            }
+
+            function setCoach(key) { state.coach = key; }
+
+            function insert(text) {
+                state.text = state.text ? (state.text + ' ' + text) : text;
+                setCoach('playCoachSend');
+                render();
+            }
+
+            function tapKey(item) {
+                if (item.stack) {
+                    var i = state.step[item.id] || 0;
+                    insert(item.stack[i].value);
+                    setCoach('playCoachStack');
+                    return;
+                }
+                var slots = slotsOf(item.value);
+                if (slots.length) { state.fill = { id: item.id, slot: slots[0], typed: '' }; render(); return; }
+                insert(item.value);
+            }
+
+            function nextStep(item) {
+                var n = item.stack.length;
+                state.step[item.id] = ((state.step[item.id] || 0) + 1) % n;
+                setCoach('playCoachStack');
+                render();
+            }
+
+            function confirmFill() {
+                var item = allKeys().filter(function (k) { return k.id === state.fill.id; })[0];
+                if (!item) { state.fill = null; render(); return; }
+                var typed = state.fill.typed.trim();
+                var filled = item.value.split(state.fill.slot).join(typed || state.fill.slot);
+                state.fill = null;
+                insert(filled);
+            }
+
+            function send() {
+                if (!state.text) return;
+                state.sent.push(state.text);
+                state.text = '';
+                setCoach('playCoachAdd');
+                render();
+            }
+
+            function addMine() {
+                var k = document.getElementById('play-new-key').value.trim();
+                var v = document.getElementById('play-new-val').value.trim();
+                if (!k || !v) { setCoach('playCoachNeedBoth'); render(); return; }
+                state.mine.push({ id: 'm' + Date.now(), key: k, value: v });
+                document.getElementById('play-new-key').value = '';
+                document.getElementById('play-new-val').value = '';
+                setCoach(slotsOf(v).length ? 'playCoachMadeTemplate' : 'playCoachMade');
+                save();
+                render();
+            }
+
+            function resetAll() {
+                state = { text: '', sent: [], mine: [], size: 'standard', step: {}, fill: null, coach: 'playCoachStart' };
+                save();
+                render();
+            }
+
+            /// ⚠️ **키에 딱지를 붙이지 않는다.** 앱도 그렇다 - "단축어 구분 표시" 설정이
+            ///    기본 꺼짐이고, 켜지 않으면 키에는 제목만 선다. 여기에만 템플릿·스택
+            ///    표시를 달아 두면 실제로 받아서 켰을 때와 다른 키보드를 보여 주는 것이 된다.
+            ///
+            ///    스택의 자리(1/3)는 딱지가 아니라 **이름의 일부**로 읽히게 옅은 글씨로 둔다.
+            ///    지금 몇 번째 무엇인지는 스택에서 유일하게 꼭 필요한 정보다.
+            function keyHTML(item) {
+                var name = esc(item.key), pos = '', next = '';
+                if (item.stack) {
+                    var i = state.step[item.id] || 0;
+                    name = esc(item.key) + ' · ' + esc(item.stack[i].key);
+                    pos = '<span class="pos">' + (i + 1) + '/' + item.stack.length + '</span>';
+                    next = '<span class="nx" data-next="' + item.id + '">&#8250;</span>';
+                }
+                return '<button class="play-key" data-key="' + item.id + '">' +
+                    '<span class="nm">' + name + '</span>' + pos + next + '</button>';
+            }
+
+            function render() {
+                var convo = document.getElementById('play-convo');
+                if (!convo) return;
+
+                var bubbles = '<div class="play-bubble them">' + esc(t('playThem')) + '</div>';
+                state.sent.forEach(function (m) {
+                    bubbles += '<div class="play-bubble me">' + esc(m) + '</div>';
+                });
+                convo.innerHTML = bubbles;
+                convo.scrollTop = convo.scrollHeight;
+
+                var field = document.getElementById('play-field');
+                field.textContent = state.text || t('playFieldPh');
+                field.className = 'play-field' + (state.text ? '' : ' empty');
+                document.getElementById('play-send').disabled = !state.text;
+                document.getElementById('play-appbar').textContent = t('playAppbar');
+
+                var kb = document.getElementById('play-kb');
+                var keys = allKeys();
+                kb.style.height = SIZE_PX[state.size] + 'px';
+                // ⚠️ 누를 수 있는 것만 둔다. 예전에는 지구본·별을 함께 세웠는데 이 판에서는
+                //    아무 일도 안 하는 그림이었다. 못 누르는 것이 섞여 있으면 다른 키도
+                //    안 눌릴 것처럼 보인다.
+                kb.innerHTML =
+                    '<div class="play-kbrow">' +
+                        '<span class="play-kbhint">' + esc(t('playKbHint')) + '</span>' +
+                        '<button class="play-ctl" id="play-clear"' + (state.text ? '' : ' disabled') + '>' +
+                            esc(t('playClear')) + '</button>' +
+                    '</div>' +
+                    '<div class="play-keys" id="play-keys">' +
+                        (keys.length ? keys.map(keyHTML).join('')
+                                     : '<div class="play-empty">' + esc(t('playNoKeys')) + '</div>') +
+                    '</div>';
+
+                var sizeBox = document.getElementById('play-size');
+                sizeBox.innerHTML = SIZES.map(function (sz) {
+                    return '<button data-size="' + sz + '" class="' + (state.size === sz ? 'on' : '') + '">' +
+                        esc(t('playSize_' + sz)) + '</button>';
+                }).join('');
+
+                document.getElementById('play-coach-title').textContent = t('playCoachTitle');
+                document.getElementById('play-coach-body').textContent = t(state.coach);
+
+                var old = document.getElementById('play-sheet');
+                if (old) old.remove();
+                if (state.fill) {
+                    var sheet = document.createElement('div');
+                    sheet.className = 'play-sheet';
+                    sheet.id = 'play-sheet';
+                    sheet.innerHTML =
+                        '<div class="play-sheet-inner">' +
+                            '<h4>' + esc(t('playFillTitle')) + '</h4>' +
+                            '<p>' + esc(state.fill.slot) + '</p>' +
+                            '<input id="play-fill-input" value="' + esc(state.fill.typed) + '">' +
+                            '<div class="row">' +
+                                '<button class="no" id="play-fill-no">' + esc(t('playFillCancel')) + '</button>' +
+                                '<button class="go" id="play-fill-go">' + esc(t('playFillGo')) + '</button>' +
+                            '</div>' +
+                        '</div>';
+                    document.getElementById('play-screen').appendChild(sheet);
+                    var input = document.getElementById('play-fill-input');
+                    input.focus();
+                    input.addEventListener('input', function () { state.fill.typed = this.value; });
+                    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') confirmFill(); });
+                    document.getElementById('play-fill-go').addEventListener('click', confirmFill);
+                    document.getElementById('play-fill-no').addEventListener('click', function () { state.fill = null; render(); });
+                }
+            }
+
+            function wire() {
+                var wrap = document.getElementById('playground');
+                if (!wrap) return;
+
+                // 키·다음칸·크기는 한 곳에서 받는다. 매번 다시 그리므로 개별 리스너를 달면 샌다.
+                wrap.addEventListener('click', function (e) {
+                    var nx = e.target.closest('[data-next]');
+                    if (nx) {
+                        var s = allKeys().filter(function (k) { return k.id === nx.getAttribute('data-next'); })[0];
+                        if (s) nextStep(s);
+                        return;
+                    }
+                    var kb = e.target.closest('[data-key]');
+                    if (kb) {
+                        var it = allKeys().filter(function (k) { return k.id === kb.getAttribute('data-key'); })[0];
+                        if (it) tapKey(it);
+                        return;
+                    }
+                    var sz = e.target.closest('[data-size]');
+                    if (sz) { state.size = sz.getAttribute('data-size'); setCoach('playCoachSize'); save(); render(); return; }
+                    if (e.target.closest('#play-send')) { send(); return; }
+                    if (e.target.closest('#play-clear')) { state.text = ''; render(); return; }
+                    if (e.target.closest('#play-add')) { addMine(); return; }
+                    if (e.target.closest('#play-reset')) { resetAll(); return; }
+                });
+
+                load();
+                render();
+            }
+
+            // 언어가 바뀌면 실습판도 그 말로 다시 그린다.
+            window.__playRender = function () { if (document.getElementById('play-convo')) render(); };
+
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+            else wire();
+        })();
+
     </script>
 </body>
 </html>

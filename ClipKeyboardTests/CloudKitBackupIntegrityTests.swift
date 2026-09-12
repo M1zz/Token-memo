@@ -96,8 +96,8 @@ final class CloudKitBackupIntegrityTests: XCTestCase {
             isSecure: true,
             templateVariables: ["이름"],
             placeholderValues: ["이름": ["유미", "주디"]],
-            comboValues: ["1단계 텍스트", "2단계 텍스트"],
-            comboInterval: 1.5,
+            stackValues: ["1단계 텍스트", "2단계 텍스트"],
+            stackInterval: 1.5,
             autoDetectedType: .bankAccount,
             imageFileName: "legacy.jpg",
             imageFileNames: ["a.jpg", "b.jpg"],
@@ -288,13 +288,13 @@ final class CloudKitBackupIntegrityTests: XCTestCase {
         // Given - 모든 필드가 채워진 메모 + 클립보드 + 콤보
         let original = makeRichMemo()
         let clipboard = SmartClipboardHistory(content: "010-1234-5678", detectedType: .phone, confidence: 0.9)
-        let combo = Combo(title: "출근 콤보", items: [
+        let stack = Combo(title: "출근 콤보", items: [
             ComboItem(type: .memo, referenceId: original.id, order: 0)
         ], interval: 3.0)
 
         try memoStore.save(memos: [original], type: .memo)
         try memoStore.saveSmartClipboardHistory(history: [clipboard])
-        try memoStore.saveCombos([combo])
+        try memoStore.saveCombos([stack])
 
         // When - 백업 → 로컬 전체 삭제(기기 변경 시나리오) → 복원
         try await sut.backupData()
@@ -316,15 +316,15 @@ final class CloudKitBackupIntegrityTests: XCTestCase {
         XCTAssertEqual(memo.isSecure, original.isSecure)
         XCTAssertEqual(memo.templateVariables, original.templateVariables)
         XCTAssertEqual(memo.placeholderValues, original.placeholderValues)
-        XCTAssertEqual(memo.comboValues, original.comboValues)
-        XCTAssertEqual(memo.comboInterval, original.comboInterval)
+        XCTAssertEqual(memo.stackValues, original.stackValues)
+        XCTAssertEqual(memo.stackInterval, original.stackInterval)
         XCTAssertEqual(memo.autoDetectedType, original.autoDetectedType)
         XCTAssertEqual(memo.imageFileName, original.imageFileName)
         XCTAssertEqual(memo.imageFileNames, original.imageFileNames)
         XCTAssertEqual(memo.contentType, original.contentType)
         XCTAssertEqual(memo.hint, original.hint)
         XCTAssertTrue(memo.isTemplate, "템플릿 판정(계산형)이 복원 후에도 유지")
-        XCTAssertTrue(memo.isCombo, "콤보 판정(계산형)이 복원 후에도 유지")
+        XCTAssertTrue(memo.isStack, "콤보 판정(계산형)이 복원 후에도 유지")
         // 날짜는 JSON 인코딩 정밀도 내에서 일치
         XCTAssertEqual(memo.lastEdited.timeIntervalSince1970,
                        original.lastEdited.timeIntervalSince1970, accuracy: 0.001)
@@ -337,14 +337,14 @@ final class CloudKitBackupIntegrityTests: XCTestCase {
         XCTAssertEqual(restoredClipboard[0].content, clipboard.content)
         XCTAssertEqual(restoredClipboard[0].detectedType, .phone)
 
-        let restoredCombos = try memoStore.loadCombos()
-        XCTAssertEqual(restoredCombos.count, 1)
-        XCTAssertEqual(restoredCombos[0].title, combo.title)
-        XCTAssertEqual(restoredCombos[0].items.count, 1)
-        XCTAssertEqual(restoredCombos[0].items[0].referenceId, original.id)
+        let restoredStacks = try memoStore.loadCombos()
+        XCTAssertEqual(restoredStacks.count, 1)
+        XCTAssertEqual(restoredStacks[0].title, stack.title)
+        XCTAssertEqual(restoredStacks[0].items.count, 1)
+        XCTAssertEqual(restoredStacks[0].items[0].referenceId, original.id)
     }
 
-    func testRestore_ResetsComboMigrationFlag() async throws {
+    func testRestore_ResetsStackMigrationFlag() async throws {
         // Given - 마이그레이션 완료 상태에서 옛 백업을 복원하는 상황
         appGroupDefaults?.set(true, forKey: "comboModelUnifyMigrated_v1")
         try memoStore.save(memos: [Memo(title: "백업", value: "값")], type: .memo)

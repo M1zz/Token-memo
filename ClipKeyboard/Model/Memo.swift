@@ -235,6 +235,62 @@ struct PlaceholderValue: Identifiable, Codable {
     }
 }
 
+
+// MARK: - 스택의 한 칸
+
+/// **단축어 스택**의 한 칸. 이름(`key`)과 넣을 글(`value`)을 함께 갖는다.
+///
+/// 왜 이름이 필요한가: 예전 콤보는 값만 줄지어 들고 있었다(`[String]`). 키보드에서 → 를
+/// 누르면 값이 잠깐 스쳐 지나갈 뿐이라, **지금 몇 번째 무엇인지** 알 길이 없었다.
+/// 튜토리얼이 "서로 다른 값 두 개가 들어갔죠?" 를 굳이 짚어 주던 이유가 그것이다.
+/// 칸마다 이름이 있으면 키보드가 그 이름을 그대로 보여 줄 수 있다.
+///
+/// ## 남의 단축어를 가리킬 수도 있다
+///
+/// `reference` 가 있으면 그 단축어를 가리키는 칸이고, 없으면 스택이 자기 것으로 갖는 칸이다.
+///
+/// ⚠️ **가리키는 칸도 `value` 를 함께 적어 둔다.** 이 저장소는 참조로 묶는 설계를 두 번
+///    만들었다가 두 번 다 인라인 값으로 접었다(`combos.data` 의 `referenceId`,
+///    그리고 미출시 `childMemoIds`). 가리키던 단축어가 지워지면 칸이 통째로 비어
+///    **스택이 조용히 망가지는** 것이 그 이유였다. 마지막으로 본 값을 함께 들고 있으면
+///    원본이 사라져도 칸은 제 몫을 한다. 원본이 살아 있으면 그쪽이 이긴다.
+struct StackItem: Codable, Equatable, Identifiable, Hashable {
+    var id: UUID
+    /// 이 칸의 이름. 비어 있으면 화면이 "1단계"처럼 자리로 부른다
+    /// (`Memo.displayKey(at:)`). **빈 값을 채워 저장하지 않는다** - 지어낸 이름을
+    /// 데이터에 굳히면 나중에 언어를 바꿔도 그 말이 따라오지 않는다.
+    var key: String
+    /// 이 칸이 넣는 글.
+    var value: String
+    /// 가리키는 단축어. nil 이면 스택이 자기 것으로 갖는 칸이다.
+    var reference: UUID?
+
+    init(id: UUID = UUID(), key: String = "", value: String, reference: UUID? = nil) {
+        self.id = id
+        self.key = key
+        self.value = value
+        self.reference = reference
+    }
+
+    /// 예전 `comboValues` 한 칸(값만 있던 것)을 옮겨 온다. 이름은 비워 둔다.
+    init(legacyValue: String) {
+        self.init(key: "", value: legacyValue)
+    }
+
+    // ⚠️ 관용적 디코더. `Memo` 와 같은 이유다 - 비옵셔널 키가 없으면 배열 전체가 실패한다.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        self.key = try c.decodeIfPresent(String.self, forKey: .key) ?? ""
+        self.value = try c.decodeIfPresent(String.self, forKey: .value) ?? ""
+        self.reference = try c.decodeIfPresent(UUID.self, forKey: .reference)
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, key, value, reference
+    }
+}
+
 struct Memo: Identifiable, Codable {
     var id = UUID()
     var title: String
@@ -258,15 +314,48 @@ struct Memo: Identifiable, Codable {
     // 템플릿의 플레이스홀더 값들 저장 (예: {이름}: [유미, 주디, 리이오])
     var placeholderValues: [String: [String]] = [:]
 
-    /// 콤보 = 메모 안의 순서 있는 텍스트 단계들("이어지는 메모"). 비어있지 않으면 콤보.
-    /// (출시본 4.3.x에도 있던 필드 - 기존 인라인 콤보 데이터와 그대로 호환.)
-    var comboValues: [String] = []
-    /// 콤보 순차 입력 시 단계 간 시간 간격(초).
-    var comboInterval: TimeInterval = 2.0
-    /// 콤보 여부(계산형) - 단계가 하나라도 있으면 콤보.
-    var isCombo: Bool { !comboValues.isEmpty }
+    /// **단축어 스택** = 이름과 값을 가진 칸들이 순서대로 늘어선 것. 비어 있지 않으면 스택이다.
+    ///
+    /// ⚠️ 저장될 때는 `stackItems`(새 키)와 `comboValues`(값만 추린 옛 키)를 **함께** 쓴다.
+    ///    구버전 앱과 위젯이 옛 키를 읽기 때문이다. 옛 키를 지우면 되돌아간 사람의 스택이
+    ///    통째로 사라진다.
+    var stackItems: [StackItem] = []
+    /// 스택이 값을 차례로 넣을 때 칸 사이 시간 간격(초).
+    var stackInterval: TimeInterval = 2.0
+    /// 스택 여부(계산형) - 칸이 하나라도 있으면 스택.
+    var isStack: Bool { !stackItems.isEmpty }
+
+    /// 칸들의 값만. 값만 쓰던 자리가 아직 많아 그대로 둔다.
+    var stackValues: [String] { stackItems.map(\.value) }
+
+    /// 칸의 **값만** 갈아 끼운다. 이름은 자리대로 따라간다.
+    ///
+    /// ⚠️ 값을 통째로 새로 넣는 자리가 셋 있다(잠글 때 암호화 · 열 때 복호화 · 편집 저장).
+    ///    그 셋이 `stackItems` 를 통째로 새로 만들면 **사용자가 지은 이름이 날아간다.**
+    ///    개수가 같으면 자리대로 이름을 물려주고, 늘어난 자리만 이름 없이 시작한다.
+    mutating func setStackValues(_ values: [String]) {
+        stackItems = values.enumerated().map { index, value in
+            var item = stackItems.indices.contains(index) ? stackItems[index] : StackItem(value: value)
+            item.value = value
+            return item
+        }
+    }
+
+    /// 화면이 부를 이름. 이름을 안 지은 칸은 **자리로 부른다**(1단계, 2단계).
+    ///
+    /// ⚠️ 이 말은 그릴 때 만든다. 옛 콤보를 옮기며 "1단계" 를 **데이터에 적어 두면**
+    ///    영어로 바꾼 사람에게도 한국어가 그대로 남는다. 빈 이름은 빈 채로 두고,
+    ///    보여 줄 때만 자리 이름을 붙인다.
+    func displayKey(at index: Int) -> String {
+        guard stackItems.indices.contains(index) else { return "" }
+        let key = stackItems[index].key.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !key.isEmpty { return key }
+        return String(format: NSLocalizedString("%d단계", comment: "Stack item fallback name by position"),
+                      index + 1)
+    }
     /// (레거시) 콤보=자식 메모 참조. 마이그레이션 디코드용으로만 보관. 신규 로직 미사용.
     var childMemoIds: [UUID] = []
+
 
     // 자동 분류 관련 (Phase 1 추가)
     var autoDetectedType: ClipboardItemType?
@@ -285,7 +374,7 @@ struct Memo: Identifiable, Codable {
     /// 바뀌었다 돌아온다(동기화). hint가 비어있으면 무의미. 기본 ON.
     var hintShownOnKeyboard: Bool = true
 
-    init(id: UUID = UUID(), title: String, value: String, isChecked: Bool = false, lastEdited: Date = Date(), isFavorite: Bool = false, category: String = "기본", isSecure: Bool = false, templateVariables: [String] = [], placeholderValues: [String: [String]] = [:], comboValues: [String] = [], comboInterval: TimeInterval = 2.0, autoDetectedType: ClipboardItemType? = nil, imageFileName: String? = nil, imageFileNames: [String] = [], contentType: ClipboardContentType = .text, lastUsedAt: Date? = nil, hint: String? = nil, hintShownOnKeyboard: Bool = true) {
+    init(id: UUID = UUID(), title: String, value: String, isChecked: Bool = false, lastEdited: Date = Date(), isFavorite: Bool = false, category: String = "기본", isSecure: Bool = false, templateVariables: [String] = [], placeholderValues: [String: [String]] = [:], stackValues: [String] = [], stackInterval: TimeInterval = 2.0, autoDetectedType: ClipboardItemType? = nil, imageFileName: String? = nil, imageFileNames: [String] = [], contentType: ClipboardContentType = .text, lastUsedAt: Date? = nil, hint: String? = nil, hintShownOnKeyboard: Bool = true) {
         self.id = id
         self.title = title
         self.value = value
@@ -296,8 +385,8 @@ struct Memo: Identifiable, Codable {
         self.isSecure = isSecure
         self.templateVariables = templateVariables
         self.placeholderValues = placeholderValues
-        self.comboValues = comboValues
-        self.comboInterval = comboInterval
+        self.stackItems = stackValues.map { StackItem(legacyValue: $0) }
+        self.stackInterval = stackInterval
         self.autoDetectedType = autoDetectedType
         self.imageFileName = imageFileName
         self.imageFileNames = imageFileNames
@@ -336,8 +425,16 @@ struct Memo: Identifiable, Codable {
         self.isSecure = try c.decodeIfPresent(Bool.self, forKey: .isSecure) ?? false
         self.templateVariables = try c.decodeIfPresent([String].self, forKey: .templateVariables) ?? []
         self.placeholderValues = try c.decodeIfPresent([String: [String]].self, forKey: .placeholderValues) ?? [:]
-        self.comboValues = try c.decodeIfPresent([String].self, forKey: .comboValues) ?? []
-        self.comboInterval = try c.decodeIfPresent(TimeInterval.self, forKey: .comboInterval) ?? 2.0
+        // 스택 칸. 새 키가 있으면 그것이 진짜다. 없으면 **옛 콤보를 그 자리에서 옮긴다**
+        // (값만 있던 것 → 이름 없는 칸). 따로 마이그레이션을 돌리지 않는 이유는,
+        // 읽는 순간 옮기면 옛 파일도 새 파일도 같은 길로 들어오기 때문이다.
+        if let items = try c.decodeIfPresent([StackItem].self, forKey: .stackItems), !items.isEmpty {
+            self.stackItems = items
+        } else {
+            let legacy = try c.decodeIfPresent([String].self, forKey: .comboValues) ?? []
+            self.stackItems = legacy.map { StackItem(legacyValue: $0) }
+        }
+        self.stackInterval = try c.decodeIfPresent(TimeInterval.self, forKey: .comboInterval) ?? 2.0
         self.childMemoIds = try c.decodeIfPresent([UUID].self, forKey: .childMemoIds) ?? []
         self.autoDetectedType = try c.decodeIfPresent(ClipboardItemType.self, forKey: .autoDetectedType)
         self.imageFileName = try c.decodeIfPresent(String.self, forKey: .imageFileName)
@@ -359,7 +456,11 @@ struct Memo: Identifiable, Codable {
         case isSecure
         case templateVariables
         case placeholderValues
+        // ⚠️ **파일에 적히는 글자는 옛 이름 그대로 둔다.** 코드에서는 스택이라 부르지만
+        //    이 글자를 바꾸면 쓰던 사람의 파일을 못 읽고, 되돌아간 앱과 위젯도 못 읽는다.
+        //    이름은 코드의 것이고, 글자는 데이터의 것이다.
         case comboValues
+        case stackItems
         case childMemoIds
         case comboInterval
         case autoDetectedType
@@ -379,7 +480,7 @@ struct Memo: Identifiable, Codable {
     /// (attachedTemplateId는 Optional이라 구버전이 누락을 허용 → 생략.)
     private enum LegacyCompatKeys: String, CodingKey {
         case isTemplate
-        case isCombo
+        case isStack
         case currentComboIndex
     }
 
@@ -396,9 +497,12 @@ struct Memo: Identifiable, Codable {
         try c.encode(isSecure, forKey: .isSecure)
         try c.encode(templateVariables, forKey: .templateVariables)
         try c.encode(placeholderValues, forKey: .placeholderValues)
-        try c.encode(comboValues, forKey: .comboValues)
+        // ⚠️ **둘 다 쓴다.** 새 키는 이름까지 담고, 옛 키는 값만 담는다.
+        //    되돌아간 앱과 위젯이 옛 키를 읽으므로, 빼면 그 사람들의 스택이 사라진다.
+        try c.encode(stackItems, forKey: .stackItems)
+        try c.encode(stackValues, forKey: .comboValues)
         try c.encode(childMemoIds, forKey: .childMemoIds)
-        try c.encode(comboInterval, forKey: .comboInterval)
+        try c.encode(stackInterval, forKey: .comboInterval)
         try c.encodeIfPresent(autoDetectedType, forKey: .autoDetectedType)
         try c.encodeIfPresent(imageFileName, forKey: .imageFileName)
         try c.encode(imageFileNames, forKey: .imageFileNames)
@@ -410,7 +514,7 @@ struct Memo: Identifiable, Codable {
         // 레거시 키도 함께 기록 - 구버전 디코더가 필수로 요구하는 키.
         var legacy = encoder.container(keyedBy: LegacyCompatKeys.self)
         try legacy.encode(isTemplate, forKey: .isTemplate)
-        try legacy.encode(isCombo, forKey: .isCombo)
+        try legacy.encode(isStack, forKey: .isStack)   // 글자는 옛 이름, 값은 지금 것
         try legacy.encode(0, forKey: .currentComboIndex)
     }
 

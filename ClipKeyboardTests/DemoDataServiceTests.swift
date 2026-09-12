@@ -159,7 +159,7 @@ final class DemoDataServiceTests: XCTestCase {
         let memos = DemoDataService.demoMemos()
         XCTAssertEqual(memos.filter(\.isFavorite).count, 2, "즐겨찾기 2개")
         XCTAssertTrue(memos.contains { $0.isTemplate }, "템플릿 포함")
-        XCTAssertTrue(memos.contains { $0.isCombo }, "콤보 포함")
+        XCTAssertTrue(memos.contains { $0.isStack }, "콤보 포함")
         XCTAssertTrue(memos.contains { $0.isSecure }, "보안 단축어 포함")
         XCTAssertTrue(memos.allSatisfy { !($0.hint ?? "").isEmpty }, "모든 카드에 힌트")
     }

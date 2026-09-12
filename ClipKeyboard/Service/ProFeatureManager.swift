@@ -33,7 +33,7 @@ struct ProFeatureManager {
     }
 
     /// 무료 콤보 최대 개수
-    static let freeComboLimit = 3
+    static let freeStackLimit = 3
 
     /// 무료 클립보드 히스토리 최대 개수
     static let freeClipboardHistoryLimit = 50
@@ -359,9 +359,9 @@ struct ProFeatureManager {
     }
 
     /// 콤보 추가 가능 여부
-    static func canAddCombo(currentCount: Int) -> Bool {
+    static func canAddStack(currentCount: Int) -> Bool {
         if hasFullAccess { return true }
-        return currentCount < freeComboLimit
+        return currentCount < freeStackLimit
     }
 
     /// 템플릿 추가 가능 여부
@@ -385,7 +385,7 @@ struct ProFeatureManager {
 
     enum LimitType {
         case memo
-        case combo
+        case stack
         case template
         case clipboardHistory
         case cloudBackup
@@ -397,7 +397,7 @@ struct ProFeatureManager {
         var analyticsKey: String {
             switch self {
             case .memo: return "memo"
-            case .combo: return "combo"
+            case .stack: return "combo"
             case .template: return "template"
             case .clipboardHistory: return "clipboard_history"
             case .cloudBackup: return "cloud_backup"
@@ -411,7 +411,7 @@ struct ProFeatureManager {
             switch self {
             case .memo:
                 return NSLocalizedString("단축어 개수 제한", comment: "Memo limit")
-            case .combo:
+            case .stack:
                 return NSLocalizedString("콤보 개수 제한", comment: "Combo limit")
             case .template:
                 return NSLocalizedString("템플릿 개수 제한", comment: "Template limit")
@@ -433,8 +433,8 @@ struct ProFeatureManager {
             case .memo:
                 // 산 칸까지 더한 **지금 이 사람의** 한도를 말한다.
                 return String(format: NSLocalizedString("무료 버전에서는 최대 %d개의 단축어를 저장할 수 있습니다.", comment: "Memo limit desc"), memoLimit)
-            case .combo:
-                return String(format: NSLocalizedString("무료 버전에서는 최대 %d개의 콤보를 만들 수 있습니다.", comment: "Combo limit desc"), freeComboLimit)
+            case .stack:
+                return String(format: NSLocalizedString("무료 버전에서는 최대 %d개의 콤보를 만들 수 있습니다.", comment: "Combo limit desc"), freeStackLimit)
             case .template:
                 return String(format: NSLocalizedString("무료 버전에서는 최대 %d개의 템플릿을 사용할 수 있습니다.", comment: "Template limit desc"), freeTemplateLimit)
             case .clipboardHistory:

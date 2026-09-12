@@ -71,7 +71,7 @@ final class CloudKitBackupServiceTests: XCTestCase {
             SmartClipboardHistory(content: "테스트 클립보드", detectedType: .text)
         ]
 
-        let testCombos = [
+        let testStacks = [
             Combo(title: "테스트 Combo", items: [
                 ComboItem(type: .memo, referenceId: testMemos[0].id, order: 0)
             ])
@@ -79,7 +79,7 @@ final class CloudKitBackupServiceTests: XCTestCase {
 
         try memoStore.save(memos: testMemos, type: .memo)
         try memoStore.saveSmartClipboardHistory(history: testHistory)
-        try memoStore.saveCombos(testCombos)
+        try memoStore.saveCombos(testStacks)
 
         // When - 백업 시도 (실제 iCloud 연결 필요)
         // Note: 실제 백업은 네트워크가 필요하므로 통합 테스트에서만 실행
@@ -87,11 +87,11 @@ final class CloudKitBackupServiceTests: XCTestCase {
         // Then
         let loadedMemos = try memoStore.load(type: .memo)
         let loadedHistory = try memoStore.loadSmartClipboardHistory()
-        let loadedCombos = try memoStore.loadCombos()
+        let loadedStacks = try memoStore.loadCombos()
 
         XCTAssertEqual(loadedMemos.count, 2)
         XCTAssertEqual(loadedHistory.count, 1)
-        XCTAssertEqual(loadedCombos.count, 1)
+        XCTAssertEqual(loadedStacks.count, 1)
     }
 
     // MARK: - CloudKit Error Tests

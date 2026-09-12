@@ -119,14 +119,14 @@ struct MemoRowView: View {
     @ViewBuilder
     private var badgesRow: some View {
         if memo.isTemplate
-            || memo.isCombo
+            || memo.isStack
             || (memo.clipCount == 0 && Date().timeIntervalSince(memo.lastEdited) < 86400)
             || memo.isSecure {
             HStack(spacing: 6) {
                 if memo.isTemplate {
                     TagBadge(label: NSLocalizedString("Template", comment: "Tag: template"))
                 }
-                if memo.isCombo {
+                if memo.isStack {
                     TagBadge(label: NSLocalizedString("Combo", comment: "Tag: combo"))
                 }
                 if memo.clipCount == 0 && Date().timeIntervalSince(memo.lastEdited) < 86400 {
@@ -165,7 +165,7 @@ struct MemoRowView: View {
         if memo.isTemplate {
             parts.append(NSLocalizedString("템플릿", comment: "VoiceOver: template badge"))
         }
-        if memo.isCombo {
+        if memo.isStack {
             parts.append(NSLocalizedString("콤보", comment: "VoiceOver: combo badge"))
         }
         if memo.isFavorite {

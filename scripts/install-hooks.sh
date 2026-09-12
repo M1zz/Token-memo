@@ -82,6 +82,24 @@ MSGHOOK="$ROOT/.git/hooks/commit-msg"
 cat > "$MSGHOOK" <<'SH2'
 #!/bin/sh
 # 커밋 메시지에 긴 줄표(U+2014 / U+2013)가 있으면 차단.
+#
+# ⚠️ 대괄호(`[$EM$EN]`)를 쓰지 않는다. UTF-8 이 아닌 로케일에서 grep 은 그 안을
+#    **바이트 하나하나의 모음**으로 읽는다. 긴 줄표의 바이트(e2 80 94)가 한글의
+#    첫 바이트와 겹쳐서, 긴 줄표가 하나도 없는 한국어 메시지가 통째로 걸렸다.
+#    (scripts/check_dashes.sh 가 같은 이유로 이미 한 번 고쳐진 자리다)
+#    글자 하나를 통째로 찾도록 -e 로 따로 준다.
+EM="$(printf '\342\200\224')"
+EN="$(printf '\342\200\223')"
+if LC_ALL=C grep -q -e "$EM" -e "$EN" "$1"; then
+  echo "❌ 커밋 차단: 커밋 메시지에 긴 줄표가 있습니다."
+  LC_ALL=C grep -n -e "$EM" -e "$EN" "$1"
+  echo "   쉼표(,) 마침표(.) 가운뎃점(·) 콜론(:) 또는 괄호로 바꿉니다."
+  echo "   (긴급 우회: git commit --no-verify)"
+  exit 1
+fi
+SH2'
+#!/bin/sh
+# 커밋 메시지에 긴 줄표(U+2014 / U+2013)가 있으면 차단.
 EM="$(printf '\342\200\224')"
 EN="$(printf '\342\200\223')"
 if grep -q "[$EM$EN]" "$1"; then

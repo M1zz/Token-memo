@@ -21,63 +21,63 @@ import Foundation
 @testable import ClipKeyboard
 
 @Suite("ComboTutorialStep: 콤보는 한 번 눌러서는 안 배워진다")
-struct ComboTutorialStepTests {
+struct StackTutorialStepTests {
 
     @Test("순서가 못박혀 있다 - 가운데의 '값 바꾸기'가 이 장의 전부다")
     func orderIsFixed() {
-        #expect(ComboTutorialStep.allCases == [
+        #expect(StackTutorialStep.allCases == [
             .insertFirst, .sendFirst, .advance, .insertSecond, .sendSecond, .confirm
         ])
     }
 
     @Test("걸음을 따라가면 확인에서 멈춘다 - 그 뒤는 없다")
     func walkEndsAtConfirm() {
-        var step: ComboTutorialStep? = .insertFirst
-        var walked: [ComboTutorialStep] = []
+        var step: StackTutorialStep? = .insertFirst
+        var walked: [StackTutorialStep] = []
         while let current = step {
             walked.append(current)
             step = current.next
-            #expect(walked.count <= ComboTutorialStep.allCases.count,
+            #expect(walked.count <= StackTutorialStep.allCases.count,
                     "걸음이 스스로를 되돌아 무한히 돈다")
         }
-        #expect(walked == ComboTutorialStep.allCases)
-        #expect(ComboTutorialStep.confirm.next == nil,
+        #expect(walked == StackTutorialStep.allCases)
+        #expect(StackTutorialStep.confirm.next == nil,
                 "확인이 마지막이라야 콤보 장이 끝나고 + 걸음으로 넘어간다")
     }
 
     @Test("넣는 걸음은 키의 **왼쪽**, 바꾸는 걸음은 **오른쪽**을 가리킨다")
     func pointsAtTheRightHalf() {
-        #expect(ComboTutorialStep.insertFirst.comboPart == .value)
-        #expect(ComboTutorialStep.insertSecond.comboPart == .value)
-        #expect(ComboTutorialStep.advance.comboPart == .next)
+        #expect(StackTutorialStep.insertFirst.stackPart == .value)
+        #expect(StackTutorialStep.insertSecond.stackPart == .value)
+        #expect(StackTutorialStep.advance.stackPart == .next)
     }
 
     @Test("보내는 걸음과 확인 걸음은 키를 가리키지 않는다")
     func sendStepsLeaveTheKeyAlone() {
-        #expect(ComboTutorialStep.sendFirst.comboPart == nil)
-        #expect(ComboTutorialStep.sendSecond.comboPart == nil)
-        #expect(ComboTutorialStep.confirm.comboPart == nil)
+        #expect(StackTutorialStep.sendFirst.stackPart == nil)
+        #expect(StackTutorialStep.sendSecond.stackPart == nil)
+        #expect(StackTutorialStep.confirm.stackPart == nil)
     }
 
     /// ⚠️ 이 규칙이 깨지면 화면에서 **두 곳이 동시에 물결친다.**
     ///    키캡과 보내기 동그라미가 같이 일렁이면 지금 누를 곳을 알 수 없다.
     @Test("키를 가리키는 걸음과 보내기를 가리키는 걸음은 절대 겹치지 않는다")
     func neverPointsAtTwoPlacesAtOnce() {
-        for step in ComboTutorialStep.allCases {
-            #expect(!(step.comboPart != nil && step.highlightsSend),
+        for step in StackTutorialStep.allCases {
+            #expect(!(step.stackPart != nil && step.highlightsSend),
                     "\(step.rawValue) 이 키와 보내기를 동시에 가리킨다")
         }
     }
 
     @Test("보내라고 말하는 걸음은 딱 둘 - 값도 두 번 들어가야 다른 것이 보인다")
     func exactlyTwoSendSteps() {
-        let sends = ComboTutorialStep.allCases.filter(\.highlightsSend)
+        let sends = StackTutorialStep.allCases.filter(\.highlightsSend)
         #expect(sends == [.sendFirst, .sendSecond])
     }
 
     @Test("걸음마다 할 말이 다르다 - 같은 문구를 다섯 번 보면 안내가 아니라 소음이다")
     func everyStepSaysSomethingDifferent() {
-        let lines = ComboTutorialStep.allCases.map(\.coachLine)
+        let lines = StackTutorialStep.allCases.map(\.coachLine)
         #expect(Set(lines).count == lines.count)
         #expect(lines.allSatisfy { !$0.isEmpty })
     }
@@ -87,10 +87,10 @@ struct ComboTutorialStepTests {
     ///    **눌러도 아무 일이 안 일어나는 화면**이 된다.
     @Test("rawValue 로 오갈 수 있다 - 앱을 껐다 켜도 그 걸음에서 이어진다")
     func survivesRoundTrip() {
-        for step in ComboTutorialStep.allCases {
-            #expect(ComboTutorialStep(rawValue: step.rawValue) == step)
+        for step in StackTutorialStep.allCases {
+            #expect(StackTutorialStep(rawValue: step.rawValue) == step)
         }
-        #expect(ComboTutorialStep(rawValue: "") == nil,
+        #expect(StackTutorialStep(rawValue: "") == nil,
                 "빈 값은 '콤보 장이 아니다'라는 뜻이라 nil 이라야 한다")
     }
 }

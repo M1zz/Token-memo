@@ -49,7 +49,7 @@ struct BulkImportView: View {
         var include: Bool = true
         var isSecure: Bool = false
 
-        var isCombo: Bool { values.count > 1 }
+        var isStack: Bool { values.count > 1 }
         /// 단일 값 접근용 (일반 단축어 행 표시·저장)
         var value: String { values.first ?? "" }
     }
@@ -406,10 +406,10 @@ struct BulkImportView: View {
             Spacer()
 
             // 콤보 하나만 골랐으면 푸는 것이 자연스러운 다음 행동이다.
-            if picked.count == 1, picked[0].isCombo {
+            if picked.count == 1, picked[0].isStack {
                 Button(NSLocalizedString("콤보 풀기", comment: "Bulk import: split combo back into items")) {
                     withAnimation(.easeInOut(duration: 0.2)) {
-                        splitCombo(picked[0].id)
+                        splitStack(picked[0].id)
                         bundleSelection = []
                     }
                 }
@@ -471,8 +471,8 @@ struct BulkImportView: View {
     }
 
     /// 콤보 항목을 단계별 개별 항목으로 다시 풀어낸다 (보안 상태는 각 항목에 승계).
-    private func splitCombo(_ id: UUID) {
-        guard let idx = drafts.firstIndex(where: { $0.id == id }), drafts[idx].isCombo else { return }
+    private func splitStack(_ id: UUID) {
+        guard let idx = drafts.firstIndex(where: { $0.id == id }), drafts[idx].isStack else { return }
         let src = drafts[idx]
         let parts = src.values.enumerated().map { i, v in
             Draft(title: i == 0 ? src.title : "\(src.title) \(i + 1)",
@@ -503,7 +503,7 @@ struct BulkImportView: View {
                 HStack(spacing: 6) {
                     TextField(NSLocalizedString("Title", comment: "Title field"), text: draft.title)
                         .font(.body.weight(.semibold))
-                    if d.isCombo {
+                    if d.isStack {
                         Text(NSLocalizedString("Combo", comment: "Tag: combo"))
                             .font(.caption2.weight(.semibold))
                             .foregroundColor(.orange)
@@ -513,7 +513,7 @@ struct BulkImportView: View {
                             .clipShape(Capsule())
                     }
                 }
-                if d.isCombo {
+                if d.isStack {
                     // 콤보 - 단계 값을 번호와 함께 표시 (보안이면 마스킹)
                     ForEach(Array(d.values.enumerated()), id: \.offset) { i, v in
                         Text("\(i + 1). \(d.isSecure ? String(repeating: "•", count: min(max(v.count, 4), 12)) : v)")
@@ -558,9 +558,9 @@ struct BulkImportView: View {
                           systemImage: "link")
                 }
             }
-            if d.isCombo {
+            if d.isStack {
                 Button {
-                    splitCombo(d.id)
+                    splitStack(d.id)
                 } label: {
                     Label(NSLocalizedString("콤보 풀기", comment: "Bulk import: split combo back into items"),
                           systemImage: "link.badge.plus")
@@ -805,7 +805,7 @@ struct BulkImportView: View {
 
                 // 묶인 항목은 콤보로 저장 (value는 비우고 comboValues에 단계 나열 - 샘플과 동일 패턴).
                 // 보안 콤보는 단계 값을 각각 암호화 - 하나라도 실패하면 일반 콤보로 폴백.
-                if d.isCombo {
+                if d.isStack {
                     var steps = d.values
                     var isSecure = d.isSecure
                     if isSecure {
@@ -820,7 +820,7 @@ struct BulkImportView: View {
                         title: finalTitle,
                         value: "",
                         isSecure: isSecure,
-                        comboValues: steps
+                        stackValues: steps
                     ))
                     continue
                 }

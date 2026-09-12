@@ -222,7 +222,7 @@ struct PaywallView: View {
                        pro: NSLocalizedString("무제한", comment: "Unlimited"))
 
             featureRow(NSLocalizedString("콤보", comment: "Combo"),
-                       free: String(format: NSLocalizedString("%d개", comment: "count unit"), ProFeatureManager.freeComboLimit),
+                       free: String(format: NSLocalizedString("%d개", comment: "count unit"), ProFeatureManager.freeStackLimit),
                        pro: NSLocalizedString("무제한", comment: "Unlimited"))
 
             featureRow(NSLocalizedString("템플릿", comment: "Template"),

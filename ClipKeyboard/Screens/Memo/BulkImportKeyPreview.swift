@@ -124,7 +124,7 @@ struct BulkImportKeyPreview: View {
                     // ⚠️ 구분 표시(showVisualCues) 설정에 맡기지 않는다. 그건 기본이 꺼져 있어서,
                     //    정작 "어떤 게 단축어이고 어떤 게 콤보인지" 판단해야 하는 이 자리에서
                     //    아무 표시도 안 나온다. 여기서는 그 판단이 화면의 존재 이유다.
-                    if d.isCombo {
+                    if d.isStack {
                         Text("\(d.values.count)")
                             .font(.system(size: buttonFontSize * 0.72, weight: .bold))
                             .foregroundColor(.orange)
@@ -171,7 +171,7 @@ struct BulkImportKeyPreview: View {
     /// 눈으로는 주황 숫자 배지가 그 일을 한다.
     private func accessibilityLabel(for draft: BulkImportView.Draft) -> String {
         let name = draft.title.isEmpty ? draft.value : draft.title
-        guard draft.isCombo else { return name }
+        guard draft.isStack else { return name }
         return String(format: NSLocalizedString("%@, 콤보 %d단계", comment: "Bulk import key preview: combo a11y label"),
                       name, draft.values.count)
     }
@@ -189,8 +189,8 @@ struct BulkImportKeyPreview: View {
     /// 앱·키보드와 똑같은 규칙으로 판정하려면 같은 타입에 물어보는 편이 안전하다.
     /// ⚠️ 저장하지 않는다. 값도 암호화하지 않는다 - 화면에 그릴 용도로만 만든다.
     private func previewMemo(for draft: BulkImportView.Draft) -> Memo {
-        draft.isCombo
-            ? Memo(title: draft.title, value: "", isSecure: draft.isSecure, comboValues: draft.values)
+        draft.isStack
+            ? Memo(title: draft.title, value: "", isSecure: draft.isSecure, stackValues: draft.values)
             : Memo(title: draft.title, value: draft.value, isSecure: draft.isSecure)
     }
 

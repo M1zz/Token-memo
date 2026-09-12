@@ -23,6 +23,7 @@ final class KeyboardHeightBookTests: XCTestCase {
     /// 시험이 쓴 값을 남기지 않는다. App Group 은 키보드도 읽는 진짜 저장소다.
     override func tearDown() {
         AppGroup.defaults?.removeObject(forKey: DefaultsKey.systemKeyboardHeights)
+        AppGroup.defaults?.removeObject(forKey: DefaultsKey.keyboardHeightPreset)
         super.tearDown()
     }
 
@@ -266,5 +267,171 @@ final class KeyboardHeightBookTests: XCTestCase {
                                     screen: screen)
 
         XCTAssertEqual(KeyboardHeightBook.measuredHeight(for: screen), 301)
+    }
+
+    // MARK: - ⑥ 사용자가 고른 높이
+
+    /// 이 설정이 생긴 이유. 리뷰: "keyboard size is too big, make it the same size as normal keyboard".
+    /// `.compact` 은 그 말을 그대로 지킨다. 한 줄이라도 어긋나면 전환할 때 눈에 보인다.
+    func test_시스템과_같게를_고르면_높이가_정확히_같다() {
+        let size = CGSize(width: 393, height: 852)
+        KeyboardHeightBook.record(height: 336, for: size)
+
+        let total = KeyboardHeightBook.height(for: size,
+                                              content: KeyboardHeightBook.ContentMetrics(),
+                                              preset: .compact)
+            + KeyboardHeightBook.systemChrome(for: size)
+
+        XCTAssertEqual(total, 336, accuracy: 0.01,
+                       "같은 높이라야 두 키보드를 오갈 때 애니메이션할 차이가 없다")
+    }
+
+    /// **이 변경의 핵심.** 예전 `버튼 높이` 슬라이더는 바닥 계산에만 들어가서, 키를 크게
+    /// 쓰는 사람이 끝까지 내려도 키보드가 안 낮아졌다. 고른 값은 바닥에 막히면 안 된다.
+    func test_시스템과_같게는_키를_크게_쓰는_사람에게도_낮아진다() {
+        let size = CGSize(width: 393, height: 852)
+        KeyboardHeightBook.record(height: 336, for: size)
+
+        // 바닥이 기본 높이를 넘어서는 설정(한 칸씩 · 큰 키)을 고른 사람.
+        var metrics = KeyboardHeightBook.ContentMetrics()
+        metrics.buttonHeight = 80
+        metrics.columns = 1
+        let keyArea = 336 - KeyboardHeightBook.systemChrome(for: size)
+        XCTAssertGreaterThan(metrics.floorHeight, keyArea + metrics.headerHeight,
+                             "이 시험이 뜻을 가지려면 바닥이 기본 높이보다 높아야 한다")
+
+        let standard = KeyboardHeightBook.height(for: size, content: metrics, preset: .standard)
+        let compact = KeyboardHeightBook.height(for: size, content: metrics, preset: .compact)
+
+        XCTAssertLessThan(compact, standard, "고른 것이 아무 일도 안 하면 설정이 아니다")
+        XCTAssertEqual(compact + KeyboardHeightBook.systemChrome(for: size), 336, accuracy: 0.01)
+    }
+
+    /// 판이 통째로 사라지지는 않는다. 바닥을 치우는 것과 없애는 것은 다르다.
+    func test_시스템과_같게도_최소_높이는_지킨다() {
+        let tiny = CGSize(width: 320, height: 480)
+        let panel = KeyboardHeightBook.height(for: tiny,
+                                              content: KeyboardHeightBook.ContentMetrics(),
+                                              preset: .compact)
+
+        XCTAssertGreaterThanOrEqual(panel, KeyboardHeightBook.minimumContentHeight)
+    }
+
+    /// 넉넉하게는 기본보다 **그 사람이 쓰는 키 한 줄**만큼 높다. 44 를 쓰는 사람과
+    /// 80 을 쓰는 사람의 한 줄은 같은 한 줄이 아니다.
+    func test_넉넉하게는_키_한_줄만큼_더_높다() {
+        let size = CGSize(width: 393, height: 852)
+        KeyboardHeightBook.record(height: 336, for: size)
+
+        var metrics = KeyboardHeightBook.ContentMetrics()
+        metrics.buttonHeight = 44
+
+        let standard = KeyboardHeightBook.height(for: size, content: metrics, preset: .standard)
+        let roomy = KeyboardHeightBook.height(for: size, content: metrics, preset: .roomy)
+
+        XCTAssertEqual(roomy - standard, metrics.buttonHeight + metrics.rowSpacing, accuracy: 0.01)
+    }
+
+    /// 세 값은 순서가 있다. 이름이 크기를 말하고 있으므로 어긋나면 거짓말이 된다.
+    func test_세_값은_낮은_것부터_높은_것까지_순서대로다() {
+        let size = CGSize(width: 393, height: 852)
+        KeyboardHeightBook.record(height: 336, for: size)
+        let metrics = KeyboardHeightBook.ContentMetrics()
+
+        let heights = KeyboardHeightPreset.allCases.map {
+            KeyboardHeightBook.height(for: size, content: metrics, preset: $0)
+        }
+        XCTAssertEqual(heights, heights.sorted(), "compact < standard < roomy 여야 한다")
+    }
+
+    /// 넉넉하게라도 화면을 통째로 먹지는 않는다. 무엇에 입력하는지가 안 보이면 안 된다.
+    func test_넉넉하게도_천장을_넘지_않는다() {
+        let size = CGSize(width: 393, height: 852)
+        KeyboardHeightBook.record(height: 336, for: size)
+
+        var metrics = KeyboardHeightBook.ContentMetrics()
+        metrics.buttonHeight = 120
+
+        let panel = KeyboardHeightBook.height(for: size, content: metrics, preset: .roomy)
+        XCTAssertLessThanOrEqual(panel, KeyboardHeightBook.maximumContentHeight(for: size))
+    }
+
+    /// 아무것도 안 고른 사람은 예전 그대로여야 한다. 업데이트로 남의 키보드가 바뀌지 않는다.
+    func test_고른_적_없으면_기본이고_모르는_값도_기본이다() {
+        AppGroup.defaults?.removeObject(forKey: DefaultsKey.keyboardHeightPreset)
+        XCTAssertEqual(KeyboardHeightPreset.current, .standard)
+
+        AppGroup.defaults?.set("한때_있었던_값", forKey: DefaultsKey.keyboardHeightPreset)
+        XCTAssertEqual(KeyboardHeightPreset.current, .standard,
+                       "모르는 값에 걸려 키보드가 짜부라지면 안 된다")
+
+        AppGroup.defaults?.set(KeyboardHeightPreset.compact.rawValue,
+                               forKey: DefaultsKey.keyboardHeightPreset)
+        XCTAssertEqual(KeyboardHeightPreset.current, .compact)
+    }
+
+    /// 저장되는 글자는 **설정 값 그 자체**다. 바꾸면 이미 고른 사람의 선택이 날아간다.
+    func test_저장되는_글자를_바꾸지_않는다() {
+        XCTAssertEqual(KeyboardHeightPreset.compact.rawValue, "compact")
+        XCTAssertEqual(KeyboardHeightPreset.standard.rawValue, "standard")
+        XCTAssertEqual(KeyboardHeightPreset.roomy.rawValue, "roomy")
+    }
+
+    // MARK: - ⑦ 조작 키 크기
+
+    /// 조작 키가 커지면 머리 줄이 두꺼워진다. 이 고리가 끊기면 키운 만큼 머리 줄이
+    /// 격자를 **덮어** 첫 줄이 잘린다(예전에 `headerHeight` 가 38 에 박혀 있었다).
+    func test_조작_키를_키우면_머리_줄도_두꺼워진다() {
+        var small = KeyboardHeightBook.ContentMetrics()
+        small.controlKeySize = 28
+        var large = KeyboardHeightBook.ContentMetrics()
+        large.controlKeySize = 44
+
+        XCTAssertEqual(small.headerHeight, 38, accuracy: 0.01, "예전 고정값과 같아야 한다")
+        XCTAssertEqual(large.headerHeight - small.headerHeight, 16, accuracy: 0.01,
+                       "키가 커진 만큼 그대로 두꺼워진다")
+    }
+
+    /// 그리고 판 전체도 그만큼 높아진다. 설정 화면이 보여 주는 숫자가 이 계산에서 나온다.
+    func test_조작_키를_키우면_판도_그만큼_높아진다() {
+        let size = CGSize(width: 393, height: 852)
+        KeyboardHeightBook.record(height: 336, for: size)
+
+        var small = KeyboardHeightBook.ContentMetrics()
+        small.controlKeySize = 28
+        var large = KeyboardHeightBook.ContentMetrics()
+        large.controlKeySize = 44
+
+        let a = KeyboardHeightBook.height(for: size, content: small, preset: .standard)
+        let b = KeyboardHeightBook.height(for: size, content: large, preset: .standard)
+        XCTAssertEqual(b - a, 16, accuracy: 0.01)
+    }
+
+    /// `.compact` 은 머리 줄을 안 얹으므로 조작 키를 키워도 총 높이가 그대로다.
+    /// "시스템 키보드와 같게" 라는 약속이 다른 설정에 흔들리면 안 된다.
+    func test_시스템과_같게는_조작_키를_키워도_높이가_그대로다() {
+        let size = CGSize(width: 393, height: 852)
+        KeyboardHeightBook.record(height: 336, for: size)
+
+        var large = KeyboardHeightBook.ContentMetrics()
+        large.controlKeySize = 44
+
+        let total = KeyboardHeightBook.height(for: size, content: large, preset: .compact)
+            + KeyboardHeightBook.systemChrome(for: size)
+        XCTAssertEqual(total, 336, accuracy: 0.01)
+    }
+
+    /// `UserDefaults` 는 키가 없으면 0 을 준다. 그대로 쓰면 머리 줄이 10pt 가 되어
+    /// 윗줄이 통째로 사라진다.
+    func test_조작_키_크기는_없거나_벗어나면_제자리로_돌아온다() {
+        XCTAssertEqual(KeyboardHeightBook.resolvedControlKeySize(0),
+                       KeyboardHeightBook.defaultControlKeySize)
+        XCTAssertEqual(KeyboardHeightBook.resolvedControlKeySize(-5),
+                       KeyboardHeightBook.defaultControlKeySize)
+        XCTAssertEqual(KeyboardHeightBook.resolvedControlKeySize(4),
+                       KeyboardHeightBook.minimumControlKeySize)
+        XCTAssertEqual(KeyboardHeightBook.resolvedControlKeySize(999),
+                       KeyboardHeightBook.maximumControlKeySize)
+        XCTAssertEqual(KeyboardHeightBook.resolvedControlKeySize(36), 36)
     }
 }

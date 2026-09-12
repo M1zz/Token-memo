@@ -164,7 +164,7 @@ struct KeyboardTip: Tip {
 // MARK: - ComboInfoTip
 // 콤보 메모를 탭해서 ComboEditSheet를 처음 열었을 때 동작 방식을 설명.
 
-struct ComboInfoTip: Tip {
+struct StackInfoTip: Tip {
     var title: Text {
         Text(NSLocalizedString("Combo는 이렇게 동작해요", comment: "Combo info tip title"))
     }

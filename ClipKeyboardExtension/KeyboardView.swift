@@ -276,6 +276,11 @@ class TemplateInputState: ObservableObject {
 struct KeyboardView: View {
 
     @AppStorage("keyboardColumnCount", store: AppGroup.defaults) private var keyboardColumnCount: Int = 2
+    /// 조작 키 한 칸의 높이. **단축어 키와 다른 값이다** - 저쪽은 문구가 적힌 키,
+    /// 이쪽은 맨 윗줄의 기능 키(지우기 · 보내기 · 클립보드 · 지구본 · 갈래 · 전체삭제).
+    @AppStorage(DefaultsKey.keyboardControlKeySize, store: AppGroup.defaults)
+    private var controlKeySizeRaw: Double = 0
+
     @AppStorage("keyboardButtonHeight", store: AppGroup.defaults) private var buttonHeight: Double = 44.0
     @AppStorage("keyboardButtonFontSize", store: AppGroup.defaults) private var buttonFontSize: Double = 17.0
 
@@ -344,10 +349,10 @@ struct KeyboardView: View {
     /// ⚠️ nil 이면 키캡 전체가 인다(콤보가 아닌 보통 키의 평소 모습). 콤보 키는 좌·우가
     ///    하는 일이 달라서, 통째로 빛나면 "어디를 누르라는 거지"가 된다 - 실제로 콤보
     ///    튜토리얼에서 사람들이 오른쪽 → 를 못 찾았다.
-    let highlightedComboPart: ComboKeyPart?
+    let highlightedStackPart: StackKeyPart?
 
     /// 콤보 키의 두 쪽. 왼쪽은 값을 넣고, 오른쪽은 다음 값으로 넘긴다.
-    enum ComboKeyPart: String, Equatable {
+    enum StackKeyPart: String, Equatable {
         /// 왼쪽 2/3 - 지금 값을 입력창에 넣는다.
         case value
         /// 오른쪽 1/3 - 다음 값으로 넘긴다(글은 안 들어간다).
@@ -358,12 +363,12 @@ struct KeyboardView: View {
          documentState: KeyboardDocumentState = KeyboardDocumentState(),
          hostKind: KeyboardHostKind = .keyboardExtension,
          highlightedMemoId: UUID? = nil,
-         highlightedComboPart: ComboKeyPart? = nil) {
+         highlightedStackPart: StackKeyPart? = nil) {
         self.typingProxy = typingProxy
         self.documentState = documentState
         self.hostKind = hostKind
         self.highlightedMemoId = highlightedMemoId
-        self.highlightedComboPart = highlightedComboPart
+        self.highlightedStackPart = highlightedStackPart
         // ⚠️ 키는 **만들어질 때부터** 채워 둔다. 예전에는 빈 채로 시작해 onAppear 에서 채웠는데,
         //    앱의 무대가 아래에서 올라오는 도중에 빈 화면이 격자로 갈리면서 키만 제자리에
         //    먼저 나타났다. 머리말·입력창은 아직 올라오는 중이라 둘이 따로 움직였다(실측).
@@ -441,7 +446,7 @@ struct KeyboardView: View {
     @State private var pendingSecureMemo: Memo?
     /// 인증을 통과하면 넣을 콤보 단계. nil 이면 콤보가 아니라 본체 값을 넣는다.
     /// (잠긴 콤보도 값을 고를 수 있어야 한다는 요청 - 고른 자리를 인증 너머까지 들고 간다.)
-    @State private var pendingSecureComboIndex: Int?
+    @State private var pendingSecureStackIndex: Int?
     @State private var enteredPIN = ""
     @State private var pinEntryWrong = false
 
@@ -577,9 +582,9 @@ struct KeyboardView: View {
     private func builtInMatches(_ raw: String, _ memo: Memo) -> Bool {
         switch raw {
         case "templates": return memo.isTemplate
-        case "textMemos": return !memo.isCombo && memo.contentType != .image && memo.contentType != .mixed
+        case "textMemos": return !memo.isStack && memo.contentType != .image && memo.contentType != .mixed
         case "images":    return memo.contentType == .image || memo.contentType == .mixed
-        case "combos":    return memo.isCombo
+        case "combos":    return memo.isStack
         default:          return false
         }
     }
@@ -705,7 +710,7 @@ struct KeyboardView: View {
                     memo: memo,
                     theme: theme,
                     onCopy: {
-                        copyTextToClipboard(memo.comboValues.first ?? memo.value)
+                        copyTextToClipboard(memo.stackValues.first ?? memo.value)
                         peekMemo = nil
                     },
                     // 하나뿐이면 바꿀 순서가 없다 - 버튼도 두지 않는다.
@@ -728,13 +733,13 @@ struct KeyboardView: View {
             proxy.deleteBackward()
         } label: {
             Image(systemName: AppSymbol.deleteLeftFill)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: controlKeyIconSize, weight: .semibold))
                 .foregroundColor(theme.text)
-                .frame(width: 36, height: 28)
+                .frame(width: controlKeyWidth(36), height: controlKeyHeight)
                 .background(theme.divider)
                 .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
         }
-        .frame(minWidth: 44, minHeight: 44)
+        .frame(minWidth: controlKeyTapTarget, minHeight: controlKeyTapTarget)
         .padding(.trailing, 2)
         .accessibilityLabel(NSLocalizedString("지우기", comment: "Backspace key"))
         .accessibilityHint(NSLocalizedString("한 글자씩 지웁니다. 누르고 있으면 이어서 지웁니다", comment: "Backspace key hint"))
@@ -769,17 +774,17 @@ struct KeyboardView: View {
                     // 호스트가 이름을 안 줬다(메모장 같은 곳). 그럴 때 줄바꿈은 '행동'이 아니라
                     // 그냥 줄바꿈이라, 강조색으로 세우지 않는다.
                     Image(systemName: AppSymbol.returnLeft)
-                        .font(.system(size: 13, weight: .semibold))
-                        .frame(width: 36)
+                        .font(.system(size: controlKeyIconSize, weight: .semibold))
+                        .frame(width: controlKeyWidth(36))
                         .foregroundColor(theme.text)
                 }
             }
-            .frame(height: 28)
+            .frame(height: controlKeyHeight)
             .background(name == nil ? theme.divider : theme.accent)
             .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
         }
         .buttonStyle(PlainButtonStyle())
-        .frame(minWidth: 44, minHeight: 44)
+        .frame(minWidth: controlKeyTapTarget, minHeight: controlKeyTapTarget)
         .padding(.trailing, 2)
         .contentShape(Rectangle())
         // 마찬가지로 "줄바꿈" 도 이미 다른 뜻(글의 줄바꿈 설정)으로 쓰여 "Line breaks" 다.
@@ -815,14 +820,14 @@ struct KeyboardView: View {
             proxy.insertText(text)
         } label: {
             Image(systemName: AppSymbol.docOnClipboard)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: controlKeyIconSize, weight: .semibold))
                 .foregroundColor(theme.textMuted)
-                .frame(width: 32, height: 28)
+                .frame(width: controlKeyWidth(32), height: controlKeyHeight)
                 .background(theme.surface)
                 .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
         }
         .buttonStyle(PlainButtonStyle())
-        .frame(minWidth: 44, minHeight: 44)
+        .frame(minWidth: controlKeyTapTarget, minHeight: controlKeyTapTarget)
         .padding(.trailing, 2)
         .onLongPressGesture(minimumDuration: 0.4) {
             clipboardLongPressAt = Date()
@@ -868,14 +873,14 @@ struct KeyboardView: View {
             proxy.clearAll()
         } label: {
             Image(systemName: AppSymbol.xmarkCircle)
-                .font(.subheadline.weight(.semibold))
+                .font(.system(size: controlKeyIconSize, weight: .semibold))
                 .foregroundColor(theme.textMuted)
-                .frame(width: 36, height: 28)
+                .frame(width: controlKeyWidth(36), height: controlKeyHeight)
                 .background(theme.surface)
                 .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
         }
         .buttonStyle(PlainButtonStyle())
-        .frame(minWidth: 44, minHeight: 44)
+        .frame(minWidth: controlKeyTapTarget, minHeight: controlKeyTapTarget)
         .contentShape(Rectangle())
         .accessibilityLabel(NSLocalizedString("전체 삭제", comment: "Clear all text"))
         .accessibilityHint(NSLocalizedString("현재 입력된 텍스트를 모두 지웁니다", comment: "Clear all button hint"))
@@ -987,7 +992,7 @@ struct KeyboardView: View {
                                     //    가리키는 곳이 오히려 흐려진다.
                                     .overlay {
                                         if item.memo.id == highlightedMemoId,
-                                           highlightedComboPart == nil {
+                                           highlightedStackPart == nil {
                                             KeyRipple(shape: keycapShape, color: theme.accent,
                                                       reach: Self.gridRippleReach)
                                         }
@@ -1551,6 +1556,32 @@ struct KeyboardView: View {
         .padding(.vertical, 5)
     }
 
+    // MARK: - 조작 키 치수
+
+    /// 조작 키 한 칸의 높이.
+    private var controlKeyHeight: CGFloat {
+        KeyboardHeightBook.resolvedControlKeySize(controlKeySizeRaw)
+    }
+
+    /// 기본(28pt) 대비 몇 배인가. 폭과 글자도 같은 비율로 따라간다.
+    ///
+    /// ⚠️ 높이만 키우면 아이콘은 그대로라 **가운데 작은 그림에 빈 판**이 된다.
+    ///    한 배율로 묶어야 키가 커진 것으로 보인다.
+    private var controlKeyScale: CGFloat {
+        controlKeyHeight / KeyboardHeightBook.defaultControlKeySize
+    }
+
+    /// 기본 폭을 지금 배율로 옮긴 값.
+    private func controlKeyWidth(_ base: CGFloat) -> CGFloat {
+        base * controlKeyScale
+    }
+
+    /// 조작 키 안의 기호 크기.
+    private var controlKeyIconSize: CGFloat { 13 * controlKeyScale }
+
+    /// 손가락이 닿는 자리. 키가 커지면 같이 커지되 44pt 아래로는 안 내려간다.
+    private var controlKeyTapTarget: CGFloat { max(44, controlKeyHeight + 16) }
+
     // MARK: - 지구본(다음 키보드)
 
     /// 지구본. **카테고리 탭 밖, 늘 같은 자리에 선다.**
@@ -1563,12 +1594,12 @@ struct KeyboardView: View {
     /// 이유는 `InputModeSwitchOverlay` 주석 참고.
     private func globeKey(proxy: TypingInputProxy) -> some View {
         Image(systemName: AppSymbol.globe)
-            .font(.system(size: 13, weight: .semibold))
+            .font(.system(size: controlKeyIconSize, weight: .semibold))
             .foregroundColor(theme.textMuted)
-            .frame(width: 32, height: 28)
+            .frame(width: controlKeyWidth(32), height: controlKeyHeight)
             .background(theme.surface)
             .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
-            .frame(minWidth: 44, minHeight: 44)
+            .frame(minWidth: controlKeyTapTarget, minHeight: controlKeyTapTarget)
             .overlay(InputModeSwitchOverlay(proxy: proxy))
     }
 
@@ -1583,9 +1614,9 @@ struct KeyboardView: View {
                         currentCategoryPage = index
                     } label: {
                         Image(systemName: iconForCategoryKey(key))
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(.system(size: controlKeyIconSize, weight: .semibold))
                             .foregroundColor(isSelected ? .white : theme.textMuted)
-                            .frame(width: 32, height: 28)
+                            .frame(width: controlKeyWidth(32), height: controlKeyHeight)
                             .background(isSelected ? accent : theme.surface)
                             .clipShape(RoundedRectangle(cornerRadius: theme.radiusXs))
                     }
@@ -1670,7 +1701,7 @@ struct KeyboardView: View {
         let imageFileName = memo.imageFileNames.first ?? memo.imageFileName ?? ""
         let bypass = false
 
-        if isImageMemo && !imageFileName.isEmpty && !memo.isCombo {
+        if isImageMemo && !imageFileName.isEmpty && !memo.isStack {
             // 이미지 메모(콤보 아님): 전체 배경으로 이미지 표시.
             // 이미지+여러 값(콤보)이면 아래 분할 버튼으로 값을 넣게 하고, 이미지는 롱프레스로 복사.
             Button {
@@ -1687,14 +1718,14 @@ struct KeyboardView: View {
             .modifier(MemoPeekOnLongPress(memo: memo, enabled: hostKind != .inApp, onPeek: showPeek))
             .accessibilityLabel(memoAccessibilityLabel(for: memo))
             .accessibilityHint(memoAccessibilityHint(for: memo))
-        } else if memo.isCombo {
+        } else if memo.isStack {
             // 여러 값(콤보) - 2/3 분할: 왼쪽 현재 값 삽입, 오른쪽 → 다음 값.
             //
             // ⚠️ **잠긴 콤보도 여기로 온다.** 예전에는 `&& !memo.isSecure` 로 빼 두었는데,
             //    그러면 잠긴 콤보는 아래 통짜 키로 떨어져 **1번 값만** 나가고 2번부터는
             //    키보드에서 꺼낼 길이 아예 없었다(사용자 요청: "잠금 푼 뒤에 고를 수가 없다").
             //    고르는 일에는 값이 필요 없다 - 값이 나가는 왼쪽만 인증을 받으면 된다.
-            comboSplitButton(for: memo, catColor: catColor)
+            stackSplitButton(for: memo, catColor: catColor)
                 .modifier(MemoPeekOnLongPress(memo: memo, enabled: hostKind != .inApp, onPeek: showPeek))
                 .accessibilityLabel(memoAccessibilityLabel(for: memo))
                 .accessibilityHint(memo.isSecure
@@ -1736,48 +1767,62 @@ struct KeyboardView: View {
     }
 
     /// 콤보(여러 값) 메모의 현재 선택 값 인덱스 - 메모별로 기억.
-    @State private var comboValueIndex: [UUID: Int] = [:]
+    @State private var stackValueIndex: [UUID: Int] = [:]
     /// → 누를 때마다 증가 - 값을 잠깐 보여줬다 사라지는 디졸브를 트리거한다.
-    @State private var comboFlash: [UUID: Int] = [:]
+    @State private var stackFlash: [UUID: Int] = [:]
     /// 지금 눌려 있는 콤보 키. 좌·우 어느 쪽을 눌러도 **키캡 하나**가 통째로 내려앉는다.
     /// (동시에 두 키를 누를 수는 없으므로 단일 값으로 충분)
-    @State private var pressedComboId: UUID?
+    @State private var pressedStackId: UUID?
 
-    private func comboSplitButton(for memo: Memo, catColor: Color?) -> some View {
-        let values = memo.comboValues.isEmpty ? [memo.value] : memo.comboValues
-        let idx = min(max(comboValueIndex[memo.id] ?? 0, 0), values.count - 1)
+    private func stackSplitButton(for memo: Memo, catColor: Color?) -> some View {
+        let values = memo.stackValues.isEmpty ? [memo.value] : memo.stackValues
+        let idx = min(max(stackValueIndex[memo.id] ?? 0, 0), values.count - 1)
         let current = values[idx]
+        // → 를 눌렀을 때 스쳐 보일 글.
+        //
+        // **이름을 지은 칸은 이름을 보여 준다.** 값이 스쳐 지나가는 것만으로는 지금 몇 번째
+        // 무엇인지 알 수 없었다(튜토리얼이 "서로 다른 값 두 개가 들어갔죠?" 를 굳이 짚어
+        // 주던 이유다). 이름이 있으면 그 한 줄이 그 설명을 대신한다.
+        //
+        // ⚠️ 이름을 **안 지은** 칸은 예전 그대로 값을 보여 준다. 옛 콤보를 쓰던 사람의
+        //    키보드가 업데이트만으로 "1단계" 같은 낯선 말로 바뀌면 안 된다.
+        let namedKey = memo.stackItems.indices.contains(idx)
+            ? memo.stackItems[idx].key.trimmingCharacters(in: .whitespacesAndNewlines)
+            : ""
+        let flashText = namedKey.isEmpty ? current : namedKey
         // 좌·우 어느 쪽을 눌러도 **키캡 하나**가 통째로 내려앉는다.
         let pressedBinding = Binding<Bool>(
-            get: { pressedComboId == memo.id },
-            set: { pressedComboId = $0 ? memo.id : nil }
+            get: { pressedStackId == memo.id },
+            set: { pressedStackId = $0 ? memo.id : nil }
         )
         // 튜토리얼이 이 키의 어느 쪽을 가리키고 있는가(가리키는 키일 때만).
-        let guided: ComboKeyPart? = memo.id == highlightedMemoId ? highlightedComboPart : nil
+        let guided: StackKeyPart? = memo.id == highlightedMemoId ? highlightedStackPart : nil
 
         return HStack(spacing: 0) {
             // 왼쪽 2/3 - 평소엔 키(제목), → 누르면 현재 값이 디졸브로 잠깐 보였다 사라진다(iOS와 동일).
             Button {
                 if memo.isSecure {
                     // 값이 나가는 쪽만 인증을 받는다. 고른 자리(idx)를 인증 너머로 들고 간다.
-                    authenticateAndInsert(memo: memo, comboIndex: idx)
+                    authenticateAndInsert(memo: memo, stackIndex: idx)
                 } else {
-                    insertComboValue(memo: memo, value: current)
+                    insertStackValue(memo: memo, value: current)
                 }
             } label: {
-                ComboKeyValueLabel(
+                StackKeyValueLabel(
                     title: memo.title,
-                    // ⚠️ 잠긴 콤보에서는 값을 넘기지 않는다. 이 라벨은 → 를 누를 때마다 값을
-                    //    잠깐 비추는데(디졸브), 잠가 둔 값이 화면에 비치면 잠근 뜻이 사라진다.
+                    // ⚠️ 잠긴 스택에서는 아무것도 넘기지 않는다. 이 라벨은 → 를 누를 때마다
+                    //    잠깐 비추는데(디졸브), 잠가 둔 것이 화면에 비치면 잠근 뜻이 사라진다.
                     //    (게다가 잠긴 값은 암호문이라 비쳐도 읽을 것이 없다.)
-                    value: memo.isSecure ? "" : current,
+                    //    이름만 비추는 길도 있지만, 잠근 것을 무엇까지 보여 줄지는 따로
+                    //    정할 일이라 여기서는 예전 그대로 아무것도 안 비춘다.
+                    value: memo.isSecure ? "" : flashText,
                     masked: memo.isSecure,
                     fontSize: buttonFontSize,
                     titleColor: theme.text,
                     valueColor: theme.textMuted,
                     accent: theme.accent,
                     accentSoft: theme.accentSoft,
-                    flashToken: comboFlash[memo.id] ?? 0
+                    flashToken: stackFlash[memo.id] ?? 0
                 )
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 8)
@@ -1793,7 +1838,7 @@ struct KeyboardView: View {
 
             // 오른쪽 1/3 - 다음 값으로 전환(값이 잠깐 보였다 사라짐).
             Button {
-                advanceComboValue(memo: memo, count: values.count)
+                advanceStackValue(memo: memo, count: values.count)
             } label: {
                 VStack(spacing: 1) {
                     Image(systemName: "arrow.right")
@@ -1804,7 +1849,7 @@ struct KeyboardView: View {
                 // 가리키는 중에는 흐린 회색이 아니라 **강조색**으로 선다.
                 // 물결만으로는 자리가 좁아 눈에 안 걸린다(실측).
                 .foregroundColor(guided == .next ? theme.accent : theme.textMuted)
-                .frame(width: comboNextWidth)
+                .frame(width: stackNextWidth)
                 .frame(height: buttonHeight)
                 .contentShape(Rectangle())
             }
@@ -1839,31 +1884,31 @@ struct KeyboardView: View {
             if guided == .value {
                 KeyRipple(shape: RoundedRectangle(cornerRadius: 8, style: .continuous),
                           color: theme.accent, reach: 7)
-                    .padding(.trailing, comboNextWidth + 1)
+                    .padding(.trailing, stackNextWidth + 1)
             }
         }
         .overlay(alignment: .trailing) {
             if guided == .next {
                 KeyRipple(shape: RoundedRectangle(cornerRadius: 8, style: .continuous),
                           color: theme.accent, reach: 7)
-                    .frame(width: comboNextWidth)
+                    .frame(width: stackNextWidth)
             }
         }
         // 통짜 키캡 - 좌·우 어디를 눌러도 한 덩어리로 내려앉는다.
         .modifier(KeycapSurface(skin: skin,
                                 cornerRadius: keycapRadius,
                                 skirtColor: keycapSkirtColor,
-                                pressed: pressedComboId == memo.id,
+                                pressed: pressedStackId == memo.id,
                                 enabled: keycapPressEnabled))
     }
 
     /// 콤보 키 오른쪽(다음 값) 칸의 폭. 버튼과 그 위의 물결이 **같은 값**을 봐야
     /// 가리키는 자리가 어긋나지 않는다.
-    private var comboNextWidth: CGFloat {
+    private var stackNextWidth: CGFloat {
         max(46, buttonHeight)
     }
 
-    private func insertComboValue(memo: Memo, value: String) {
+    private func insertStackValue(memo: Memo, value: String) {
         if isSearching {
             withAnimation(.easeOut(duration: 0.18)) {
                 hangul.reset()
@@ -1878,16 +1923,16 @@ struct KeyboardView: View {
         )
     }
 
-    private func advanceComboValue(memo: Memo, count: Int) {
+    private func advanceStackValue(memo: Memo, count: Int) {
         guard count > 0 else { return }
         KeyboardHaptics.softTap()
-        let cur = comboValueIndex[memo.id] ?? 0
-        comboValueIndex[memo.id] = (cur + 1) % count
+        let cur = stackValueIndex[memo.id] ?? 0
+        stackValueIndex[memo.id] = (cur + 1) % count
         // 값을 잠깐 보여줬다 사라지게(디졸브) 트리거.
-        comboFlash[memo.id] = (comboFlash[memo.id] ?? 0) + 1
+        stackFlash[memo.id] = (stackFlash[memo.id] ?? 0) + 1
         // ⚠️ 여기서는 **글이 하나도 안 들어간다** - 값만 바뀐다. 그래서 `.memoUsed` 가
         //    나가지 않고, 튜토리얼은 이 걸음을 지났는지 알 길이 없었다. 따로 알린다.
-        NotificationCenter.postOnMain(name: .comboValueAdvanced, object: nil,
+        NotificationCenter.postOnMain(name: .stackValueAdvanced, object: nil,
                                         userInfo: ["memoId": memo.id])
     }
 
@@ -1895,7 +1940,7 @@ struct KeyboardView: View {
         var parts: [String] = [memo.title]
         if memo.isSecure { parts.append(NSLocalizedString("보안 단축어", comment: "VoiceOver: secure memo badge")) }
         if memo.isTemplate { parts.append(NSLocalizedString("템플릿", comment: "VoiceOver: template badge")) }
-        if memo.isCombo { parts.append(NSLocalizedString("콤보", comment: "VoiceOver: combo badge")) }
+        if memo.isStack { parts.append(NSLocalizedString("콤보", comment: "VoiceOver: combo badge")) }
         if memo.contentType == .image || memo.contentType == .mixed {
             parts.append(NSLocalizedString("이미지 단축어", comment: "VoiceOver: image memo"))
         } else if !memo.isSecure, !memo.value.isEmpty {
@@ -1911,7 +1956,7 @@ struct KeyboardView: View {
     private func memoAccessibilityHint(for memo: Memo) -> String {
         if memo.isTemplate {
             return NSLocalizedString("탭하면 빈칸을 채워 붙여넣습니다", comment: "Template memo button hint")
-        } else if memo.isCombo {
+        } else if memo.isStack {
             return NSLocalizedString("탭하면 여러 값이 순서대로 입력됩니다", comment: "Combo memo button hint")
         } else if memo.isSecure {
             return NSLocalizedString("탭하면 PIN 인증 후 붙여넣기합니다", comment: "Secure memo button hint")
@@ -1978,7 +2023,7 @@ struct KeyboardView: View {
     }
 
     /// - Parameter comboIndex: 잠긴 콤보에서 고른 단계. nil 이면 본체 값을 넣는다.
-    private func authenticateAndInsert(memo: Memo, bypassTemplate: Bool = false, comboIndex: Int? = nil) {
+    private func authenticateAndInsert(memo: Memo, bypassTemplate: Bool = false, stackIndex: Int? = nil) {
         let storedHash = AppGroup.defaults?.string(forKey: DefaultsKey.keyboardSecurePinHash) ?? ""
         guard !storedHash.isEmpty else {
             UINotificationFeedbackGenerator().notificationOccurred(.warning)
@@ -1990,7 +2035,7 @@ struct KeyboardView: View {
         }
         pendingSecureMemo = memo
         pendingBypassTemplate = bypassTemplate
-        pendingSecureComboIndex = comboIndex
+        pendingSecureStackIndex = stackIndex
         enteredPIN = ""
         pinEntryWrong = false
         showPINEntry = true
@@ -1998,8 +2043,8 @@ struct KeyboardView: View {
 
     /// 잠긴 콤보의 한 단계를 복호화해서 넣는다. 키가 아직 안 내려왔으면 넣지 않는다
     /// (암호문을 그대로 흘리면 상대에게 "smenc1:..." 이 붙여넣어진다).
-    private func insertSecureComboValue(memo: Memo, index: Int) {
-        let raw = memo.comboValues.indices.contains(index) ? memo.comboValues[index] : memo.value
+    private func insertSecureStackValue(memo: Memo, index: Int) {
+        let raw = memo.stackValues.indices.contains(index) ? memo.stackValues[index] : memo.value
         guard !raw.isEmpty else { return }
         let value: String
         if SecureMemoCrypto.isEncrypted(raw) {
@@ -2011,7 +2056,7 @@ struct KeyboardView: View {
         } else {
             value = raw
         }
-        insertComboValue(memo: memo, value: value)
+        insertStackValue(memo: memo, value: value)
     }
 
     private func verifyPIN() {
@@ -2021,14 +2066,14 @@ struct KeyboardView: View {
         if hash == storedHash {
             showPINEntry = false
             if let memo = pendingSecureMemo {
-                if let index = pendingSecureComboIndex {
-                    insertSecureComboValue(memo: memo, index: index)
+                if let index = pendingSecureStackIndex {
+                    insertSecureStackValue(memo: memo, index: index)
                 } else {
                     insertMemo(memo, bypassTemplate: pendingBypassTemplate)
                 }
             }
             pendingSecureMemo = nil
-            pendingSecureComboIndex = nil
+            pendingSecureStackIndex = nil
             enteredPIN = ""
             pinEntryWrong = false
             pendingBypassTemplate = false
@@ -2709,7 +2754,7 @@ struct KeyboardView: View {
             KeyboardHaptics.softTap()
             showPINEntry = false
             pendingSecureMemo = nil
-            pendingSecureComboIndex = nil
+            pendingSecureStackIndex = nil
             enteredPIN = ""
             pinEntryWrong = false
         } label: {
@@ -2841,7 +2886,7 @@ struct KeyboardView: View {
 /// 콤보 분할 버튼 왼쪽 라벨 - 평소엔 키(제목), flashToken이 바뀌면(→ 누르거나 처음 나타날 때)
 /// 현재 값이 디졸브(블러+페이드)로 잠깐 보였다가 다시 키로 돌아온다. iOS의 값 미리보기와 같은 경험.
 /// 여러 값이면 → 를 누를 때마다 값1·값2… 가 차례로 스쳐 보인다.
-struct ComboKeyValueLabel: View {
+struct StackKeyValueLabel: View {
     let title: String
     let value: String
     /// 잠긴 콤보. 값을 **한 번도** 비추지 않는다 - 디졸브까지 끈다.

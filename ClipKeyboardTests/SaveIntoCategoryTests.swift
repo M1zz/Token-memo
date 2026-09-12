@@ -68,8 +68,8 @@ final class SaveIntoCategoryTests: XCTestCase {
                     insertedCategory: insertedCategory,
                     insertedIsTemplate: false,
                     insertedIsSecure: false,
-                    insertedIsCombo: false,
-                    insertedComboValues: [],
+                    insertedIsStack: false,
+                    insertedStackValues: [],
                     insertedHint: "",
                     insertedIsFavorite: false)
         return vm

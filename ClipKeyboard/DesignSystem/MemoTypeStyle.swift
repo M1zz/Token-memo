@@ -45,7 +45,7 @@ enum MemoTypeStyle {
         if forceTemplate || memo.isTemplate || !memo.templateVariables.isEmpty {
             return TypeVisualStyle(color: .purple, lineWidth: 1.5, dash: [])
         }
-        if memo.isCombo {
+        if memo.isStack {
             return TypeVisualStyle(color: .orange, lineWidth: 1.5, dash: [5, 3])
         }
         if memo.isSecure {
@@ -60,7 +60,7 @@ enum MemoTypeStyle {
     /// 앱 카드와 키보드 키가 **같은 그림**을 써야 사용자가 두 화면을 같은 물건으로 읽는다.
     static func symbolName(for memo: Memo, forceTemplate: Bool = false) -> String {
         if forceTemplate || memo.isTemplate { return AppSymbol.wandAndSparkles }
-        if memo.isCombo { return AppSymbol.squareStack3dUpFill }
+        if memo.isStack { return AppSymbol.squareStack3dUpFill }
         if memo.isSecure { return AppSymbol.lockFill }
         if memo.contentType == .image || memo.contentType == .mixed { return AppSymbol.photoFill }
         return AppSymbol.docFill
@@ -72,7 +72,7 @@ enum MemoTypeStyle {
     static func hasDistinctType(_ memo: Memo, forceTemplate: Bool = false) -> Bool {
         forceTemplate
             || memo.isTemplate
-            || memo.isCombo
+            || memo.isStack
             || memo.isSecure
             || memo.contentType == .image
             || memo.contentType == .mixed

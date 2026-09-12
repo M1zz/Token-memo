@@ -684,7 +684,7 @@ struct ImportSummary {
     var addedMemos: Int
     var updatedMemos: Int
     var totalMemos: Int
-    var addedCombos: Int
+    var addedStacks: Int
     var addedClips: Int
     var images: Int
     /// 함께 살아난 카테고리 수.
@@ -692,7 +692,7 @@ struct ImportSummary {
 
     var localizedDescription: String {
         String(format: NSLocalizedString("단축어 %1$d개 추가, %2$d개 갱신 (총 %3$d개).\n콤보 %4$d개, 이미지 %5$d개, 카테고리 %6$d개를 가져왔습니다.", comment: "Import summary message"),
-               addedMemos, updatedMemos, totalMemos, addedCombos, images, categories)
+               addedMemos, updatedMemos, totalMemos, addedStacks, images, categories)
     }
 }
 
@@ -813,10 +813,10 @@ enum DataPortability {
 
         // 3) 콤보 병합 (union by id)
         var combos = read(StorageFile.combos, as: [Combo].self) ?? []
-        var comboIds = Set(combos.map { $0.id })
-        var addedCombos = 0
-        for c in bundle.combos where !comboIds.contains(c.id) {
-            combos.append(c); comboIds.insert(c.id); addedCombos += 1
+        var stackIds = Set(combos.map { $0.id })
+        var addedStacks = 0
+        for c in bundle.combos where !stackIds.contains(c.id) {
+            combos.append(c); stackIds.insert(c.id); addedStacks += 1
         }
         try write(combos, to: StorageFile.combos)
 
@@ -846,7 +846,7 @@ enum DataPortability {
         NotificationCenter.postOnMain(name: .dataRestored)
 
         return ImportSummary(addedMemos: added, updatedMemos: updated, totalMemos: memos.count,
-                             addedCombos: addedCombos, addedClips: addedClips, images: restoredImages,
+                             addedStacks: addedStacks, addedClips: addedClips, images: restoredImages,
                              categories: restoredCategories)
     }
 }

@@ -68,7 +68,7 @@ final class DataPortabilityCategoryTests: XCTestCase {
     /// 가져오기 요약이 되살린 카테고리 수를 말한다 - 조용히 넘어가면 확인할 길이 없다.
     func test_가져오기_요약이_카테고리_수를_말한다() {
         let summary = ImportSummary(addedMemos: 3, updatedMemos: 0, totalMemos: 3,
-                                    addedCombos: 0, addedClips: 0, images: 0, categories: 2)
+                                    addedStacks: 0, addedClips: 0, images: 0, categories: 2)
 
         XCTAssertTrue(summary.localizedDescription.contains("2"),
                       "요약에 카테고리 수가 들어가야 한다")

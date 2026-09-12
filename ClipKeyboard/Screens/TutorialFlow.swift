@@ -35,7 +35,17 @@ enum TutorialChapter: String, Identifiable, CaseIterable {
     /// 빈칸을 채워 쓰는 것.
     case template
     /// 여러 값이 순서대로 들어가는 것.
-    case combo
+    case stack
+    /// **써 본 다음에** 키보드 크기를 한 번 정한다.
+    ///
+    /// ⚠️ 앞의 셋과 성격이 다르다. 저쪽은 넣어 둔 것을 눌러 보는 장이고 이 장은 누를 것이
+    ///    없다(`TutorialScenarios.match` 가 nil 을 준다). 그래서 환영 화면의
+    ///    "이런 걸 넣어뒀어요" 목록에는 저절로 안 들어간다 - 그 목록은 가리킬 것이 있는
+    ///    장만 그린다.
+    ///
+    /// ⚠️ **맨 뒤에 둔다.** 크기를 먼저 물으면 무엇을 담을 키보드인지 모르는 채로 고르게
+    ///    된다. 셋을 눌러 보고 나면 화면에 자기 단축어가 서 있어서, 그걸 보며 고른다.
+    case layout
 
     var id: String { rawValue }
 
@@ -51,9 +61,12 @@ enum TutorialChapter: String, Identifiable, CaseIterable {
         case .template:
             return NSLocalizedString("이번엔 템플릿이에요. 눌러서 빈칸만 채워보세요.",
                                      comment: "Coach line: try the prepared template")
-        case .combo:
+        case .stack:
             return NSLocalizedString("마지막은 콤보예요. 여러 개가 순서대로 들어가요.",
                                      comment: "Coach line: try the prepared combo")
+        case .layout:
+            return NSLocalizedString("마지막으로 키보드 크기만 정하면 끝이에요.",
+                                     comment: "Coach line: choose the keyboard size")
         }
     }
 
@@ -66,9 +79,13 @@ enum TutorialChapter: String, Identifiable, CaseIterable {
         case .template:
             return NSLocalizedString("빈칸만 채워 쓰는 템플릿",
                                      comment: "Welcome: what a template is")
-        case .combo:
+        case .stack:
             return NSLocalizedString("여러 값을 순서대로 넣는 콤보",
                                      comment: "Welcome: what a combo is")
+        case .layout:
+            // 환영 화면 목록에는 안 들어가지만(가리킬 것이 없어 걸러진다) 스위치는 다 채운다.
+            return NSLocalizedString("내 손에 맞는 키보드 크기",
+                                     comment: "Welcome: choosing the keyboard size")
         }
     }
 
@@ -76,7 +93,8 @@ enum TutorialChapter: String, Identifiable, CaseIterable {
         switch self {
         case .snippet:  return "text.cursor"
         case .template: return "square.dashed"
-        case .combo:    return "list.number"
+        case .stack:    return "list.number"
+        case .layout:   return "arrow.up.and.down"
         }
     }
 }
@@ -95,7 +113,7 @@ enum TutorialChapter: String, Identifiable, CaseIterable {
 ///
 /// ⚠️ 마지막에 **묻는다.** 두 번 보내 놓고 그냥 지나가면 두 번 눌렀다는 것만 남는다.
 ///    "서로 다른 값 두 개가 들어갔죠?" 를 한 번 짚어 주어야 손에 남은 것이 뜻이 된다.
-enum ComboTutorialStep: String, CaseIterable, Identifiable {
+enum StackTutorialStep: String, CaseIterable, Identifiable {
     /// 콤보 키 **왼쪽**을 눌러 첫 값을 넣는다.
     case insertFirst
     /// 보내기(위 화살표)를 눌러 올린다.
@@ -138,7 +156,7 @@ enum ComboTutorialStep: String, CaseIterable, Identifiable {
     }
 
     /// 지금 가리키는 것이 콤보 키의 어느 쪽인가. nil 이면 키가 아닌 다른 곳을 가리킨다.
-    var comboPart: KeyboardView.ComboKeyPart? {
+    var stackPart: KeyboardView.StackKeyPart? {
         switch self {
         case .insertFirst, .insertSecond: return .value
         case .advance:                    return .next
@@ -152,8 +170,8 @@ enum ComboTutorialStep: String, CaseIterable, Identifiable {
     }
 
     /// 이 걸음을 지나면 다음은 무엇인가. 마지막(`confirm`)이면 nil - 장이 끝난다.
-    var next: ComboTutorialStep? {
-        let all = ComboTutorialStep.allCases
+    var next: StackTutorialStep? {
+        let all = StackTutorialStep.allCases
         guard let i = all.firstIndex(of: self), i + 1 < all.count else { return nil }
         return all[i + 1]
     }
@@ -184,17 +202,21 @@ enum TutorialScenarios {
         switch chapter {
         case .snippet:
             return memos.first {
-                !$0.isTemplate && !$0.isCombo && $0.contentType == .text
+                !$0.isTemplate && !$0.isStack && $0.contentType == .text
                     && !$0.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
         case .template:
-            return memos.first { $0.isTemplate && !$0.isCombo }
-        case .combo:
-            // ⚠️ **값이 둘 이상이라야 한다.** `isCombo` 는 값이 하나여도 참이다
-            //    (`comboValues` 가 비지만 않으면 콤보다). 값이 하나뿐인 콤보를 가리키면
+            return memos.first { $0.isTemplate && !$0.isStack }
+        case .stack:
+            // ⚠️ **값이 둘 이상이라야 한다.** `isStack` 는 값이 하나여도 참이다
+            //    (`stackValues` 가 비지만 않으면 콤보다). 값이 하나뿐인 콤보를 가리키면
             //    "오른쪽 → 를 눌러보세요, 다음 값으로 바뀝니다" 라고 해 놓고 아무것도
             //    안 바뀐다. 가리킬 것이 없으면 그 장은 조용히 건너뛰는 편이 낫다.
-            return memos.first { $0.comboValues.count > 1 }
+            return memos.first { $0.stackValues.count > 1 }
+        case .layout:
+            // 가리킬 카드가 없는 장이다. 여기서 nil 을 주는 덕분에 환영 화면의
+            // "이런 걸 넣어뒀어요" 목록에서 저절로 빠진다(`availableChapters`).
+            return nil
         }
     }
 
@@ -629,10 +651,10 @@ enum TutorialReset {
         d.set(false, forKey: DefaultsKey.tutorialWelcomeDone)
         d.set(false, forKey: DefaultsKey.tutorialSnippetDone)
         d.set(false, forKey: DefaultsKey.tutorialTemplateDone)
-        d.set(false, forKey: DefaultsKey.tutorialComboDone)
+        d.set(false, forKey: DefaultsKey.tutorialStackDone)
         // 콤보 장 안쪽의 걸음도 함께 비운다 - 남겨 두면 다시 하기를 눌러도 그 장이
         // 중간부터 열려서, 처음부터 다시 하겠다고 한 사람의 말과 어긋난다.
-        d.set("", forKey: DefaultsKey.tutorialComboStep)
+        d.set("", forKey: DefaultsKey.tutorialStackStep)
         d.set(false, forKey: DefaultsKey.tutorialSwitchHintSeen)
         d.set(false, forKey: DefaultsKey.tutorialChaptersDone)
         d.set(false, forKey: DefaultsKey.tutorialMakeOwnDone)
@@ -644,5 +666,90 @@ enum TutorialReset {
         // 튜토리얼은 무대에서 시작한다 - 목록에 있으면 첫 걸음이 열리지 않는다.
         d.set(SnippetsTabStyle.keyboard.rawValue, forKey: DefaultsKey.snippetsTabStyle)
         print("🎓 [TutorialReset] 튜토리얼 표식 초기화, 처음부터 다시")
+    }
+}
+
+// MARK: - 크기를 한 번 정하는 장
+
+/// 튜토리얼 마지막 장에 무대 위로 올라오는 카드.
+///
+/// 왜 이 장이 있나: 크기 설정은 설정 > 키보드 > 키보드 레이아웃, 세 단계 안쪽에 있다.
+/// 거기까지 들어가는 사람은 드물어서 "키보드가 너무 크다"는 리뷰를 남긴 사람조차 그 자리를
+/// 못 찾았다. 설명으로 알리는 대신 **한 번 지나가게** 한다.
+///
+/// ⚠️ **바로 아래에 진짜 키보드가 서 있다.** 이 카드는 무대 위, 키보드 바로 위에 얹힌다.
+///    끄는 대로 아래가 따라 움직이는 것이 이 장의 전부다. 설명을 길게 쓰지 않는 이유다.
+///
+/// ⚠️ **막는 문이 아니다.** 고르지 않고 넘어가도 되고, 나중에 설정에서 언제든 바꾼다.
+///    온보딩에 문을 세우면 지날 길이 없는 사람이 생긴다(키보드 켜기 걸음을 뺀 것과 같은 이유).
+///
+/// ⚠️ 두 가지만 묻는다. 높이와 키 크기. 여기에 열 개수·글자 크기·색까지 얹으면
+///    설정 화면을 온보딩에 옮겨 놓은 것이 되고, 그러면 아무것도 안 고르고 넘긴다.
+struct TutorialLayoutCard: View {
+
+    /// "이대로 할게요" 또는 "그냥 둘게요".
+    var onDone: () -> Void
+
+    @AppStorage(DefaultsKey.keyboardHeightPreset, store: AppGroup.defaults)
+    private var heightPresetRaw: String = KeyboardHeightPreset.fallback.rawValue
+    @AppStorage("keyboardButtonHeight", store: AppGroup.defaults)
+    private var buttonHeight: Double = 44.0
+
+    private var preset: KeyboardHeightPreset {
+        KeyboardHeightPreset(rawValue: heightPresetRaw) ?? .fallback
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: AppSymbol.arrowUpAndDown)
+                    .font(.subheadline.weight(.semibold))
+                Text(NSLocalizedString("키보드 크기를 정해 볼까요", comment: "Layout step: headline"))
+                    .font(.subheadline.weight(.bold))
+                Spacer(minLength: 0)
+            }
+
+            Text(NSLocalizedString("아래 키보드가 바로 따라 바뀝니다. 나중에 설정에서 언제든 다시 바꿀 수 있어요.",
+                                   comment: "Layout step: body"))
+                .font(.footnote)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Picker(NSLocalizedString("키보드 높이", comment: "Keyboard height section title"),
+                   selection: $heightPresetRaw) {
+                ForEach(KeyboardHeightPreset.allCases) { candidate in
+                    Text(candidate.localizedName).tag(candidate.rawValue)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            VStack(alignment: .leading, spacing: 2) {
+                HStack {
+                    Text(NSLocalizedString("단축어 높이", comment: "Memo cell height"))
+                        .font(.footnote.weight(.semibold))
+                    Spacer()
+                    Text("\(Int(buttonHeight))pt").font(.footnote)
+                }
+                Slider(value: $buttonHeight, in: 32...120, step: 1)
+            }
+
+            Button(action: onDone) {
+                Text(NSLocalizedString("이대로 할게요", comment: "Layout step: confirm button"))
+                    .font(.subheadline.weight(.bold))
+                    .foregroundColor(Color.accentColor)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 9)
+                    .background(Capsule().fill(Color.accentForeground))
+            }
+            .buttonStyle(.plain)
+        }
+        .foregroundColor(Color.accentForeground)
+        .tint(Color.accentForeground)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity)
+        // 콤보 확인 카드와 **같은 모양**이다. 튜토리얼이 말을 거는 자리는 하나로 보여야
+        // 사용자가 "또 그 띠구나" 하고 읽는다.
+        .background(Color.accentColor)
+        .accessibilityElement(children: .contain)
     }
 }

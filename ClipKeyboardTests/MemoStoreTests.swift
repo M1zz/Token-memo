@@ -126,7 +126,7 @@ final class MemoStoreTests: XCTestCase {
 
     // MARK: - Combo Tests
 
-    func testSaveAndLoadCombos() throws {
+    func testSaveAndLoadStacks() throws {
         // Given
         let combos = [
             Combo(title: "Combo1", items: [
@@ -140,37 +140,37 @@ final class MemoStoreTests: XCTestCase {
 
         // When
         try sut.saveCombos(combos)
-        let loadedCombos = try sut.loadCombos()
+        let loadedStacks = try sut.loadCombos()
 
         // Then
-        XCTAssertEqual(loadedCombos.count, 2)
-        XCTAssertEqual(loadedCombos[0].title, "Combo1")
-        XCTAssertEqual(loadedCombos[0].items.count, 1)
-        XCTAssertEqual(loadedCombos[1].title, "Combo2")
-        XCTAssertEqual(loadedCombos[1].items.count, 2)
+        XCTAssertEqual(loadedStacks.count, 2)
+        XCTAssertEqual(loadedStacks[0].title, "Combo1")
+        XCTAssertEqual(loadedStacks[0].items.count, 1)
+        XCTAssertEqual(loadedStacks[1].title, "Combo2")
+        XCTAssertEqual(loadedStacks[1].items.count, 2)
     }
 
-    func testUpdateCombo() throws {
+    func testUpdateStack() throws {
         // Given
-        let combo = Combo(title: "원본 Combo", items: [])
-        try sut.saveCombos([combo])
+        let stack = Combo(title: "원본 Combo", items: [])
+        try sut.saveCombos([stack])
 
         // When
-        var loadedCombos = try sut.loadCombos()
-        loadedCombos[0].title = "수정된 Combo"
-        loadedCombos[0].items = [
+        var loadedStacks = try sut.loadCombos()
+        loadedStacks[0].title = "수정된 Combo"
+        loadedStacks[0].items = [
             ComboItem(type: .memo, referenceId: UUID(), order: 0)
         ]
-        try sut.saveCombos(loadedCombos)
+        try sut.saveCombos(loadedStacks)
 
-        let finalCombos = try sut.loadCombos()
+        let finalStacks = try sut.loadCombos()
 
         // Then
-        XCTAssertEqual(finalCombos[0].title, "수정된 Combo")
-        XCTAssertEqual(finalCombos[0].items.count, 1)
+        XCTAssertEqual(finalStacks[0].title, "수정된 Combo")
+        XCTAssertEqual(finalStacks[0].items.count, 1)
     }
 
-    func testDeleteCombo() throws {
+    func testDeleteStack() throws {
         // Given
         let combos = [
             Combo(title: "Combo1", items: []),
@@ -180,81 +180,81 @@ final class MemoStoreTests: XCTestCase {
         try sut.saveCombos(combos)
 
         // When
-        var loadedCombos = try sut.loadCombos()
-        loadedCombos.remove(at: 1) // Combo2 삭제
-        try sut.saveCombos(loadedCombos)
+        var loadedStacks = try sut.loadCombos()
+        loadedStacks.remove(at: 1) // Combo2 삭제
+        try sut.saveCombos(loadedStacks)
 
-        let finalCombos = try sut.loadCombos()
+        let finalStacks = try sut.loadCombos()
 
         // Then
-        XCTAssertEqual(finalCombos.count, 2)
-        XCTAssertEqual(finalCombos[0].title, "Combo1")
-        XCTAssertEqual(finalCombos[1].title, "Combo3")
+        XCTAssertEqual(finalStacks.count, 2)
+        XCTAssertEqual(finalStacks[0].title, "Combo1")
+        XCTAssertEqual(finalStacks[1].title, "Combo3")
     }
 
     // MARK: - Combo Validation Tests
 
-    func testValidateComboItem_ValidMemo() throws {
+    func testValidateStackItem_ValidMemo() throws {
         // Given
         try sut.save(memos: testMemos, type: .memo)
         let item = ComboItem(type: .memo, referenceId: testMemos[0].id, order: 0)
 
         // When
-        let isValid = try sut.validateComboItem(item)
+        let isValid = try sut.validateStackItem(item)
 
         // Then
         XCTAssertTrue(isValid)
     }
 
-    func testValidateComboItem_InvalidMemo() throws {
+    func testValidateStackItem_InvalidMemo() throws {
         // Given
         try sut.save(memos: testMemos, type: .memo)
         let invalidItem = ComboItem(type: .memo, referenceId: UUID(), order: 0)
 
         // When
-        let isValid = try sut.validateComboItem(invalidItem)
+        let isValid = try sut.validateStackItem(invalidItem)
 
         // Then
         XCTAssertFalse(isValid)
     }
 
-    func testCleanupCombo_RemovesInvalidItems() throws {
+    func testCleanupStack_RemovesInvalidItems() throws {
         // Given
         try sut.save(memos: testMemos, type: .memo)
 
         let validId = testMemos[0].id
         let invalidId = UUID()
 
-        let combo = Combo(title: "테스트 Combo", items: [
+        let stack = Combo(title: "테스트 Combo", items: [
             ComboItem(type: .memo, referenceId: validId, order: 0),
             ComboItem(type: .memo, referenceId: invalidId, order: 1), // 유효하지 않음
             ComboItem(type: .memo, referenceId: testMemos[1].id, order: 2)
         ])
 
         // When
-        let cleanedCombo = try sut.cleanupCombo(combo)
+        let cleanedStack = try sut.cleanupStack(stack)
 
         // Then
-        XCTAssertEqual(cleanedCombo.items.count, 2) // 유효하지 않은 항목 제거됨
-        XCTAssertEqual(cleanedCombo.items[0].referenceId, validId)
-        XCTAssertEqual(cleanedCombo.items[1].referenceId, testMemos[1].id)
+        XCTAssertEqual(cleanedStack.items.count, 2) // 유효하지 않은 항목 제거됨
+        XCTAssertEqual(cleanedStack.items[0].referenceId, validId)
+        XCTAssertEqual(cleanedStack.items[1].referenceId, testMemos[1].id)
     }
 
     // MARK: - Combo Item Value Tests
 
-    func testGetComboItemValue_Memo() throws {
+    func testGetStackItemValue_Memo() throws {
         // Given
         try sut.save(memos: testMemos, type: .memo)
         let item = ComboItem(type: .memo, referenceId: testMemos[0].id, order: 0)
 
         // When
-        let value = try sut.getComboItemValue(item)
+        let value = try sut.getStackItemValue(item)
 
         // Then
         XCTAssertEqual(value, "값1")
     }
 
-    func testGetComboItemValue_Template() throws {
+    func testGetStackItemValue_Template() throws {
         // Given
         let template = Memo(title: "템플릿", value: "안녕하세요 {이름}님", templateVariables: ["{이름}"])
         try sut.save(memos: [template], type: .memo)
@@ -267,13 +267,13 @@ final class MemoStoreTests: XCTestCase {
         )
 
         // When
-        let value = try sut.getComboItemValue(item)
+        let value = try sut.getStackItemValue(item)
 
         // Then
         XCTAssertEqual(value, "안녕하세요 홍길동님")
     }
 
-    func testGetComboItemValue_ClipboardHistory() throws {
+    func testGetStackItemValue_ClipboardHistory() throws {
         // Given
         let history = [
             SmartClipboardHistory(content: "복사된 텍스트", detectedType: .text)
@@ -282,7 +282,7 @@ final class MemoStoreTests: XCTestCase {
         let item = ComboItem(type: .clipboardHistory, referenceId: history[0].id, order: 0)
 
         // When
-        let value = try sut.getComboItemValue(item)
+        let value = try sut.getStackItemValue(item)
 
         // Then
         XCTAssertEqual(value, "복사된 텍스트")
@@ -290,31 +290,31 @@ final class MemoStoreTests: XCTestCase {
 
     // MARK: - Increment Use Count Tests
 
-    func testIncrementComboUseCount() throws {
+    func testIncrementStackUseCount() throws {
         // Given
-        let combo = Combo(title: "사용 횟수 테스트", items: [], useCount: 0)
-        try sut.saveCombos([combo])
+        let stack = Combo(title: "사용 횟수 테스트", items: [], useCount: 0)
+        try sut.saveCombos([stack])
 
         // When
-        try sut.incrementComboUseCount(id: combo.id)
-        let loadedCombos = try sut.loadCombos()
+        try sut.incrementStackUseCount(id: stack.id)
+        let loadedStacks = try sut.loadCombos()
 
         // Then
-        XCTAssertEqual(loadedCombos[0].useCount, 1)
+        XCTAssertEqual(loadedStacks[0].useCount, 1)
     }
 
-    func testIncrementComboUseCount_Multiple() throws {
+    func testIncrementStackUseCount_Multiple() throws {
         // Given
-        let combo = Combo(title: "다중 사용 테스트", items: [], useCount: 0)
-        try sut.saveCombos([combo])
+        let stack = Combo(title: "다중 사용 테스트", items: [], useCount: 0)
+        try sut.saveCombos([stack])
 
         // When
-        try sut.incrementComboUseCount(id: combo.id)
-        try sut.incrementComboUseCount(id: combo.id)
-        try sut.incrementComboUseCount(id: combo.id)
-        let loadedCombos = try sut.loadCombos()
+        try sut.incrementStackUseCount(id: stack.id)
+        try sut.incrementStackUseCount(id: stack.id)
+        try sut.incrementStackUseCount(id: stack.id)
+        let loadedStacks = try sut.loadCombos()
 
         // Then
-        XCTAssertEqual(loadedCombos[0].useCount, 3)
+        XCTAssertEqual(loadedStacks[0].useCount, 3)
     }
 }

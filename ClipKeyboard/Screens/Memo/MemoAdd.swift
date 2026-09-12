@@ -34,8 +34,8 @@ struct MemoAdd: View {
     var insertedCategory: String = "텍스트"
     var insertedIsTemplate: Bool = false
     var insertedIsSecure: Bool = false
-    var insertedIsCombo: Bool = false
-    var insertedComboValues: [String] = []
+    var insertedIsStack: Bool = false
+    var insertedStackValues: [String] = []
     var insertedHint: String = ""
     var insertedIsFavorite: Bool = false
     /// "임시 저장 보기"에서 이어쓰기로 진입했을 때 그 드래프트 id - 저장/폐기 시 해당 드래프트를 정리한다.
@@ -76,7 +76,7 @@ struct MemoAdd: View {
     @AppStorage(DefaultsKey.tutorialMakeOwnDone) private var makeOwnDone: Bool = false
     @AppStorage(DefaultsKey.tutorialMakeOwnCoachSkipped) private var coachSkipped: Bool = false
     /// 기존 단축어를 골라 값으로 가져오는 시트.
-    @State private var showComboImport: Bool = false
+    @State private var showStackImport: Bool = false
 
     var body: some View {
         addBody
@@ -173,8 +173,8 @@ struct MemoAdd: View {
                 insertedCategory: insertedCategory,
                 insertedIsTemplate: insertedIsTemplate,
                 insertedIsSecure: insertedIsSecure,
-                insertedIsCombo: insertedIsCombo,
-                insertedComboValues: insertedComboValues,
+                insertedIsStack: insertedIsStack,
+                insertedStackValues: insertedStackValues,
                 insertedHint: insertedHint,
                 insertedIsFavorite: insertedIsFavorite
             )
@@ -245,11 +245,11 @@ struct MemoAdd: View {
         .navigationTitle({
             if memoId != nil {
                 if insertedIsTemplate { return NSLocalizedString("단축어 수정 타이틀_템플릿", comment: "Edit template navigation title") }
-                if insertedIsCombo { return NSLocalizedString("단축어 수정 타이틀_콤보", comment: "Edit combo navigation title") }
+                if insertedIsStack { return NSLocalizedString("단축어 수정 타이틀_콤보", comment: "Edit combo navigation title") }
                 return NSLocalizedString("단축어 수정", comment: "Edit memo navigation title")
             }
             if insertedIsTemplate { return NSLocalizedString("새 템플릿", comment: "New template navigation title") }
-            if insertedIsCombo { return NSLocalizedString("새 콤보", comment: "New combo navigation title") }
+            if insertedIsStack { return NSLocalizedString("새 콤보", comment: "New combo navigation title") }
             return NSLocalizedString("새 단축어", comment: "New memo navigation title")
         }())
         .navigationBarTitleDisplayMode(.inline)
@@ -752,7 +752,7 @@ struct MemoAdd: View {
                 // 기존 단축어 값 가져오기 - 이미 만든 단축어들을 골라 그 값을 이 콤보에 복사한다.
                 Button {
                     HapticManager.shared.light()
-                    showComboImport = true
+                    showStackImport = true
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "square.stack.3d.up")
@@ -775,8 +775,8 @@ struct MemoAdd: View {
                         .foregroundColor(theme.textFaint)
                 }
             }
-            .sheet(isPresented: $showComboImport) {
-                ComboImportSheet { values in
+            .sheet(isPresented: $showStackImport) {
+                StackImportSheet { values in
                     viewModel.continuations.append(contentsOf: values.map(ContinuationStep.init(text:)))
                 }
             }

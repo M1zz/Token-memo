@@ -85274,6 +85274,731 @@
           }
         }
       }
+    },
+    "지금 이 기기의 기본 키보드와 높이가 같아요." : {
+      "comment" : "Keyboard height comparison: same as system",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Right now it is the same height as this device's standard keyboard."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас высота совпадает со стандартной клавиатурой этого устройства."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前与本机系统键盘高度相同。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前與本機系統鍵盤高度相同。"
+          }
+        }
+      }
+    },
+    "지금 기본 키보드보다 %dpt 높아요." : {
+      "comment" : "Keyboard height comparison: taller",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Right now it is %dpt taller than the standard keyboard."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас на %dpt выше стандартной клавиатуры."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前比系统键盘高 %dpt。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前比系統鍵盤高 %dpt。"
+          }
+        }
+      }
+    },
+    "지금 기본 키보드보다 %dpt 낮아요." : {
+      "comment" : "Keyboard height comparison: shorter",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Right now it is %dpt shorter than the standard keyboard."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас на %dpt ниже стандартной клавиатуры."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前比系统键盘矮 %dpt。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當前比系統鍵盤矮 %dpt。"
+          }
+        }
+      }
+    },
+    "키보드 높이" : {
+      "comment" : "Keyboard height section title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keyboard Height"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высота клавиатуры"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "键盘高度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鍵盤高度"
+          }
+        }
+      }
+    },
+    "키 크기와 개수" : {
+      "comment" : "Section: key size and count",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key Size and Count"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер и число клавиш"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按键大小与数量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按鍵大小與數量"
+          }
+        }
+      }
+    },
+    "키 하나의 크기예요. 키보드 전체 높이는 맨 위에서 정합니다." : {
+      "comment" : "Grid section footer: button height is not keyboard height",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This sets the size of a single key. The overall keyboard height is set at the top."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это размер одной клавиши. Общая высота клавиатуры задаётся выше."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这里设置的是单个按键的大小。键盘的整体高度在顶部设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這裡設定的是單個按鍵的大小。鍵盤的整體高度在頂部設定。"
+          }
+        }
+      }
+    },
+    "시스템과 같게" : {
+      "comment" : "Keyboard height preset name: match system keyboard",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Match System"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как в системе"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "与系统一致"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "與系統一致"
+          }
+        }
+      }
+    },
+    "넉넉하게" : {
+      "comment" : "Keyboard height preset name: roomy",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roomy"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Просторная"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "宽松"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寬松"
+          }
+        }
+      }
+    },
+    "기본 키보드와 높이가 같아요. 키보드를 바꿔도 화면이 움직이지 않습니다. 단축어는 굴려서 봅니다." : {
+      "comment" : "Keyboard height preset description: compact",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The same height as the standard keyboard, so nothing shifts when you switch keyboards. Scroll to see more snippets."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Такая же высота, как у стандартной клавиатуры: при переключении ничего не смещается. Фразы можно прокручивать."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "与系统键盘同高，切换键盘时画面不会跳动。短语可以滚动查看。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "與系統鍵盤同高，切換鍵盤時畫面不會跳動。短語可以滾動查看。"
+          }
+        }
+      }
+    },
+    "기본 키보드보다 윗줄 하나만큼 높아요. 단축어가 더 보입니다." : {
+      "comment" : "Keyboard height preset description: standard",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One row taller than the standard keyboard, so more snippets fit."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На одну строку выше стандартной клавиатуры, поэтому видно больше фраз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比系统键盘高出一行，能看到更多短语。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比系統鍵盤高出一行，能看到更多短語。"
+          }
+        }
+      }
+    },
+    "한 줄을 더 얹어요. 단축어를 굴리지 않고 보고 싶을 때." : {
+      "comment" : "Keyboard height preset description: roomy",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adds one more row, for when you would rather not scroll."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавляет ещё одну строку, если не хочется прокручивать."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再加一行，适合不想滚动查看的时候。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再加一行，適合不想滾動查看的時候。"
+          }
+        }
+      }
+    },
+    "표준" : {
+      "comment" : "Keyboard height preset name: standard",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стандартная"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标准"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "標準"
+          }
+        }
+      }
+    },
+    "조작 키 크기" : {
+      "comment" : "Control key size label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control Key Size"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер служебных клавиш"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作键大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作鍵大小"
+          }
+        }
+      }
+    },
+    "단축어 높이는 문구가 적힌 키, 조작 키는 맨 윗줄의 지우기·보내기·지구본이에요. 키보드 전체 높이는 맨 위에서 정합니다." : {
+      "comment" : "Grid section footer: which height is which",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snippet height is the keys with your text on them; control keys are delete, send and the globe in the top row. The overall keyboard height is set at the top."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высота фразы относится к клавишам с вашим текстом, а служебные клавиши это удаление, отправка и глобус в верхнем ряду. Общая высота клавиатуры задаётся выше."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短语高度指写着文字的按键，操作键指顶行的删除、发送和地球键。键盘的整体高度在顶部设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短語高度指寫著文字的按鍵，操作鍵指頂行的刪除、發送和地球鍵。鍵盤的整體高度在頂部設定。"
+          }
+        }
+      }
+    },
+    "마지막으로 키보드 크기만 정하면 끝이에요." : {
+      "comment" : "Coach line: choose the keyboard size",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One last thing: pick the keyboard size."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последний шаг: выберите размер клавиатуры."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最后一步，选一下键盘大小就完成了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後一步，選一下鍵盤大小就完成了。"
+          }
+        }
+      }
+    },
+    "내 손에 맞는 키보드 크기" : {
+      "comment" : "Welcome: choosing the keyboard size",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A keyboard size that fits your hand"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер клавиатуры под вашу руку"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "适合你手感的键盘大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "適合你手感的鍵盤大小"
+          }
+        }
+      }
+    },
+    "키보드 크기를 정해 볼까요" : {
+      "comment" : "Layout step: headline",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let's pick your keyboard size"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Давайте выберем размер клавиатуры"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来选一下键盘大小吧"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "來選一下鍵盤大小吧"
+          }
+        }
+      }
+    },
+    "아래 키보드가 바로 따라 바뀝니다. 나중에 설정에서 언제든 다시 바꿀 수 있어요." : {
+      "comment" : "Layout step: body",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The keyboard below changes as you go. You can always change it later in Settings."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клавиатура внизу меняется сразу. Позже это всегда можно изменить в настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下方的键盘会立刻跟着变。之后也可以随时在设置里改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下方的鍵盤會立刻跟著變。之後也可以隨時在設定裡改。"
+          }
+        }
+      }
+    },
+    "이대로 할게요" : {
+      "comment" : "Layout step: confirm button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks good"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Так и оставлю"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "就这样"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "就這樣"
+          }
+        }
+      }
+    },
+    "%d단계" : {
+      "comment" : "Stack item fallback name by position",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step %d"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг %d"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %d 步"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %d 步"
+          }
+        }
+      }
+    },
+    "키보드 높이를 기본 키보드와 같게 맞출 수 있어요. 키보드를 바꿔도 화면이 움직이지 않아요" : {
+      "comment" : "Changelog 5.1.2 keyboard height",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can match the keyboard height to your system keyboard, so nothing shifts when you switch keyboards."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высоту клавиатуры можно сделать такой же, как у системной. Экран не будет сдвигаться при переключении клавиатур."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可以把键盘高度调成和系统键盘一样，切换键盘时画面不会跳动。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可以把鍵盤高度調成和系統鍵盤一樣，切換鍵盤時畫面不會跳動。"
+          }
+        }
+      }
+    },
+    "지우기·보내기 같은 조작 키 크기도 정할 수 있어요" : {
+      "comment" : "Changelog 5.1.2 control key size",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can set the size of control keys like delete and send."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Можно задать размер клавиш управления, например удаления и отправки."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除、发送这些操作键的大小也可以设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除、發送這些操作鍵的大小也可以設定。"
+          }
+        }
+      }
+    },
+    "목록의 단축어 높이를 원하는 만큼 조절해요. 세 칸 중 고르는 대신 자유롭게요" : {
+      "comment" : "Changelog 5.1.2 snippet height slider",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adjust snippet height in the list as much as you like, instead of picking one of three."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высоту фразы в списке можно настроить как угодно, а не выбирать из трёх вариантов."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "列表里的短语高度可以随意调整，不再只能三选一。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "列表裡的短語高度可以隨意調整，不再只能三選一。"
+          }
+        }
+      }
+    },
+    "처음 시작할 때 키보드 크기를 한 번 정하고 넘어가요" : {
+      "comment" : "Changelog 5.1.2 onboarding size step",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick your keyboard size once when you first start out."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "При первом запуске один раз выберите размер клавиатуры."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一次使用时先把键盘大小定好再继续。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一次使用時先把鍵盤大小定好再繼續。"
+          }
+        }
+      }
+    },
+    "여러 값을 담은 단축어가 단축어 스택이 됐어요. 칸마다 이름을 붙여 지금 무엇이 들어갈지 보여요" : {
+      "comment" : "Changelog 5.1.2 snippet stack",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snippets holding several values are now snippet stacks. Each slot gets a name, so you can see what goes in next."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фразы с несколькими значениями теперь стали стеком фраз. У каждого поля есть имя, чтобы было видно, что в него попадёт."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "装了多个值的短语现在叫短语堆。每一格都有名字，能看清接下来会输入什么。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "裝了多個值的短語現在叫短語堆。每一格都有名字，能看清接下來會輸入什麼。"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

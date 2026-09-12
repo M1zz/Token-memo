@@ -21,7 +21,7 @@ struct ProFeatureLimitsSwiftTests {
     @Test("무료 한도 상수")
     func freeLimitConstants() {
         #expect(ProFeatureManager.freeMemoLimit == 10)
-        #expect(ProFeatureManager.freeComboLimit == 3)
+        #expect(ProFeatureManager.freeStackLimit == 3)
         #expect(ProFeatureManager.freeTemplateLimit == 3)
         #expect(ProFeatureManager.freeImageMemoLimit == 5)
         #expect(ProFeatureManager.freeClipboardHistoryLimit == 50)
@@ -32,7 +32,7 @@ struct ProFeatureLimitsSwiftTests {
     @Test("0개일 때는 항상 추가 가능")
     func canAlwaysAddFromZero() {
         #expect(ProFeatureManager.canAddMemo(currentCount: 0))
-        #expect(ProFeatureManager.canAddCombo(currentCount: 0))
+        #expect(ProFeatureManager.canAddStack(currentCount: 0))
         #expect(ProFeatureManager.canAddTemplate(currentCount: 0))
         #expect(ProFeatureManager.canAddImageMemo(currentImageMemoCount: 0))
     }
@@ -42,13 +42,13 @@ struct ProFeatureLimitsSwiftTests {
         let full = ProFeatureManager.hasFullAccess
         if full {
             #expect(ProFeatureManager.canAddMemo(currentCount: 9999))
-            #expect(ProFeatureManager.canAddCombo(currentCount: 9999))
+            #expect(ProFeatureManager.canAddStack(currentCount: 9999))
             #expect(ProFeatureManager.canAddTemplate(currentCount: 9999))
             #expect(ProFeatureManager.canAddImageMemo(currentImageMemoCount: 9999))
         } else {
             #expect(ProFeatureManager.canAddMemo(currentCount: 9) == true)
             #expect(ProFeatureManager.canAddMemo(currentCount: 10) == false)
-            #expect(ProFeatureManager.canAddCombo(currentCount: 3) == false)
+            #expect(ProFeatureManager.canAddStack(currentCount: 3) == false)
             #expect(ProFeatureManager.canAddTemplate(currentCount: 3) == false)
             #expect(ProFeatureManager.canAddImageMemo(currentImageMemoCount: 5) == false)
         }

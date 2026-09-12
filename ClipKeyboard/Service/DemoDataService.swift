@@ -159,7 +159,7 @@ extension DemoDataService {
                      ]),
                 make("계약 안내 콤보", "안녕하세요, 계약서 보내드립니다.",
                      hint: "계약 단계에서 순서대로", clips: 12, used: ago(hours: 26),
-                     combo: ["안녕하세요, 계약서 보내드립니다. 확인 부탁드려요.",
+                     stack: ["안녕하세요, 계약서 보내드립니다. 확인 부탁드려요.",
                              "서명 후 회신 주시면 착수 일정 잡겠습니다.",
                              "감사합니다. 좋은 하루 되세요!"]),
                 make("포트폴리오", "https://leeo.design",
@@ -186,7 +186,7 @@ extension DemoDataService {
                  ]),
             make("Contract combo", "Hi! Please find the contract attached.",
                  hint: "Step by step at contract time", clips: 12, used: ago(hours: 26),
-                 combo: ["Hi! Please find the contract attached.",
+                 stack: ["Hi! Please find the contract attached.",
                          "Once signed, I'll lock in the start date.",
                          "Thanks: have a great day!"]),
             make("Portfolio", "https://leeo.design",
@@ -234,7 +234,7 @@ extension DemoDataService {
         secure: Bool = false,
         variables: [String] = [],
         placeholders: [String: [String]] = [:],
-        combo: [String] = []
+        stack: [String] = []
     ) -> Memo {
         var memo = Memo(
             title: title,
@@ -243,7 +243,7 @@ extension DemoDataService {
             isSecure: secure,
             templateVariables: variables,
             placeholderValues: placeholders,
-            comboValues: combo,
+            stackValues: stack,
             autoDetectedType: type,
             lastUsedAt: used,
             hint: hint

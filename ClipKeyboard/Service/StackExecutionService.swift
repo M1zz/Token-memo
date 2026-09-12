@@ -11,7 +11,7 @@ import UIKit
 import Combine
 
 /// Combo 실행 상태
-enum ComboExecutionState: Equatable {
+enum StackExecutionState: Equatable {
     case idle
     case running(currentIndex: Int, totalCount: Int)
     case paused(currentIndex: Int)
@@ -20,15 +20,15 @@ enum ComboExecutionState: Equatable {
 }
 
 /// Combo 실행 서비스
-class ComboExecutionService: ObservableObject {
-    static let shared = ComboExecutionService()
+class StackExecutionService: ObservableObject {
+    static let shared = StackExecutionService()
 
-    @Published var state: ComboExecutionState = .idle
+    @Published var state: StackExecutionState = .idle
     @Published var currentItemIndex: Int = 0
 
     private var timer: Timer?
     /// 실행 중인 콤보(= 자식 메모를 가진 Memo).
-    private var currentCombo: Memo?
+    private var currentStack: Memo?
     /// 자식 메모들의 value(순서대로). childMemoIds → 메모 value 해석 결과.
     private var currentValues: [String] = []
 
@@ -36,23 +36,23 @@ class ComboExecutionService: ObservableObject {
 
     /// Combo 실행 시작
     /// - Parameter memo: 자식 메모(childMemoIds)를 가진 콤보 Memo
-    func startCombo(_ memo: Memo) {
+    func startStack(_ memo: Memo) {
         guard state == .idle else {
             print("⚠️ Combo가 이미 실행 중입니다")
             return
         }
 
-        currentCombo = memo
-        currentValues = memo.comboValues   // 콤보 단계(인라인 텍스트)
+        currentStack = memo
+        currentValues = memo.stackValues   // 콤보 단계(인라인 텍스트)
         currentItemIndex = 0
 
         guard !currentValues.isEmpty else {
             print("⚠️ Combo '\(memo.title)' 자식 메모 없음. 실행 취소")
-            stopCombo()
+            stopStack()
             return
         }
 
-        print("🎬 Combo '\(memo.title)' 실행 시작 (\(currentValues.count)개 항목, \(memo.comboInterval)초 간격)")
+        print("🎬 Combo '\(memo.title)' 실행 시작 (\(currentValues.count)개 항목, \(memo.stackInterval)초 간격)")
 
         // 첫 번째 항목 즉시 실행
         executeCurrentItem()
@@ -60,7 +60,7 @@ class ComboExecutionService: ObservableObject {
         // 타이머 시작 (두 번째 항목부터)
         if currentValues.count > 1 {
             state = .running(currentIndex: 0, totalCount: currentValues.count)
-            startTimer(interval: memo.comboInterval)
+            startTimer(interval: memo.stackInterval)
         } else {
             // 항목이 1개면 바로 완료
             completeExecution()
@@ -68,7 +68,7 @@ class ComboExecutionService: ObservableObject {
     }
 
     /// Combo 일시정지
-    func pauseCombo() {
+    func pauseStack() {
         guard case .running = state else { return }
         timer?.invalidate()
         timer = nil
@@ -77,18 +77,18 @@ class ComboExecutionService: ObservableObject {
     }
 
     /// Combo 재개
-    func resumeCombo() {
-        guard case .paused = state, let memo = currentCombo else { return }
+    func resumeStack() {
+        guard case .paused = state, let memo = currentStack else { return }
         state = .running(currentIndex: currentItemIndex, totalCount: currentValues.count)
-        startTimer(interval: memo.comboInterval)
+        startTimer(interval: memo.stackInterval)
         print("▶️ Combo 재개")
     }
 
     /// Combo 중지
-    func stopCombo() {
+    func stopStack() {
         timer?.invalidate()
         timer = nil
-        currentCombo = nil
+        currentStack = nil
         currentValues = []
         currentItemIndex = 0
         state = .idle
@@ -148,29 +148,29 @@ class ComboExecutionService: ObservableObject {
         }
 
         // 사용 횟수 증가 (콤보도 일반 메모이므로 clipCount/lastUsedAt 일원화)
-        if let combo = currentCombo {
+        if let stack = currentStack {
             do {
-                try MemoStore.shared.incrementClipCount(for: combo.id)
-                print("🎉 Combo '\(combo.title)' 완료!")
+                try MemoStore.shared.incrementClipCount(for: stack.id)
+                print("🎉 Combo '\(stack.title)' 완료!")
             } catch {
                 print("⚠️ 사용 횟수 업데이트 실패: \(error)")
             }
 
             // 리뷰 요청 트리거: Combo 완료
-            NotificationCenter.postOnMain(name: .reviewTriggerComboCompleted, object: nil)
+            NotificationCenter.postOnMain(name: .reviewTriggerStackCompleted, object: nil)
         }
 
         // 3초 후 상태 초기화
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             if case .completed = self?.state {
-                self?.stopCombo()
+                self?.stopStack()
             }
         }
     }
 
     private func postNotification(value: String) {
         NotificationCenter.postOnMain(
-            name: .comboItemExecuted,
+            name: .stackItemExecuted,
             object: nil,
             userInfo: [
                 "value": value,

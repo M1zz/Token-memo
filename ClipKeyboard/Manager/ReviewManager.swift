@@ -29,7 +29,7 @@ class ReviewManager {
     // MARK: - UserDefaults Keys (새 트리거)
 
     private let keyFirstPasteReview = "hasRequestedReview_firstPaste"
-    private let keyComboReview = "hasRequestedReview_combo"
+    private let keyStackReview = "hasRequestedReview_combo"
     private let keyPowerUserReview = "hasRequestedReview_powerUser"
     private let keyInstallDate = "app_install_date"
     private let keyKeyboardUseCount = "keyboard_use_count"
@@ -55,9 +55,9 @@ class ReviewManager {
 
         // 공유 파일(MemoStore, ComboExecutionService)에서 보내는 알림 구독
         NotificationCenter.default.addObserver(
-            forName: .reviewTriggerComboCompleted, object: nil, queue: .main
+            forName: .reviewTriggerStackCompleted, object: nil, queue: .main
         ) { [weak self] _ in
-            self?.trackComboCompleted()
+            self?.trackStackCompleted()
         }
         NotificationCenter.default.addObserver(
             forName: .reviewTriggerClipSaved, object: nil, queue: .main
@@ -192,9 +192,9 @@ class ReviewManager {
     }
 
     /// Combo 완료 시 호출
-    func trackComboCompleted() {
+    func trackStackCompleted() {
         print("📊 [ReviewManager] Combo 완료 트리거")
-        requestReviewOnce(key: keyComboReview, delay: 1.5)
+        requestReviewOnce(key: keyStackReview, delay: 1.5)
     }
 
     /// 리뷰 배너 표시 여부 확인
@@ -365,7 +365,7 @@ class ReviewManager {
         UserDefaults.standard.removeObject(forKey: memoCreatedCountKey)
         UserDefaults.standard.removeObject(forKey: hasRequestedReviewKey)
         UserDefaults.standard.removeObject(forKey: keyFirstPasteReview)
-        UserDefaults.standard.removeObject(forKey: keyComboReview)
+        UserDefaults.standard.removeObject(forKey: keyStackReview)
         UserDefaults.standard.removeObject(forKey: keyPowerUserReview)
         UserDefaults.standard.removeObject(forKey: keyKeyboardUseCount)
         UserDefaults.standard.removeObject(forKey: keyClipSaveCount)

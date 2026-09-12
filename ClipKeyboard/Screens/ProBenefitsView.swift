@@ -51,7 +51,7 @@ struct ProBenefitsView: View {
             var u = Usage()
             u.memos = ProFeatureManager.ownMemoCount(all)
             u.templates = all.filter(\.isTemplate).count
-            u.combos = all.filter(\.isCombo).count
+            u.combos = all.filter(\.isStack).count
             u.images = all.filter { !$0.imageFileNames.isEmpty || !($0.imageFileName ?? "").isEmpty }.count
             u.secure = all.filter(\.isSecure).count
             u.clipboard = ((try? MemoStore.shared.loadSmartClipboardHistory()) ?? []).count
@@ -86,7 +86,7 @@ struct ProBenefitsView: View {
             LimitRow(id: "combo",
                      title: NSLocalizedString("콤보", comment: "Combo"),
                      symbol: AppSymbol.squareStack3dUpFill,
-                     freeLimit: ProFeatureManager.freeComboLimit, used: usage.combos),
+                     freeLimit: ProFeatureManager.freeStackLimit, used: usage.combos),
             LimitRow(id: "image",
                      title: NSLocalizedString("이미지 단축어", comment: "Image"),
                      symbol: AppSymbol.photo,

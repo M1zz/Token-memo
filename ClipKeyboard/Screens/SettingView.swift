@@ -335,15 +335,29 @@ struct DisplaySettingsView: View {
             }
 
             // 메모 높이
+            //
+            // ⚠️ 예전에는 작게(110)·보통(140)·크게(180) 세 칸이었다. 세 칸은 고르기는 쉬운데
+            //    **그 사이에 있고 싶은 사람**에게 줄 것이 없었다(사용자 요청: 커스텀하게
+            //    조절하고 싶다). 위 미리보기가 끄는 대로 즉시 따라오므로, 눈으로 맞추는
+            //    편이 이름으로 고르는 것보다 정확하다.
+            //
+            // ⚠️ 예전 세 값은 이 범위 **안**에 있다. 쓰던 사람의 값이 그대로 살아 있고,
+            //    슬라이더가 그 자리에서 시작한다.
             Section {
-                Picker(selection: $memoCardHeight) {
-                    Text(NSLocalizedString("작게", comment: "Small")).tag(110.0)
-                    Text(NSLocalizedString("보통", comment: "Medium")).tag(140.0)
-                    Text(NSLocalizedString("크게", comment: "Large")).tag(180.0)
-                } label: {
-                    Label(NSLocalizedString("단축어 높이", comment: "Memo cell height"), systemImage: AppSymbol.arrowUpAndDown)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Label(NSLocalizedString("단축어 높이", comment: "Memo cell height"),
+                              systemImage: AppSymbol.arrowUpAndDown)
+                        Spacer()
+                        Text("\(Int(memoCardHeight))pt").foregroundColor(.secondary)
+                    }
+                    Slider(value: $memoCardHeight, in: 90...220, step: 2).tint(theme.accent)
+                    HStack {
+                        Text(NSLocalizedString("작게", comment: "Small")).font(.caption).foregroundColor(.secondary)
+                        Spacer()
+                        Text(NSLocalizedString("크게", comment: "Large")).font(.caption).foregroundColor(.secondary)
+                    }
                 }
-                .pickerStyle(.segmented)
             } header: {
                 Text(NSLocalizedString("단축어 높이", comment: "Memo cell height"))
             } footer: {

@@ -46,7 +46,7 @@ final class ProFeatureManagerTests: XCTestCase {
 
     func testFreeLimits_AreExpectedValues() {
         XCTAssertEqual(ProFeatureManager.freeMemoLimit, 10)
-        XCTAssertEqual(ProFeatureManager.freeComboLimit, 3)
+        XCTAssertEqual(ProFeatureManager.freeStackLimit, 3)
         XCTAssertEqual(ProFeatureManager.freeClipboardHistoryLimit, 50)
         XCTAssertEqual(ProFeatureManager.freeTemplateLimit, 3)
         XCTAssertEqual(ProFeatureManager.freeImageMemoLimit, 5)
@@ -70,10 +70,10 @@ final class ProFeatureManagerTests: XCTestCase {
         XCTAssertFalse(ProFeatureManager.canAddMemo(currentCount: 100))
     }
 
-    func testCanAddCombo_FreeUserUnderLimit() throws {
+    func testCanAddStack_FreeUserUnderLimit() throws {
         guard !ProFeatureManager.hasFullAccess else { throw XCTSkip("Pro 환경") }
-        XCTAssertTrue(ProFeatureManager.canAddCombo(currentCount: 2))
-        XCTAssertFalse(ProFeatureManager.canAddCombo(currentCount: 3))
+        XCTAssertTrue(ProFeatureManager.canAddStack(currentCount: 2))
+        XCTAssertFalse(ProFeatureManager.canAddStack(currentCount: 3))
     }
 
     func testCanAddTemplate_FreeUserUnderLimit() throws {
@@ -98,7 +98,7 @@ final class ProFeatureManagerTests: XCTestCase {
     func testCanAddMemo_Grandfathered_AlwaysTrue() {
         groupDefaults?.set(true, forKey: ProFeatureManager.grandfatheredPurchaseKey)
         XCTAssertTrue(ProFeatureManager.canAddMemo(currentCount: 99999))
-        XCTAssertTrue(ProFeatureManager.canAddCombo(currentCount: 99999))
+        XCTAssertTrue(ProFeatureManager.canAddStack(currentCount: 99999))
     }
 
     func testClipboardHistoryLimit_FullAccess_Higher() {
@@ -206,7 +206,7 @@ final class ProFeatureManagerTests: XCTestCase {
     func testLimitType_AnalyticsKeys_Unique() {
         let keys = [
             ProFeatureManager.LimitType.memo.analyticsKey,
-            ProFeatureManager.LimitType.combo.analyticsKey,
+            ProFeatureManager.LimitType.stack.analyticsKey,
             ProFeatureManager.LimitType.template.analyticsKey,
             ProFeatureManager.LimitType.clipboardHistory.analyticsKey,
             ProFeatureManager.LimitType.cloudBackup.analyticsKey,

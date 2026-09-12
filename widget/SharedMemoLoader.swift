@@ -26,8 +26,8 @@ struct WidgetMemo: Identifiable, Codable {
     var isTemplate: Bool = false
     var templateVariables: [String] = []
     var placeholderValues: [String: [String]] = [:]
-    var isCombo: Bool = false
-    var comboValues: [String] = []
+    var isStack: Bool = false
+    var stackValues: [String] = []
     var currentComboIndex: Int = 0
     var imageFileName: String?
     var imageFileNames: [String] = []
@@ -35,7 +35,12 @@ struct WidgetMemo: Identifiable, Codable {
     enum CodingKeys: String, CodingKey {
         case id, title, value, isFavorite, lastEdited, category, isSecure
         case isChecked, clipCount, isTemplate, templateVariables, placeholderValues
-        case isCombo, comboValues, currentComboIndex
+        // ⚠️ **JSON 의 글자는 옛 이름 그대로다.** 앱이 스택으로 이름을 바꾼 뒤에도
+        //    파일에는 `isCombo`·`comboValues` 로 적힌다(되돌아간 앱과 이 위젯을 위해).
+        //    여기서 글자까지 바꾸면 위젯이 스택을 통째로 못 읽는다.
+        case isStack = "isCombo"
+        case stackValues = "comboValues"
+        case currentComboIndex
         case imageFileName, imageFileNames
     }
 
@@ -53,8 +58,8 @@ struct WidgetMemo: Identifiable, Codable {
         isTemplate = try container.decodeIfPresent(Bool.self, forKey: .isTemplate) ?? false
         templateVariables = try container.decodeIfPresent([String].self, forKey: .templateVariables) ?? []
         placeholderValues = try container.decodeIfPresent([String: [String]].self, forKey: .placeholderValues) ?? [:]
-        isCombo = try container.decodeIfPresent(Bool.self, forKey: .isCombo) ?? false
-        comboValues = try container.decodeIfPresent([String].self, forKey: .comboValues) ?? []
+        isStack = try container.decodeIfPresent(Bool.self, forKey: .isStack) ?? false
+        stackValues = try container.decodeIfPresent([String].self, forKey: .stackValues) ?? []
         currentComboIndex = try container.decodeIfPresent(Int.self, forKey: .currentComboIndex) ?? 0
         imageFileName = try container.decodeIfPresent(String.self, forKey: .imageFileName)
         imageFileNames = try container.decodeIfPresent([String].self, forKey: .imageFileNames) ?? []

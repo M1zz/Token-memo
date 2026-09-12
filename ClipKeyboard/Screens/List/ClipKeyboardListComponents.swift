@@ -396,7 +396,7 @@ struct MemoActionSheet: View {
                 }
                 // 템플릿으로 만들기 - 아직 템플릿/콤보가 아닌 일반 텍스트 메모에서만 노출
                 // (보안 메모는 값이 암호문이라 제외).
-                if let onMakeTemplate, !memo.isTemplate, !memo.isCombo, !memo.isSecure, memo.contentType == .text {
+                if let onMakeTemplate, !memo.isTemplate, !memo.isStack, !memo.isSecure, memo.contentType == .text {
                     Divider().padding(.leading, 56)
                     actionRow(
                         label: NSLocalizedString("템플릿으로 만들기", comment: "Action: turn memo into a template"),
@@ -683,7 +683,7 @@ struct SheetModifiers: ViewModifier {
     @Binding var showTemplateInputSheet: Bool
     @Binding var showPlaceholderManagementSheet: Bool
     @Binding var selectedTemplateIdForSheet: UUID?
-    @Binding var selectedComboIdForSheet: UUID?
+    @Binding var selectedStackIdForSheet: UUID?
 
     // 데이터
     let templatePlaceholders: [String]
@@ -698,7 +698,7 @@ struct SheetModifiers: ViewModifier {
     let onTemplateCancel: () -> Void
     let onTemplateCopy: (Memo, String) -> Void
     let onTemplateSheetCancel: () -> Void
-    let onComboDismiss: () -> Void
+    let onStackDismiss: () -> Void
 
     func body(content: Content) -> some View {
         content
@@ -746,11 +746,11 @@ struct SheetModifiers: ViewModifier {
                 }
             }
             // Combo 미리보기 하프모달 - 탭 시 즉시 복사되고, 순차 입력될 값들을 보여준다.
-            .sheet(item: $selectedComboIdForSheet) { comboId in
-                ComboPreviewSheet(
-                    comboId: comboId,
+            .sheet(item: $selectedStackIdForSheet) { stackId in
+                StackPreviewSheet(
+                    stackId: stackId,
                     allMemos: memos,
-                    onDismiss: onComboDismiss
+                    onDismiss: onStackDismiss
                 )
                 // 템플릿 fill 시트와 동일하게 하프모달(필요 시 위로 확장).
                 .presentationDetents([.medium, .large])

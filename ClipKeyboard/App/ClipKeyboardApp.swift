@@ -140,7 +140,7 @@ struct ClipKeyboardApp: App {
         print("🚀 [APP INIT] ClipKeyboardApp 초기화 시작")
 
         // 콤보/attached 데이터 모델 통합 마이그레이션 - 다른 어떤 load/save보다 먼저 실행해
-        // 레거시 키(isCombo/comboValues/attachedTemplateId)가 신 모델 재저장으로 사라지기 전에 변환.
+        // 레거시 키(isStack/stackValues/attachedTemplateId)가 신 모델 재저장으로 사라지기 전에 변환.
         LaunchGuard.essential(.comboMigration) {
             migrateComboModelIfNeeded()
         }
@@ -757,15 +757,22 @@ struct ClipKeyboardApp: App {
     /// (신 Memo 모델은 이 키들을 더 이상 디코드하지 않으므로 별도로 읽어야 한다.)
     private struct LegacyMemoFields: Decodable {
         let id: UUID
-        var isCombo: Bool = false
-        var comboValues: [String] = []
+        var isStack: Bool = false
+        var stackValues: [String] = []
         var attachedTemplateId: UUID?
-        enum CodingKeys: String, CodingKey { case id, isCombo, comboValues, attachedTemplateId }
+        // ⚠️ 이건 **옛 파일을 읽으려고** 있는 것이다. 글자를 새 이름으로 바꾸면
+        //    읽으려던 그 옛 파일을 못 읽는다.
+        enum CodingKeys: String, CodingKey {
+            case id
+            case isStack = "isCombo"
+            case stackValues = "comboValues"
+            case attachedTemplateId
+        }
         init(from decoder: Decoder) throws {
             let c = try decoder.container(keyedBy: CodingKeys.self)
             id = try c.decode(UUID.self, forKey: .id)
-            isCombo = try c.decodeIfPresent(Bool.self, forKey: .isCombo) ?? false
-            comboValues = try c.decodeIfPresent([String].self, forKey: .comboValues) ?? []
+            isStack = try c.decodeIfPresent(Bool.self, forKey: .isStack) ?? false
+            stackValues = try c.decodeIfPresent([String].self, forKey: .stackValues) ?? []
             attachedTemplateId = try c.decodeIfPresent(UUID.self, forKey: .attachedTemplateId)
         }
     }
@@ -796,9 +803,9 @@ struct ClipKeyboardApp: App {
     private func hasLegacyKeysInMemoFile() -> Bool {
         guard let url = appGroupContainerURL?.appendingPathComponent(StorageFile.memos),
               let d = try? Data(contentsOf: url) else { return false }
-        let isCombo = Data("\"isCombo\":true".utf8)
+        let isStack = Data("\"isStack\":true".utf8)
         let attached = Data("\"attachedTemplateId\":\"".utf8)
-        return d.range(of: isCombo) != nil || d.range(of: attached) != nil
+        return d.range(of: isStack) != nil || d.range(of: attached) != nil
     }
 
     /// 변환되지 않은 레거시 콤보/attached 데이터가 디스크에 남아있는지 감지.
@@ -810,7 +817,7 @@ struct ClipKeyboardApp: App {
     }
 
     /// 콤보/메모+템플릿 데이터 모델 통합 마이그레이션.
-    /// - 레거시 메모 내장 콤보(isCombo+comboValues) → 자식 메모 생성 + childMemoIds
+    /// - 레거시 메모 내장 콤보(isStack+stackValues) → 자식 메모 생성 + childMemoIds
     /// - attachedTemplateId → 본문을 합쳐 일반 메모로 (compose)
     /// - 플랫 Combo(combos.data) → childMemoIds를 가진 콤보 Memo
     ///
@@ -845,10 +852,10 @@ struct ClipKeyboardApp: App {
                 for l in legacy { legacyById[l.id] = l }
             }
 
-            var memos = try MemoStore.shared.load(type: .memo)   // 신 모델 (comboValues 보유 메모는 그대로 디코드)
+            var memos = try MemoStore.shared.load(type: .memo)   // 신 모델 (stackValues 보유 메모는 그대로 디코드)
             var converted = false
 
-            // 2) attachedTemplate → 본문 합치기 + dev childMemoIds 콤보 → comboValues.
+            // 2) attachedTemplate → 본문 합치기 + dev childMemoIds 콤보 → stackValues.
             //    (레거시 메모 내장 콤보의 comboValues는 모델에 그대로 디코드되어 별도 변환 불필요.)
             let valueById = Dictionary(memos.map { ($0.id, $0.value) }, uniquingKeysWith: { a, _ in a })
             for i in memos.indices {
@@ -859,11 +866,11 @@ struct ClipKeyboardApp: App {
                         memoValue: memos[i].value, templateBody: tmpl.value, templateInputs: [:])
                     converted = true
                 }
-                // dev(미출시)에서 만든 childMemoIds 콤보 → 참조 메모 value를 comboValues 단계로 펼침.
-                if memos[i].comboValues.isEmpty, !memos[i].childMemoIds.isEmpty {
+                // dev(미출시)에서 만든 childMemoIds 콤보 → 참조 메모 value를 stackValues 단계로 펼침.
+                if memos[i].stackValues.isEmpty, !memos[i].childMemoIds.isEmpty {
                     let steps = memos[i].childMemoIds.compactMap { valueById[$0] }.filter { !$0.isEmpty }
                     if !steps.isEmpty {
-                        memos[i].comboValues = steps
+                        memos[i].stackItems = steps.map { StackItem(value: $0) }
                         memos[i].childMemoIds = []
                         converted = true
                     }
@@ -885,12 +892,12 @@ struct ClipKeyboardApp: App {
                     }
                 }
                 guard !steps.isEmpty else { continue }   // 빈 콤보는 만들지 않음
-                var comboMemo = Memo(
+                var stackMemo = Memo(
                     id: c.id, title: c.title, value: "",
                     isFavorite: c.isFavorite, category: c.category,
-                    comboValues: steps, comboInterval: c.interval, lastUsedAt: c.lastUsed)
-                comboMemo.clipCount = c.useCount
-                memos.append(comboMemo)
+                    stackValues: steps, stackInterval: c.interval, lastUsedAt: c.lastUsed)
+                stackMemo.clipCount = c.useCount
+                memos.append(stackMemo)
                 converted = true
             }
             // 변경이 있을 때만 저장(불필요한 디스크 쓰기 방지).
@@ -1048,12 +1055,12 @@ struct ClipKeyboardApp: App {
             placeholderValues: Self.starterPlaceholderValues(isKorean: isKorean),
             hint: isKorean ? "{변수} 빈칸을 채워 쓰는 템플릿" : "A template: fill in the {blanks}"
         )
-        // 3) 콤보 - 메모 안에 순서 있는 단계들(comboValues)
-        let combo = Memo(
+        // 3) 콤보 - 메모 안에 순서 있는 단계들(stackValues)
+        let stack = Memo(
             title: isKorean ? "이름 + 연락처" : "Name + Contact",
             value: "",
             category: personal,
-            comboValues: isKorean ? ["홍길동", "010-0000-0000"] : ["John Doe", "555-0000"],
+            stackValues: isKorean ? ["홍길동", "010-0000-0000"] : ["John Doe", "555-0000"],
             hint: isKorean ? "값 여러 개를 순서대로 입력하는 콤보" : "A combo: types multiple values in order"
         )
         // 4) 인사말 + 회신 양식을 한 메모로 합침 - 본문에 {변수}가 있으므로 템플릿이어야 한다.
@@ -1067,7 +1074,7 @@ struct ClipKeyboardApp: App {
             placeholderValues: template.placeholderValues,
             hint: isKorean ? "단축어에 템플릿을 이어 붙인 중첩 단축어" : "A nested snippet: a snippet plus a template"
         )
-        return ([memo, template, combo, memoWithTemplate], [work, personal])
+        return ([memo, template, stack, memoWithTemplate], [work, personal])
     }
 
     private func nomadSamples(isKorean: Bool) -> (memos: [Memo], categories: [String]) {
@@ -1089,11 +1096,11 @@ struct ClipKeyboardApp: App {
             placeholderValues: Self.starterNomadPlaceholderValues(isKorean: isKorean),
             hint: isKorean ? "{변수} 빈칸을 채워 쓰는 템플릿" : "A template: fill in the {blanks}"
         )
-        let combo = Memo(
+        let stack = Memo(
             title: isKorean ? "내 연락처" : "My Contact",
             value: "",
             category: travel,
-            comboValues: isKorean ? ["이름", "이메일", "전화번호"] : ["Full Name", "Email", "Phone"],
+            stackValues: isKorean ? ["이름", "이메일", "전화번호"] : ["Full Name", "Email", "Phone"],
             hint: isKorean ? "값 여러 개를 순서대로 입력하는 콤보" : "A combo: types multiple values in order"
         )
         // 즐겨찾기 - 기본 제공되는 즐겨찾기 탭에 바로 들어가 분홍으로 표시
@@ -1114,7 +1121,7 @@ struct ClipKeyboardApp: App {
             placeholderValues: template.placeholderValues,
             hint: isKorean ? "단축어에 템플릿을 이어 붙인 중첩 단축어" : "A nested snippet: a snippet plus a template"
         )
-        return ([template, combo, checklist, noteWithTemplate], [finance, travel])
+        return ([template, stack, checklist, noteWithTemplate], [finance, travel])
     }
 
     var body: some Scene {
@@ -1713,7 +1720,7 @@ struct MemoSearchView: View {
     private func typeStyle(_ memo: Memo) -> (icon: String, color: Color) {
         if memo.isSecure { return (AppSymbol.lockFill, .gray) }
         if memo.isTemplate { return ("wand.and.stars", .purple) }
-        if memo.isCombo { return ("square.stack.3d.up.fill", .orange) }
+        if memo.isStack { return ("square.stack.3d.up.fill", .orange) }
         if memo.contentType == .image || memo.contentType == .mixed { return ("photo.fill", .green) }
         return ("doc.text.fill", .blue)
     }
@@ -1776,7 +1783,7 @@ enum OffMainPublishDetector {
         watch(DraftStore.shared, "DraftStore")
         watch(ProStatusManager.shared, "ProStatusManager")
         watch(CloudKitBackupService.shared, "CloudKitBackupService")
-        watch(ComboExecutionService.shared, "ComboExecutionService")
+        watch(StackExecutionService.shared, "ComboExecutionService")
         watch(SuggestionManager.shared, "SuggestionManager")
         watch(StoreManager.shared, "StoreManager")
     }

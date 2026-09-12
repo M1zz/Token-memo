@@ -47,13 +47,13 @@ struct UsageScenario: Identifiable {
 }
 
 enum ScenarioFeature: String {
-    case snippet, template, combo, smartClipboard
+    case snippet, template, stack, smartClipboard
 
     var label: String {
         switch self {
         case .snippet: return NSLocalizedString("Snippet", comment: "Feature tag: snippet")
         case .template: return NSLocalizedString("Template", comment: "Feature tag: template")
-        case .combo: return NSLocalizedString("Combo", comment: "Feature tag: combo")
+        case .stack: return NSLocalizedString("Combo", comment: "Feature tag: combo")
         case .smartClipboard: return NSLocalizedString("Smart Clipboard", comment: "Feature tag: smart clipboard")
         }
     }
@@ -62,7 +62,7 @@ enum ScenarioFeature: String {
         switch self {
         case .snippet: return .blue
         case .template: return .orange
-        case .combo: return .purple
+        case .stack: return .purple
         case .smartClipboard: return .green
         }
     }
@@ -421,7 +421,7 @@ private enum UsageScenarioData {
                     titleKey: "New client wire transfer info",
                     contextKey: "Please send your banking details for wire transfer.",
                     exampleKey: "Name: {Your Name}\nIBAN: {Your IBAN}\nSWIFT: {Your SWIFT/BIC}\nAddress: {Your Registered Address}\nVAT ID: {Your VAT Number}",
-                    feature: .combo
+                    feature: .stack
                 ),
                 UsageScenario(
                     titleKey: "Wise / PayPal quick share",
@@ -526,7 +526,7 @@ private enum UsageScenarioData {
                     titleKey: "Gmail: new client onboarding",
                     contextKey: nil,
                     exampleKey: "Welcome aboard, {client}! Here's what to expect:\n\n1. Calendly for our first sync: {calendly}\n2. Banking info below (if paying by wire)\n3. Slack channel invite coming in 24h\n4. Progress demos every Thursday\n\nLooking forward to working together!",
-                    feature: .combo
+                    feature: .stack
                 )
             ]
         ),
@@ -829,7 +829,7 @@ struct PersonaScenarioCard: View {
                         insertedValue: scenario.example,
                         // {플레이스홀더}가 있으면 항상 템플릿으로 추가 - 탭하면 칩/값 채우기 UX
                         insertedIsTemplate: scenario.feature == .template || scenario.example.contains("{"),
-                        insertedIsCombo: scenario.feature == .combo
+                        insertedIsStack: scenario.feature == .stack
                     )
                 } label: {
                     HStack(spacing: 4) {

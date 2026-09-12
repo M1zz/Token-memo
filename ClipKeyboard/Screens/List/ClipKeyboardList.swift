@@ -154,7 +154,7 @@ struct ClipKeyboardList: View {
     @State private var showAddMemoSheet: Bool = false
     @State private var addMemoSheetCategory: String = ""
     @State private var showAddTemplateSheet: Bool = false
-    @State private var showAddComboSheet: Bool = false
+    @State private var showAddStackSheet: Bool = false
     @State private var memoToEdit: Memo?
     /// "템플릿으로 만들기" 원본 메모 - 이 메모 내용으로 채운 별도 새 메모를 만든다(원본은 그대로).
     @State private var makeTemplateSource: Memo?
@@ -877,7 +877,7 @@ struct ClipKeyboardList: View {
                 showTemplateInputSheet: $viewModel.showTemplateInputSheet,
                 showPlaceholderManagementSheet: $viewModel.showPlaceholderManagementSheet,
                 selectedTemplateIdForSheet: $viewModel.selectedTemplateIdForSheet,
-                selectedComboIdForSheet: $viewModel.selectedComboIdForSheet,
+                selectedStackIdForSheet: $viewModel.selectedStackIdForSheet,
                 templatePlaceholders: viewModel.templatePlaceholders,
                 templateInputs: $viewModel.templateInputs,
                 memos: viewModel.memos,
@@ -892,8 +892,8 @@ struct ClipKeyboardList: View {
                     viewModel.selectedTemplateIdForSheet = nil
                 },
                 onTemplateSheetCancel: { viewModel.selectedTemplateIdForSheet = nil },
-                onComboDismiss: {
-                    viewModel.selectedComboIdForSheet = nil
+                onStackDismiss: {
+                    viewModel.selectedStackIdForSheet = nil
                     viewModel.loadMemos()
                 }
             ))
@@ -1435,7 +1435,7 @@ struct ClipKeyboardList: View {
 
     /// 지금 무언가 시트가 떠 있는가. 떠 있으면 동전은 기다린다.
     private var anyModalUp: Bool {
-        viewModel.selectedComboIdForSheet != nil
+        viewModel.selectedStackIdForSheet != nil
             || viewModel.selectedTemplateIdForSheet != nil
             || viewModel.showTemplateInputSheet
     }
@@ -2065,8 +2065,8 @@ struct ClipKeyboardList: View {
             showAddFavoriteMemoSheet = true
         case .addTemplate:
             showAddTemplateSheet = true
-        case .addCombo:
-            showAddComboSheet = true
+        case .addStack:
+            showAddStackSheet = true
         }
     }
 
@@ -2458,12 +2458,12 @@ struct ClipKeyboardList: View {
                     }
             }
         }
-        .sheet(isPresented: $showAddComboSheet, onDismiss: { viewModel.loadMemos() }) {
+        .sheet(isPresented: $showAddStackSheet, onDismiss: { viewModel.loadMemos() }) {
             NavigationStack {
-                MemoAdd(insertedIsCombo: true)
+                MemoAdd(insertedIsStack: true)
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
-                            Button(NSLocalizedString("취소", comment: "Cancel")) { showAddComboSheet = false }
+                            Button(NSLocalizedString("취소", comment: "Cancel")) { showAddStackSheet = false }
                         }
                     }
             }
@@ -2676,7 +2676,7 @@ struct ClipKeyboardList: View {
         add.insertedValue = suggestion.content
         switch suggestion.feature {
         case .template:      add.insertedIsTemplate = true
-        case .combo:         add.insertedIsCombo    = true
+        case .stack:         add.insertedIsStack    = true
         case .snippet, .smartClipboard: break
         }
         return add

@@ -24,7 +24,7 @@ struct InAppKeyboardStage: View {
     var highlightedMemoId: UUID? = nil
     /// 가리키는 키가 콤보라면 **그 키의 어느 쪽**인가(왼쪽=값 넣기 · 오른쪽=다음 값).
     /// nil 이면 키캡이 통째로 인다(보통 키).
-    var highlightedComboPart: KeyboardView.ComboKeyPart? = nil
+    var highlightedStackPart: KeyboardView.StackKeyPart? = nil
     /// 가리키는 동안 대화 위에 얹을 안내 한 줄. 장마다 다르다(`TutorialChapter.coachLine`).
     var tutorialLine: String? = nil
     /// 마지막 걸음 - **직접 하나 만들어 보라고** 권하는 중인가. 머리말의 + 를 가리킨다.
@@ -41,9 +41,16 @@ struct InAppKeyboardStage: View {
     ///
     /// ⚠️ 두 번 보내 놓고 그냥 지나가면 "두 번 눌렀다"만 남는다. 콤보가 값을 여러 개
     ///    갖고 있다는 것은 두 말풍선을 **나란히 놓고 짚어 줘야** 뜻이 된다.
-    var awaitsComboConfirm: Bool = false
+    var awaitsStackConfirm: Bool = false
     /// 그 카드의 "확인했어요".
-    var onComboConfirmed: () -> Void = {}
+    var onStackConfirmed: () -> Void = {}
+    /// 마지막 장 - **크기를 한 번 정해 보는** 카드를 띄우는가.
+    ///
+    /// ⚠️ 이 카드만 아래 키보드를 실제로 바꾼다. 그래서 자리가 키보드 **바로 위**여야 한다.
+    ///    화면 위쪽에 두면 끄는 손과 바뀌는 것이 멀어 둘이 이어져 보이지 않는다.
+    var asksLayout: Bool = false
+    /// 그 카드의 "이대로 할게요".
+    var onLayoutChosen: () -> Void = {}
     /// 목록 ↔ 키보드를 오가는 법을 지금 짚어 주는가(다 배운 뒤 한 번).
     var showsSwitchHint: Bool = false
     /// 그 안내를 봤다 - 다시는 안 나온다.
@@ -62,24 +69,28 @@ struct InAppKeyboardStage: View {
     ///    뷰가 만들어지는 시점에 미리 읽어 두면 등장할 때는 그릴 것이 이미 준비돼 있다.
     init(styleRaw: Binding<String>,
          highlightedMemoId: UUID? = nil,
-         highlightedComboPart: KeyboardView.ComboKeyPart? = nil,
+         highlightedStackPart: KeyboardView.StackKeyPart? = nil,
          tutorialLine: String? = nil,
          asksToMakeOwn: Bool = false,
          onMakeOwnSkipped: @escaping () -> Void = {},
          highlightsSend: Bool = false,
-         awaitsComboConfirm: Bool = false,
-         onComboConfirmed: @escaping () -> Void = {},
+         awaitsStackConfirm: Bool = false,
+         onStackConfirmed: @escaping () -> Void = {},
+         asksLayout: Bool = false,
+         onLayoutChosen: @escaping () -> Void = {},
          showsSwitchHint: Bool = false,
          onSwitchHintSeen: @escaping () -> Void = {}) {
         self._styleRaw = styleRaw
         self.highlightedMemoId = highlightedMemoId
-        self.highlightedComboPart = highlightedComboPart
+        self.highlightedStackPart = highlightedStackPart
         self.tutorialLine = tutorialLine
         self.asksToMakeOwn = asksToMakeOwn
         self.onMakeOwnSkipped = onMakeOwnSkipped
         self.highlightsSend = highlightsSend
-        self.awaitsComboConfirm = awaitsComboConfirm
-        self.onComboConfirmed = onComboConfirmed
+        self.awaitsStackConfirm = awaitsStackConfirm
+        self.onStackConfirmed = onStackConfirmed
+        self.asksLayout = asksLayout
+        self.onLayoutChosen = onLayoutChosen
         self.showsSwitchHint = showsSwitchHint
         self.onSwitchHintSeen = onSwitchHintSeen
         // ⚠️ **비어 있을 때만** 읽는다. init 은 부모가 다시 그릴 때마다 도는데,
@@ -191,7 +202,9 @@ struct InAppKeyboardStage: View {
                 conversation
                 // 콤보 장의 마지막 - 두 말풍선을 **눈앞에 둔 채로** 무엇을 본 것인지 짚는다.
                 // 대화 바로 아래여야 "저 둘"이 무엇을 가리키는지 눈이 안다.
-                comboConfirmCard
+                stackConfirmCard
+                // 크기를 정하는 장. 바로 아래 키보드가 이 카드에 따라 움직인다.
+                layoutCard
                 composer
                 // ⚠️ 안내는 **가리키는 것 바로 옆**에 둔다. 화면 맨 위에 두었더니 빛나는 키와
                 //    멀어서 둘이 같은 이야기인 줄 몰랐다 - 눈이 글에서 키로 바로 건너가야 한다.
@@ -201,7 +214,7 @@ struct InAppKeyboardStage: View {
                              documentState: host.documentState,
                              hostKind: .inApp,
                              highlightedMemoId: highlightedMemoId,
-                             highlightedComboPart: highlightedComboPart)
+                             highlightedStackPart: highlightedStackPart)
                     .frame(height: min(max(geo.size.height * 0.5, 260), 430))
                     .id(feedToken)
             }
@@ -555,8 +568,8 @@ struct InAppKeyboardStage: View {
     ///    무엇이 서로 다르다는 건지 확인할 길이 사라진다. 짚어 주는 글은 짚어지는 것과
     ///    같은 화면에 있어야 한다.
     @ViewBuilder
-    private var comboConfirmCard: some View {
-        if awaitsComboConfirm {
+    private var stackConfirmCard: some View {
+        if awaitsStackConfirm {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
                     Image(systemName: AppSymbol.checkmarkSealFill)
@@ -571,7 +584,7 @@ struct InAppKeyboardStage: View {
                     .font(.footnote)
                     .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.leading)
-                Button(action: onComboConfirmed) {
+                Button(action: onStackConfirmed) {
                     Text(NSLocalizedString("확인했어요", comment: "Combo step: confirm button"))
                         .font(.subheadline.weight(.bold))
                         .foregroundColor(Color.accentColor)
@@ -590,6 +603,15 @@ struct InAppKeyboardStage: View {
         }
     }
 
+    /// 크기를 한 번 정해 보는 장의 띠. 내용은 `TutorialLayoutCard` 가 갖고 있다.
+    @ViewBuilder
+    private var layoutCard: some View {
+        if asksLayout {
+            TutorialLayoutCard(onDone: onLayoutChosen)
+                .transition(.opacity)
+        }
+    }
+
     // MARK: - 대화
 
     /// 튜토리얼이 가리키는 중이면 대화 위에 한 줄 더 얹는다 - 무엇을 하라는 건지
@@ -603,7 +625,7 @@ struct InAppKeyboardStage: View {
     ///    말을 걸면 어느 쪽을 따라야 하는지 알 수 없다.
     @ViewBuilder
     private var tutorialCue: some View {
-        if awaitsComboConfirm {
+        if awaitsStackConfirm {
             EmptyView()
         } else if highlightsSend {
             HStack(spacing: 8) {

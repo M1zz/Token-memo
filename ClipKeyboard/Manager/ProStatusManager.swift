@@ -102,7 +102,7 @@ class ProStatusManager: ObservableObject {
     }
 
     /// Combo 기능 사용 가능 여부
-    var canUseCombo: Bool {
+    var canUseStack: Bool {
         return ProFeatureManager.hasFullAccess
     }
 

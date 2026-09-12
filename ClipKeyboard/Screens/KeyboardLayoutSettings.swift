@@ -28,6 +28,12 @@ struct KeyboardLayoutSettings: View {
     private var truncationRaw: String = KeyLabelTruncation.middle.rawValue
     @AppStorage(DefaultsKey.keyboardSkin, store: AppGroup.defaults)
     private var keyboardSkinRaw: String = KeyboardSkin.classic.rawValue
+    /// 판 높이. **단축어 키 하나의 높이와 다른 것이다** - 저쪽은 키, 이쪽은 키보드 전체.
+    @AppStorage(DefaultsKey.keyboardHeightPreset, store: AppGroup.defaults)
+    private var heightPresetRaw: String = KeyboardHeightPreset.fallback.rawValue
+    /// 조작 키 한 칸의 높이. 0 이면 아직 안 고른 것이라 기본값으로 읽는다.
+    @AppStorage(DefaultsKey.keyboardControlKeySize, store: AppGroup.defaults)
+    private var controlKeySizeRaw: Double = 0
     @AppStorage(DefaultsKey.keyboardShowSearch, store: AppGroup.defaults) private var showSearch: Bool   = false
     /// '최근 단축어' 토글의 **날값**. 화면이 보여 주는 값은 아래 `showRecentBinding` 이다.
     /// (값이 없을 때와 false 를 `@AppStorage` 가 구분하지 못하는 탓 - DefaultsKey 참고)
@@ -47,6 +53,53 @@ struct KeyboardLayoutSettings: View {
         KeyLabelTruncation(rawValue: truncationRaw) ?? .middle
     }
 
+    private var selectedHeightPreset: KeyboardHeightPreset {
+        KeyboardHeightPreset(rawValue: heightPresetRaw) ?? .fallback
+    }
+
+    /// 지금 조작 키 높이. 익스텐션과 **같은 함수**로 해석한다.
+    private var controlKeySize: CGFloat {
+        KeyboardHeightBook.resolvedControlKeySize(controlKeySizeRaw)
+    }
+
+    /// 슬라이더가 잡고 있을 값. 아직 안 고른 사람(0)에게도 기본값 자리에서 시작하게 한다.
+    private var controlKeySizeBinding: Binding<Double> {
+        Binding(get: { Double(controlKeySize) },
+                set: { controlKeySizeRaw = $0 })
+    }
+
+    /// 지금 고른 값으로 키보드가 실제로 얼마나 높아지는가. 기본 키보드와 나란히 본다.
+    ///
+    /// ⚠️ 익스텐션과 **같은 함수**로 잰다. 여기서 따로 셈하면 설정이 말하는 숫자와
+    ///    실제로 올라오는 키보드가 갈라지고, 그때는 설정 쪽이 거짓말이 된다.
+    private var heightComparison: (ours: CGFloat, system: CGFloat) {
+        let size = UIScreen.main.bounds.size
+        var metrics = KeyboardHeightBook.ContentMetrics()
+        metrics.buttonHeight = CGFloat(buttonHeight)
+        metrics.columns = columnCount
+        metrics.controlKeySize = controlKeySize
+        let panel = KeyboardHeightBook.height(for: size, content: metrics, preset: selectedHeightPreset)
+        return (panel + KeyboardHeightBook.systemChrome(for: size),
+                KeyboardHeightBook.totalHeight(for: size))
+    }
+
+    /// 위 숫자를 사람 말로. **높이는 눈으로 보는 것이라, 몇 pt 인지보다 기본 키보드와
+    /// 견줘서 어떤지가 뜻이 있다.**
+    private var heightComparisonLine: String {
+        let (ours, system) = heightComparison
+        let diff = Int((ours - system).rounded())
+        if diff == 0 {
+            return NSLocalizedString("지금 이 기기의 기본 키보드와 높이가 같아요.",
+                                     comment: "Keyboard height comparison: same as system")
+        }
+        if diff > 0 {
+            return String(format: NSLocalizedString("지금 기본 키보드보다 %dpt 높아요.",
+                                                    comment: "Keyboard height comparison: taller"), diff)
+        }
+        return String(format: NSLocalizedString("지금 기본 키보드보다 %dpt 낮아요.",
+                                                comment: "Keyboard height comparison: shorter"), -diff)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // ── 상단 고정 실시간 미리보기 - 아래 설정을 바꾸면 즉시 반영된다 ──
@@ -63,6 +116,31 @@ struct KeyboardLayoutSettings: View {
                 .background(theme.bg)
 
             List {
+            // ── 0. 키보드 높이 ─────────────────────────
+            // **맨 위에 둔다.** 키보드가 크다·작다는 쓰자마자 드는 느낌이고, 그래서 설정을
+            // 여는 가장 흔한 이유다. 아래 `버튼 높이` 를 높이 조절로 알고 찾아 들어왔다가
+            // 아무것도 안 바뀌어 그냥 나간 사람이 있었다(리뷰).
+            Section {
+                Picker(NSLocalizedString("키보드 높이", comment: "Keyboard height section title"),
+                       selection: $heightPresetRaw) {
+                    ForEach(KeyboardHeightPreset.allCases) { preset in
+                        Text(preset.localizedName).tag(preset.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+            } header: {
+                Text(NSLocalizedString("키보드 높이", comment: "Keyboard height section title"))
+            } footer: {
+                // 고른 것이 무슨 뜻인지, 그리고 **이 기기에서 실제로 어떻게 되는지.**
+                // 둘째 줄이 없으면 고르고 나서도 맞게 골랐는지 알 수 없다.
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(selectedHeightPreset.localizedDescription)
+                    Text(heightComparisonLine)
+                        .foregroundColor(.secondary)
+                }
+                .font(.body)
+            }
+
             // ── 1. 긴 이름 접기 ────────────────────────────────────────
             // 키 폭은 레이아웃이 정하고 이름은 그 안에서 잘린다. 자르지 않을 방법은 없으니
             // 남는 문제는 **어디를 자를 것인가**이고, 그걸 고르게 한다.
@@ -97,7 +175,7 @@ struct KeyboardLayoutSettings: View {
                     .font(.body)
             }
 
-            // ── 2. 그리드 레이아웃 ─────────────────────────────────────
+            // ── 2. 키 크기와 개수 ─────────────────────────────────────
             Section {
                 // 열 개수 - segmented
                 VStack(alignment: .leading, spacing: 8) {
@@ -115,14 +193,40 @@ struct KeyboardLayoutSettings: View {
                     .pickerStyle(.segmented)
                 }
 
-                // 버튼 높이
+                // 단축어 키 높이
+                //
+                // ⚠️ 예전 이름은 "버튼 높이" 였다. 앱은 같은 물건을 "단축어" 라 부르는데
+                //    여기서만 "버튼" 이라, 크기를 바꾸러 온 사람이 이 줄을 그냥 지나쳤다.
+                //    앱 목록의 "단축어 높이" 와 같은 말을 쓴다.
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text(NSLocalizedString("버튼 높이", comment: "Button height label"))
+                        Text(NSLocalizedString("단축어 높이", comment: "Memo cell height"))
                         Spacer()
                         Text("\(Int(buttonHeight))pt").foregroundColor(.secondary)
                     }
                     Slider(value: $buttonHeight, in: 32...120, step: 1).tint(theme.accent)
+                    HStack {
+                        Text(NSLocalizedString("작게", comment: "Small")).font(.caption).foregroundColor(.secondary)
+                        Spacer()
+                        Text(NSLocalizedString("크게", comment: "Large")).font(.caption).foregroundColor(.secondary)
+                    }
+                }
+
+                // 조작 키 크기
+                //
+                // ⚠️ 지우기·보내기·클립보드·지구본·갈래가 한 값으로 묶여 있다. 하나만
+                //    키우면 윗줄이 어긋난다. 이 값이 커지면 머리 줄이 두꺼워지므로
+                //    키보드 전체 높이도 따라 움직인다(위 비교 줄이 그걸 보여 준다).
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text(NSLocalizedString("조작 키 크기", comment: "Control key size label"))
+                        Spacer()
+                        Text("\(Int(controlKeySize))pt").foregroundColor(.secondary)
+                    }
+                    Slider(value: controlKeySizeBinding,
+                           in: Double(KeyboardHeightBook.minimumControlKeySize)...Double(KeyboardHeightBook.maximumControlKeySize),
+                           step: 1)
+                        .tint(theme.accent)
                     HStack {
                         Text(NSLocalizedString("작게", comment: "Small")).font(.caption).foregroundColor(.secondary)
                         Spacer()
@@ -145,7 +249,13 @@ struct KeyboardLayoutSettings: View {
                     }
                 }
             } header: {
-                Text(NSLocalizedString("그리드 레이아웃", comment: "Section: grid layout"))
+                Text(NSLocalizedString("키 크기와 개수", comment: "Section: key size and count"))
+            } footer: {
+                // 이 두 글자가 붙어 있으면 사람은 `버튼 높이` 를 키보드 높이로 읽는다.
+                // 실제로 그렇게 읽고 슬라이더를 끝까지 내렸다가 아무 일도 안 일어난
+                // 사람이 있었다. 다른 것이라고 여기서 말해 준다.
+                Text(NSLocalizedString("단축어 높이는 문구가 적힌 키, 조작 키는 맨 윗줄의 지우기·보내기·지구본이에요. 키보드 전체 높이는 맨 위에서 정합니다.",
+                                       comment: "Grid section footer: which height is which"))
             }
 
             // ── 3. 언어 설정 ───────────────────────────────────────────
@@ -392,6 +502,8 @@ struct KeyboardLayoutSettings: View {
 
     private func resetToDefaults() {
         columnCount = 2; buttonHeight = 56; buttonFontSize = 17
+        heightPresetRaw = KeyboardHeightPreset.fallback.rawValue
+        controlKeySizeRaw = Double(KeyboardHeightBook.defaultControlKeySize)
         useCustomColors = false; customBgHex = ""; customKeyHex = ""
         customBgColor = .clear; customKeyColor = .clear
         showSearch = false; showReturnKey = true

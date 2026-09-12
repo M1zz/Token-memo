@@ -20,8 +20,8 @@ enum MemoPreviewFormatter {
     ///   - memo: The memo to format.
     ///   - resolvedType: The effective type (may come from category, autoDetectedType, or live classification).
     static func preview(for memo: Memo, resolvedType: ClipboardItemType?) -> String {
-        if memo.isCombo {
-            return comboPreview(memo)
+        if memo.isStack {
+            return stackPreview(memo)
         }
         if memo.isTemplate {
             return templatePreview(memo)
@@ -89,11 +89,11 @@ enum MemoPreviewFormatter {
         return "\(first) · \(count)"
     }
 
-    private static func comboPreview(_ memo: Memo) -> String {
+    private static func stackPreview(_ memo: Memo) -> String {
         // 첫 번째 값을 앞세우고 개수는 꼬리로 - 템플릿 미리보기("첫 줄 · N variables")와 동일 스타일.
-        guard let first = memo.comboValues.first else { return truncate(singleLine(memo.value)) }
+        guard let first = memo.stackValues.first else { return truncate(singleLine(memo.value)) }
         let format = NSLocalizedString("%d items", comment: "Combo item count preview")
-        let count = String(format: format, memo.comboValues.count)
+        let count = String(format: format, memo.stackValues.count)
         // 보안 콤보 - 값(암호문 포함)을 노출하지 않고 개수만 보여준다.
         if memo.isSecure { return count }
         return "\(truncate(singleLine(first), max: 28)) · \(count)"

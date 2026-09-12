@@ -55,11 +55,11 @@ enum BuiltInCategory: String, CaseIterable, Hashable {
     func matches(_ memo: Memo) -> Bool {
         switch self {
         case .templates: return memo.isTemplate
-        case .textMemos: return !memo.isCombo
+        case .textMemos: return !memo.isStack
                               && memo.contentType != .image
                               && memo.contentType != .mixed
         case .images:    return memo.contentType == .image || memo.contentType == .mixed
-        case .combos:    return memo.isCombo
+        case .combos:    return memo.isStack
         }
     }
 }
@@ -710,7 +710,7 @@ final class ClipKeyboardListViewModel: ObservableObject {
     @Published var showTemplateInputSheet: Bool = false
     @Published var showPlaceholderManagementSheet: Bool = false
     @Published var selectedTemplateIdForSheet: UUID?
-    @Published var selectedComboIdForSheet: UUID?
+    @Published var selectedStackIdForSheet: UUID?
     @Published var showAuthAlert: Bool = false
 
     // MARK: - Template Input
@@ -1106,19 +1106,19 @@ final class ClipKeyboardListViewModel: ObservableObject {
                 return
             }
             // 콤보면 단계 값도 함께 암호화 - 하나라도 실패하면 전체 롤백(부분 암호화 방지).
-            let encSteps = SecureMemoCrypto.encryptSteps(SecureMemoCrypto.decryptSteps(memo.comboValues))
-            guard encSteps.allSatisfy({ SecureMemoCrypto.isEncrypted($0) }) || memo.comboValues.isEmpty else {
+            let encSteps = SecureMemoCrypto.encryptSteps(SecureMemoCrypto.decryptSteps(memo.stackValues))
+            guard encSteps.allSatisfy({ SecureMemoCrypto.isEncrypted($0) }) || memo.stackValues.isEmpty else {
                 showPlainToast(NSLocalizedString("보안 설정에 실패했습니다", comment: "Make-secure failed toast"))
                 return
             }
             memo.value = enc
-            memo.comboValues = encSteps
+            memo.setStackValues(encSteps)
             memo.isSecure = true
         } else {
             if SecureMemoCrypto.isEncrypted(memo.value) {
                 memo.value = SecureMemoCrypto.decrypt(memo.value) ?? memo.value
             }
-            memo.comboValues = SecureMemoCrypto.decryptSteps(memo.comboValues)
+            memo.setStackValues(SecureMemoCrypto.decryptSteps(memo.stackValues))
             memo.isSecure = false
         }
         loadedData[idx] = memo
@@ -1473,11 +1473,11 @@ final class ClipKeyboardListViewModel: ObservableObject {
     }
 
     private func processMemoAfterAuth(_ memo: Memo) {
-        if memo.isCombo {
+        if memo.isStack {
             // 콤보(여러 값) 탭 → 값 목록 시트를 띄워 원하는 값 하나를 골라 복사하게 한다.
             // (예전엔 전체를 합쳐 자동 복사했지만, 이제 값 선택 UI로 대체.)
             print("🔁 [processMemoAfterAuth] Combo 메모 - 값 선택 시트 표시")
-            selectedComboIdForSheet = memo.id
+            selectedStackIdForSheet = memo.id
             return
         }
 

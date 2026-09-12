@@ -171,21 +171,21 @@ final class BuiltInCategoryTests: XCTestCase {
 
     private let template = Memo(title: "템플릿", value: "{이름}님", templateVariables: ["이름"])
     private let plain = Memo(title: "일반", value: "텍스트")
-    private let combo = Memo(title: "콤보", value: "1단계", comboValues: ["1단계", "2단계"])
+    private let stack = Memo(title: "콤보", value: "1단계", stackValues: ["1단계", "2단계"])
     private let image = Memo(title: "이미지", value: "", imageFileNames: ["a.jpg"], contentType: .image)
 
     func testTemplatesCategory_MatchesOnlyTemplates() {
         XCTAssertTrue(BuiltInCategory.templates.matches(template))
         XCTAssertFalse(BuiltInCategory.templates.matches(plain))
-        XCTAssertFalse(BuiltInCategory.templates.matches(combo))
+        XCTAssertFalse(BuiltInCategory.templates.matches(stack))
         XCTAssertFalse(BuiltInCategory.templates.matches(image))
     }
 
-    func testTextMemosCategory_IncludesTemplatesExcludesImageAndCombo() {
+    func testTextMemosCategory_IncludesTemplatesExcludesImageAndStack() {
         // "메모+템플릿" 탭 - 텍스트 기반이면 템플릿도 포함, 이미지·콤보는 제외
         XCTAssertTrue(BuiltInCategory.textMemos.matches(plain))
         XCTAssertTrue(BuiltInCategory.textMemos.matches(template))
-        XCTAssertFalse(BuiltInCategory.textMemos.matches(combo))
+        XCTAssertFalse(BuiltInCategory.textMemos.matches(stack))
         XCTAssertFalse(BuiltInCategory.textMemos.matches(image))
     }
 
@@ -197,8 +197,8 @@ final class BuiltInCategoryTests: XCTestCase {
         XCTAssertFalse(BuiltInCategory.images.matches(plain))
     }
 
-    func testCombosCategory_MatchesOnlyCombos() {
-        XCTAssertTrue(BuiltInCategory.combos.matches(combo))
+    func testStacksCategory_MatchesOnlyStacks() {
+        XCTAssertTrue(BuiltInCategory.combos.matches(stack))
         XCTAssertFalse(BuiltInCategory.combos.matches(plain))
         XCTAssertFalse(BuiltInCategory.combos.matches(template))
     }

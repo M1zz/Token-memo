@@ -95,11 +95,11 @@ struct KeyboardMemoPeek: View {
         } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
-                    if memo.comboValues.isEmpty {
+                    if memo.stackValues.isEmpty {
                         valueText(memo.value)
                     } else {
                         // 콤보는 단계 번호를 붙여 순서를 보여준다.
-                        ForEach(Array(memo.comboValues.enumerated()), id: \.offset) { index, value in
+                        ForEach(Array(memo.stackValues.enumerated()), id: \.offset) { index, value in
                             HStack(alignment: .top, spacing: 8) {
                                 Text("\(index + 1).")
                                     .font(.system(.footnote, design: .monospaced, weight: .semibold))

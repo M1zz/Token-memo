@@ -70,7 +70,7 @@ final class InAppKeyboardHost: ObservableObject, TypingInputProxy {
 
     private var tokens: [NSObjectProtocol] = []
     /// 콤보 순차 입력이 도는 중인지 - 무대를 떠나면 멈춘다.
-    private var comboWorkItems: [DispatchWorkItem] = []
+    private var stackWorkItems: [DispatchWorkItem] = []
 
     // MARK: - 생애
 
@@ -101,8 +101,8 @@ final class InAppKeyboardHost: ObservableObject, TypingInputProxy {
         typingTask = nil
         typingRemainder = []
         typingCompletion = nil
-        comboWorkItems.forEach { $0.cancel() }
-        comboWorkItems.removeAll()
+        stackWorkItems.forEach { $0.cancel() }
+        stackWorkItems.removeAll()
     }
 
     private func subscribe() {
@@ -341,8 +341,8 @@ final class InAppKeyboardHost: ObservableObject, TypingInputProxy {
               let memoId = note.userInfo?["memoId"] as? UUID else { return }
 
         // 콤보 분할 버튼에서 값 하나만 넣는 경우 순차 입력을 건너뛴다.
-        let skipCombo = (note.userInfo?["skipCombo"] as? Bool) ?? false
-        if !skipCombo, handleComboIfNeeded(text: raw, memoId: memoId) { return }
+        let skipStack = (note.userInfo?["skipCombo"] as? Bool) ?? false
+        if !skipStack, handleStackIfNeeded(text: raw, memoId: memoId) { return }
 
         let custom = customPlaceholders(in: raw)
         if custom.isEmpty {
@@ -397,21 +397,21 @@ final class InAppKeyboardHost: ObservableObject, TypingInputProxy {
 
     /// 여러 값(콤보) 문구면 값들을 간격을 두고 하나씩 넣는다.
     /// - Returns: 콤보로 처리했으면 true.
-    private func handleComboIfNeeded(text raw: String, memoId: UUID) -> Bool {
+    private func handleStackIfNeeded(text raw: String, memoId: UUID) -> Bool {
         guard let memo = (try? MemoStore.shared.load(type: .memo))?.first(where: { $0.id == memoId }),
-              !memo.comboValues.isEmpty else { return false }
+              !memo.stackValues.isEmpty else { return false }
 
-        let values = SecureMemoCrypto.decryptSteps(memo.comboValues)
+        let values = SecureMemoCrypto.decryptSteps(memo.stackValues)
         guard !values.isEmpty else { return false }
         // 키가 아직 동기화되지 않아 암호문이 남았다면 그걸 그대로 타이핑하지 않는다.
         if values.contains(where: { SecureMemoCrypto.isEncrypted($0) }) { return true }
 
-        insertCombo(values, interval: memo.comboInterval, index: 0)
+        insertStack(values, interval: memo.stackInterval, index: 0)
         trackUse(memoId: memoId)
         return true
     }
 
-    private func insertCombo(_ values: [String], interval: TimeInterval, index: Int) {
+    private func insertStack(_ values: [String], interval: TimeInterval, index: Int) {
         guard index < values.count else { return }
 
         if index < values.count - 1 {
@@ -420,9 +420,9 @@ final class InAppKeyboardHost: ObservableObject, TypingInputProxy {
             insert(TemplateVariableProcessor.resolveCursor(in: processVariables(in: values[index])).text)
             KeyboardHaptics.mediumTap()
             let work = DispatchWorkItem { [weak self] in
-                MainActor.assumeIsolated { self?.insertCombo(values, interval: interval, index: index + 1) }
+                MainActor.assumeIsolated { self?.insertStack(values, interval: interval, index: index + 1) }
             }
-            comboWorkItems.append(work)
+            stackWorkItems.append(work)
             DispatchQueue.main.asyncAfter(deadline: .now() + interval, execute: work)
         } else {
             insertResolved(processVariables(in: values[index]))

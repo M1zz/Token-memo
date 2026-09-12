@@ -36,7 +36,7 @@ final class BulkImportBundlingTests: XCTestCase {
 
         XCTAssertEqual(result.count, 3, "둘이 하나로 합쳐져 하나 줄어야 한다")
         XCTAssertEqual(result[0].values, ["a@b.com", "pw"])
-        XCTAssertTrue(result[0].isCombo)
+        XCTAssertTrue(result[0].isStack)
         XCTAssertEqual(result[1].title, "메모", "사이에 끼어 있던 항목은 그대로 남는다")
         XCTAssertEqual(result[2].title, "OTP")
     }
@@ -117,11 +117,11 @@ final class BulkImportBundlingTests: XCTestCase {
     // MARK: - 이미 콤보인 것을 다시 묶기
 
     func testMergingACombineWithAnotherFlattensAllSteps() {
-        let combo = Draft(title: "로그인", values: ["id", "pw"])
+        let stack = Draft(title: "로그인", values: ["id", "pw"])
         let extra = Draft(title: "OTP", values: ["123456"])
-        let drafts = [combo, extra]
+        let drafts = [stack, extra]
 
-        let result = BulkImportView.merging(drafts, selection: [combo.id, extra.id]).drafts
+        let result = BulkImportView.merging(drafts, selection: [stack.id, extra.id]).drafts
 
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].values, ["id", "pw", "123456"], "콤보의 단계가 중첩되지 않고 이어져야 한다")

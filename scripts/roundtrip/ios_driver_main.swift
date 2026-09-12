@@ -29,13 +29,13 @@ func makeFixtureMemos() -> [Memo] {
                   hint: "신규 고객 응대 메일")
     var m3 = Memo(id: id3, title: "로그인 콤보", value: "",
                   lastEdited: fixedDate,
-                  comboValues: ["myid@example.com", "password123"],
-                  comboInterval: 3.5)
+                  stackValues: ["myid@example.com", "password123"],
+                  stackInterval: 3.5)
     _ = m2; _ = m3
     return [m1, m2, m3]
 }
 
-func makeFixtureCombos() -> [Combo] {
+func makeFixtureStacks() -> [Combo] {
     let item = ComboItem(id: childA, type: .memo, referenceId: id1, order: 0,
                          displayTitle: "집 주소", displayValue: "서울시 어딘가 123")
     return [Combo(id: childB, title: "주문 콤보", items: [item], interval: 1.5,
@@ -70,7 +70,7 @@ switch mode {
 case "encode":
     let enc = JSONEncoder()
     try enc.encode(makeFixtureMemos()).write(to: URL(fileURLWithPath: dir + "/memos.json"))
-    try enc.encode(makeFixtureCombos()).write(to: URL(fileURLWithPath: dir + "/combos.json"))
+    try enc.encode(makeFixtureStacks()).write(to: URL(fileURLWithPath: dir + "/combos.json"))
     try enc.encode(makeFixtureClipboard()).write(to: URL(fileURLWithPath: dir + "/clipboard.json"))
     print("✅ iOS encode 완료 (memos/combos/clipboard)")
 
@@ -94,9 +94,9 @@ case "verify":
     check(m2.isTemplate, "m2.isTemplate 계산값 불일치")
     check(m2.placeholderValues["이름"] == ["유미", "주디", "리이오"], "m2.placeholderValues 손실")
     check(m2.hint == "신규 고객 응대 메일", "m2.hint 손실")
-    check(m3.comboValues == ["myid@example.com", "password123"], "m3.comboValues 손실")
-    check(m3.comboInterval == 3.5, "m3.comboInterval 손실")
-    check(m3.isCombo, "m3.isCombo 계산값 불일치")
+    check(m3.stackValues == ["myid@example.com", "password123"], "m3.stackValues 손실")
+    check(m3.stackInterval == 3.5, "m3.stackInterval 손실")
+    check(m3.isStack, "m3.isStack 계산값 불일치")
     check(m3.hint == nil, "m3.hint nil이어야 함")
 
     let combos = try dec.decode([Combo].self, from: Data(contentsOf: URL(fileURLWithPath: dir + "/combos.json")))

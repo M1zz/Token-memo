@@ -273,7 +273,9 @@ class KeyboardViewController: UIInputViewController {
     /// 지금 화면에서 우리 판이 가질 높이. 앱이 재 둔 시스템 키보드 값이 바탕이 된다.
     /// (없으면 화면 비율로 어림한다. `KeyboardHeightBook` 머리말 참고)
     private var desiredHeight: CGFloat {
-        KeyboardHeightBook.height(for: screenSize, content: contentMetrics)
+        KeyboardHeightBook.height(for: screenSize,
+                                  content: contentMetrics,
+                                  preset: KeyboardHeightPreset.current)
     }
 
     /// 우리 판이 지금 무엇을 그리는지. 키 높이와 칸 수는 사용자가 설정에서 바꾼다.
@@ -289,6 +291,9 @@ class KeyboardViewController: UIInputViewController {
         if let columns = defaults?.object(forKey: "keyboardColumnCount") as? Int, columns > 0 {
             metrics.columns = columns
         }
+        // 머리 줄 높이가 여기서 나온다. 안 읽으면 조작 키를 키운 만큼 첫 줄이 잘린다.
+        let rawControl = defaults?.object(forKey: DefaultsKey.keyboardControlKeySize) as? Double ?? 0
+        metrics.controlKeySize = KeyboardHeightBook.resolvedControlKeySize(rawControl)
         return metrics
     }
 
@@ -396,8 +401,8 @@ class KeyboardViewController: UIInputViewController {
         print("🆔 메모 ID: \(memoId)")
 
         // skipCombo=true면(콤보 분할 버튼에서 값 하나만 삽입) 순차 자동입력을 건너뛴다.
-        let skipCombo = (userInfo["skipCombo"] as? Bool) ?? false
-        if !skipCombo, handleComboMemoIfNeeded(text: text, memoId: memoId) { return }
+        let skipStack = (userInfo["skipCombo"] as? Bool) ?? false
+        if !skipStack, handleStackMemoIfNeeded(text: text, memoId: memoId) { return }
 
         let customPlaceholders = extractCustomPlaceholders(from: text)
         print("🔍 발견된 커스텀 플레이스홀더: \(customPlaceholders)")
@@ -416,27 +421,27 @@ class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Combo 메모(자식 메모 참조)인 경우 자식들의 value를 comboInterval 간격으로 순차 입력.
+    /// Combo 메모(자식 메모 참조)인 경우 자식들의 value를 stackInterval 간격으로 순차 입력.
     /// - Returns: Combo 처리를 했으면 true
-    private func handleComboMemoIfNeeded(text: String, memoId: UUID) -> Bool {
-        guard let memo = clipMemos.first(where: { $0.id == memoId }), !memo.comboValues.isEmpty else { return false }
+    private func handleStackMemoIfNeeded(text: String, memoId: UUID) -> Bool {
+        guard let memo = clipMemos.first(where: { $0.id == memoId }), !memo.stackValues.isEmpty else { return false }
         // 보안 콤보 - 단계 값 복호화(PIN 인증은 KeyboardView에서 이미 통과).
         // 키 미동기화로 암호문이 남으면 암호문을 타이핑하지 않도록 중단한다.
-        let values = SecureMemoCrypto.decryptSteps(memo.comboValues)
+        let values = SecureMemoCrypto.decryptSteps(memo.stackValues)
         guard !values.isEmpty else { return false }
         if values.contains(where: { SecureMemoCrypto.isEncrypted($0) }) {
             print("🔒 [handleComboMemoIfNeeded] 보안 키 미동기화 - 콤보 복호화 불가, 입력 중단")
             return true
         }
 
-        print("🔄 Combo 메모 '\(memo.title)' - 자식 \(values.count)개 순차 입력 (간격 \(memo.comboInterval)s)")
-        insertComboValuesSequentially(values, interval: memo.comboInterval, index: 0, memoId: memoId)
+        print("🔄 Combo 메모 '\(memo.title)' - 자식 \(values.count)개 순차 입력 (간격 \(memo.stackInterval)s)")
+        insertStackValuesSequentially(values, interval: memo.stackInterval, index: 0, memoId: memoId)
         trackKeyboardPaste(memoId: memoId)
         return true
     }
 
     /// 콤보 자식 값들을 interval 간격으로 하나씩 입력(정책 A). 자동변수 치환 포함.
-    private func insertComboValuesSequentially(_ values: [String], interval: TimeInterval, index: Int, memoId: UUID? = nil) {
+    private func insertStackValuesSequentially(_ values: [String], interval: TimeInterval, index: Int, memoId: UUID? = nil) {
         guard index < values.count else { return }
 
         if index < values.count - 1 {
@@ -446,7 +451,7 @@ class KeyboardViewController: UIInputViewController {
             textDocumentProxy.insertText(processed)
             KeyboardHaptics.mediumTap()
             DispatchQueue.main.asyncAfter(deadline: .now() + interval) { [weak self] in
-                self?.insertComboValuesSequentially(values, interval: interval, index: index + 1, memoId: memoId)
+                self?.insertStackValuesSequentially(values, interval: interval, index: index + 1, memoId: memoId)
             }
         } else {
             // 마지막 항목 - 여기서만 커서 위치를 반영하고 날인으로 마무리.
@@ -598,6 +603,11 @@ class KeyboardViewController: UIInputViewController {
         // 키보드가 뜰 때마다 읽으면 항상 최신이다.
         KeyboardCapability.update(hasFullAccess: hasFullAccess,
                                   needsInputModeSwitchKey: needsInputModeSwitchKey)
+        // 사용자가 앱에서 높이를 바꿨을 수 있다. 익스텐션 프로세스는 키보드를 내려도
+        // 살아 있어서, 여기서 다시 읽지 않으면 다음에 뜰 때도 예전 높이 그대로다
+        // (프로세스가 죽었다 살아날 때까지, 즉 언제 반영될지 모르는 상태가 된다).
+        // 값이 그대로면 `applyHeight` 가 바로 돌아 나온다.
+        applyHeight()
         // 등장 **전에** 한 번 재 둔다. 첫 프레임이 이미 제 높이로 그려지게 하는 것이라
         // 남긴다(등장 뒤에 부르는 것과는 성격이 다르다, `viewDidAppear` 참고).
         view.layoutIfNeeded()

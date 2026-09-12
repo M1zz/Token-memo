@@ -235,9 +235,10 @@ struct SnippetsTab: View {
     /// 써 보는 장(단축어 → 템플릿 → 콤보) 완료 표식.
     @AppStorage(DefaultsKey.tutorialSnippetDone) private var tutorialSnippetDone: Bool = false
     @AppStorage(DefaultsKey.tutorialTemplateDone) private var tutorialTemplateDone: Bool = false
-    @AppStorage(DefaultsKey.tutorialComboDone) private var tutorialComboDone: Bool = false
+    @AppStorage(DefaultsKey.tutorialStackDone) private var tutorialStackDone: Bool = false
+    @AppStorage(DefaultsKey.tutorialLayoutDone) private var tutorialLayoutDone: Bool = false
     /// 콤보 장 안쪽의 걸음. 빈 값이면 그 장이 아니거나 아직 안 열렸다.
-    @AppStorage(DefaultsKey.tutorialComboStep) private var comboStepRaw: String = ""
+    @AppStorage(DefaultsKey.tutorialStackStep) private var stackStepRaw: String = ""
     /// 챕터 기계가 "더 가리킬 것이 없다"고 알려주면 켜진다.
     @AppStorage(DefaultsKey.tutorialChaptersDone) private var chaptersFinished: Bool = false
     /// 직접 하나 만들어 보는 걸음을 지났는가(만들었든 미뤘든).
@@ -308,7 +309,8 @@ struct SnippetsTab: View {
         .current(startedFresh: startedFresh,
                  welcomeDone: welcomeDone,
                  chaptersDone: chaptersFinished
-                     || (tutorialSnippetDone && tutorialTemplateDone && tutorialComboDone),
+                     || (tutorialSnippetDone && tutorialTemplateDone
+                         && tutorialStackDone && tutorialLayoutDone),
                  makeOwnDone: makeOwnDone)
     }
 
@@ -325,8 +327,8 @@ struct SnippetsTab: View {
     }
 
     /// 콤보 장 안쪽에서 지금 서 있는 걸음. 그 장이 아니면 nil.
-    private var comboStep: ComboTutorialStep? {
-        ComboTutorialStep(rawValue: comboStepRaw)
+    private var stackStep: StackTutorialStep? {
+        StackTutorialStep(rawValue: stackStepRaw)
     }
 
     /// 무대에 띄울 안내 한 줄. 콤보 장이면 그 장 안쪽의 걸음이 말하고, 아니면 장 자체가 말한다.
@@ -335,7 +337,7 @@ struct SnippetsTab: View {
     ///    장의 안내("이걸 눌러보세요")를 그대로 흘리면, 이미 누른 사람에게 또 누르라고
     ///    말하는 꼴이 된다. 그때 할 말은 무대가 스스로 갖고 있다.
     private var stageTutorialLine: String? {
-        if let comboStep { return comboStep.coachLine }
+        if let stackStep { return stackStep.coachLine }
         if awaitingSend { return nil }
         return nextChapter?.coachLine
     }
@@ -346,7 +348,7 @@ struct SnippetsTab: View {
     ///    키캡과 보내기 동그라미가 **동시에** 물결쳐서, 지금 눌러야 할 곳이 둘이 된다.
     ///    물결은 언제나 한 곳에만 있어야 안내로 읽힌다.
     private var stageHighlightedMemoId: UUID? {
-        if let comboStep { return comboStep.comboPart == nil ? nil : highlightedMemoId }
+        if let stackStep { return stackStep.stackPart == nil ? nil : highlightedMemoId }
         return highlightedMemoId
     }
 
@@ -355,7 +357,7 @@ struct SnippetsTab: View {
     /// 콤보 장에서는 걸음이 정한다(`sendFirst`·`sendSecond`). 나머지 장에서는
     /// "넣었고 보내기만 남은" 상태(`awaitingSend`)가 정한다.
     private var stageHighlightsSend: Bool {
-        if let comboStep { return comboStep.highlightsSend }
+        if let stackStep { return stackStep.highlightsSend }
         return awaitingSend
     }
 
@@ -378,6 +380,27 @@ struct SnippetsTab: View {
             theme.bg.ignoresSafeArea()
             content
         }
+    }
+
+    /// 무대. **본문에서 꺼내 둔다.**
+    ///
+    /// ⚠️ 인자가 열이 넘어서, 이걸 `content` 안에 그대로 두면 스위프트가 그 뷰의 타입을
+    ///    제 시간에 못 푼다(실제로 빌드가 "unable to type-check this expression in
+    ///    reasonable time" 으로 멎었다). 인자를 더 붙일 일이 있으면 여기에 붙인다.
+    private var stage: some View {
+        InAppKeyboardStage(styleRaw: $styleRaw,
+                           highlightedMemoId: stageHighlightedMemoId,
+                           highlightedStackPart: stackStep?.stackPart,
+                           tutorialLine: stageTutorialLine,
+                           asksToMakeOwn: onboardingStep == .makeOwn,
+                           onMakeOwnSkipped: { finishMakeOwn() },
+                           highlightsSend: stageHighlightsSend,
+                           awaitsStackConfirm: stackStep == .confirm,
+                           onStackConfirmed: { finishStackChapter() },
+                           asksLayout: asksLayoutNow,
+                           onLayoutChosen: { finishLayoutChapter() },
+                           showsSwitchHint: showsSwitchHint,
+                           onSwitchHintSeen: { switchHintSeen = true })
     }
 
     @ViewBuilder
@@ -415,17 +438,7 @@ struct SnippetsTab: View {
                     // 겹치는 순서를 우리가 정한다. SwiftUI 에 맡기면 내려가는 무대가 목록
                     // 뒤로 숨어서 **아무것도 안 움직이는 것처럼** 보인다.
                     if style == .keyboard {
-                        InAppKeyboardStage(styleRaw: $styleRaw,
-                                           highlightedMemoId: stageHighlightedMemoId,
-                                           highlightedComboPart: comboStep?.comboPart,
-                                           tutorialLine: stageTutorialLine,
-                                           asksToMakeOwn: onboardingStep == .makeOwn,
-                                           onMakeOwnSkipped: { finishMakeOwn() },
-                                           highlightsSend: stageHighlightsSend,
-                                           awaitsComboConfirm: comboStep == .confirm,
-                                           onComboConfirmed: { finishComboChapter() },
-                                           showsSwitchHint: showsSwitchHint,
-                                           onSwitchHintSeen: { switchHintSeen = true })
+                        stage
                             .transition(stageTransition)
                             .zIndex(1)
                     }
@@ -451,8 +464,8 @@ struct SnippetsTab: View {
             finishChapterAfterSend()
         }
         // 콤보의 → 는 글을 넣지 않아 `.memoUsed` 가 안 나간다 - 따로 듣는다.
-        .onReceive(NotificationCenter.default.publisher(for: .comboValueAdvanced),
-                   perform: comboValueWasAdvanced)
+        .onReceive(NotificationCenter.default.publisher(for: .stackValueAdvanced),
+                   perform: stackValueWasAdvanced)
         // 자기 것을 하나라도 만들면 그 걸음은 끝난다 - 어디서 만들었든(무대의 +, 목록, 공유 시트).
         .onReceive(NotificationCenter.default.publisher(for: .memoDataChanged)) { _ in
             completeMakeOwnIfMadeSomething()
@@ -513,13 +526,23 @@ struct SnippetsTab: View {
 
     // MARK: - 써 보는 장들 (무대 위에서 돈다)
 
+    /// 지금 크기 정하는 카드를 띄울 자리인가.
+    ///
+    /// ⚠️ 본문 안에 `a == b && c == d` 로 적었더니 컴파일러가 그 뷰의 타입을
+    ///    제 시간에 못 풀었다(무대 호출부는 인자가 열이 넘는다). 밖으로 꺼내 둔다.
+    private var asksLayoutNow: Bool {
+        guard onboardingStep == .tryScenarios else { return false }
+        return nextChapter == .layout
+    }
+
     /// 아직 안 지난 다음 장. 없으면 nil.
     private var nextChapter: TutorialChapter? {
         TutorialChapter.allCases.first { chapter in
             switch chapter {
             case .snippet:  return !tutorialSnippetDone
             case .template: return !tutorialTemplateDone
-            case .combo:    return !tutorialComboDone
+            case .stack:    return !tutorialStackDone
+            case .layout:   return !tutorialLayoutDone
             }
         }
     }
@@ -531,7 +554,7 @@ struct SnippetsTab: View {
     private func resumeTutorialIfStalled() {
         guard onboardingStep == .tryScenarios,
               highlightedMemoId == nil,
-              comboStep == nil,
+              stackStep == nil,
               !awaitingSend,
               countdownEndsAt == nil else { return }
         openNextChapter()
@@ -567,6 +590,17 @@ struct SnippetsTab: View {
             withAnimation(.easeInOut(duration: 0.28)) { chaptersFinished = true }
             return
         }
+        // 크기 장은 **가리킬 카드가 없다.** 아래 카드 찾기로 내려보내면 없는 것으로 치고
+        // 그냥 건너뛴다. 여기서 먼저 갈라 카드를 띄운다.
+        if chapter == .layout {
+            withAnimation(.easeInOut(duration: 0.28)) {
+                firstUseMemoIdRaw = ""
+                stackStepRaw = ""
+                // 크기를 정하려면 키보드가 보여야 한다. 목록에 서 있으면 옮겨 준다.
+                styleRaw = SnippetsTabStyle.keyboard.rawValue
+            }
+            return
+        }
         let memos = (try? MemoStore.shared.load(type: .memo)) ?? []
         guard let memo = TutorialScenarios.memo(for: chapter, in: memos) else {
             print("⏭️ [SnippetsTab] \(chapter.rawValue) 장에 가리킬 것이 없어 건너뜁니다")
@@ -578,7 +612,7 @@ struct SnippetsTab: View {
             firstUseMemoIdRaw = memo.id.uuidString
             // 콤보만 장 안쪽에 걸음이 다섯이다 - 첫 걸음부터 연다.
             // (다른 장은 이 값이 늘 비어 있어야 하므로 여기서 확실히 비운다)
-            comboStepRaw = chapter == .combo ? ComboTutorialStep.insertFirst.rawValue : ""
+            stackStepRaw = chapter == .stack ? StackTutorialStep.insertFirst.rawValue : ""
         }
     }
 
@@ -598,8 +632,8 @@ struct SnippetsTab: View {
               let chapter = nextChapter else { return }
 
         // 콤보 장은 넣는 걸음이 둘이라 따로 센다.
-        if chapter == .combo {
-            advanceComboStep(after: [.insertFirst, .insertSecond])
+        if chapter == .stack {
+            advanceStackStep(after: [.insertFirst, .insertSecond])
             return
         }
 
@@ -610,44 +644,44 @@ struct SnippetsTab: View {
     }
 
     /// 콤보 키의 오른쪽 → 를 눌러 다음 값으로 넘겼다.
-    private func comboValueWasAdvanced(_ note: Notification) {
+    private func stackValueWasAdvanced(_ note: Notification) {
         guard let used = note.userInfo?["memoId"] as? UUID,
               used == highlightedMemoId else { return }
-        advanceComboStep(after: [.advance])
+        advanceStackStep(after: [.advance])
     }
 
     /// 콤보 장의 걸음을 하나 넘긴다 - **지금 서 있는 걸음이 기다리던 것일 때만.**
     ///
     /// ⚠️ 어느 걸음에서 온 신호인지 확인하지 않으면 순서가 무너진다. 예를 들어 값을
     ///    넣으라고 한 자리에서 → 를 두 번 누르면, 확인 없이는 걸음이 둘 건너뛴다.
-    private func advanceComboStep(after expected: [ComboTutorialStep]) {
-        guard let step = comboStep, expected.contains(step) else { return }
+    private func advanceStackStep(after expected: [StackTutorialStep]) {
+        guard let step = stackStep, expected.contains(step) else { return }
         let following = step.next
         withAnimation(.easeInOut(duration: 0.28)) {
             // 물결은 걸음을 따라 옮겨 붙는다 - 어디를 누를지는 `comboPart` 가 정한다.
-            comboStepRaw = following?.rawValue ?? ""
+            stackStepRaw = following?.rawValue ?? ""
         }
         print("🎓 [SnippetsTab] 콤보 걸음 \(step.rawValue) → \(following?.rawValue ?? "끝")")
-        if following == nil { finishComboChapter() }
+        if following == nil { finishStackChapter() }
     }
 
     /// "확인했어요" - 콤보 장이 여기서 끝난다. 다음은 직접 만들어 보는 걸음(+).
-    private func finishComboChapter() {
-        guard !tutorialComboDone else { return }
+    private func finishStackChapter() {
+        guard !tutorialStackDone else { return }
         withAnimation(.easeInOut(duration: 0.28)) {
-            comboStepRaw = ""
+            stackStepRaw = ""
             firstUseMemoIdRaw = ""
             awaitingSend = false
         }
-        markChapterDone(.combo)
+        markChapterDone(.stack)
         scheduleNextChapter()
     }
 
     /// 보냈다 - 이제 이 장이 끝났다. 한 박자 쉬고 다음 장으로.
     private func finishChapterAfterSend() {
         // 콤보 장은 보내는 걸음이 둘이라, 보냈다고 장이 끝나지 않는다.
-        if nextChapter == .combo {
-            advanceComboStep(after: [.sendFirst, .sendSecond])
+        if nextChapter == .stack {
+            advanceStackStep(after: [.sendFirst, .sendSecond])
             return
         }
         guard awaitingSend, let chapter = nextChapter else { return }
@@ -811,11 +845,23 @@ struct SnippetsTab: View {
         }
     }
 
+    /// 크기 장을 지난다. **고른 값은 이미 저장돼 있다** - 카드의 조절기가 App Group 에
+    /// 바로 쓰기 때문에, 여기서 할 일은 장을 닫는 것뿐이다.
+    ///
+    /// ⚠️ 쉼(카운트다운)을 두지 않는다. 이 장이 마지막이라 다음에 열 장이 없고,
+    ///    빈 원이 혼자 돌다 사라지면 무엇을 기다린 것인지 알 수 없다.
+    private func finishLayoutChapter() {
+        withAnimation(.easeInOut(duration: 0.28)) {
+            markChapterDone(.layout)
+        }
+    }
+
     private func markChapterDone(_ chapter: TutorialChapter) {
         switch chapter {
         case .snippet:  tutorialSnippetDone = true
         case .template: tutorialTemplateDone = true
-        case .combo:    tutorialComboDone = true
+        case .stack:    tutorialStackDone = true
+        case .layout:   tutorialLayoutDone = true
         }
     }
 

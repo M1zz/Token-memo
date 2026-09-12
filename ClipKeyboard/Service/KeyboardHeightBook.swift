@@ -80,15 +80,31 @@ enum KeyboardHeightBook {
     /// 총 높이는 시스템 키보드보다 머리 줄만큼 높아진다. 그게 맞다. 시스템 키보드에 없는
     /// 것을 우리가 그리고 있으니 그만큼 자리가 더 필요하다.
     ///
+    /// ## 사용자가 높이를 고르면
+    ///
+    /// 위 문단이 정하는 것은 **기본값**이고, 사람은 그보다 낮거나 높은 것을 고를 수 있다
+    /// (`KeyboardHeightPreset`). 고르는 자리가 왜 따로 필요한지는 그 열거형 머리말에 적었다.
+    ///
     /// - Parameter content: 우리 판이 그리는 것들의 치수. 사용자가 설정에서 키 높이와
     ///   칸 수를 바꾸므로 값이 고정이 아니다.
-    static func height(for size: CGSize, content: ContentMetrics = ContentMetrics()) -> CGFloat {
+    /// - Parameter preset: 사용자가 고른 높이. 익스텐션은 `.current` 를 넘긴다.
+    static func height(for size: CGSize,
+                       content: ContentMetrics = ContentMetrics(),
+                       preset: KeyboardHeightPreset = .standard) -> CGFloat {
         // ① 시스템 키보드가 키에 쓰는 만큼은 격자에 준다. 머리 줄은 그 위에 얹는다.
         let keyArea = totalHeight(for: size) - systemChrome(for: size)
-        let matched = keyArea + content.headerHeight
+        let matched = keyArea + preset.extraHeight(content: content)
 
         // ② 그래도 버튼 여섯은 보인다. 화면이 작아 ① 이 모자란 기기를 위한 바닥.
-        let floor = max(content.floorHeight, minimumContentHeight)
+        //
+        //   ⚠️ **`.compact` 에는 이 바닥을 대지 않는다.** 이 값을 고른 사람은 "시스템 키보드와
+        //      같은 높이"를 달라고 말한 것이고, 여섯 개가 안 보이면 굴려서 보겠다고 이미
+        //      답한 것이다. 여기서 바닥을 대면 키를 크게 쓰는 사람에게는 고른 것이
+        //      **아무 일도 안 하는 것처럼** 보인다(예전 `버튼 높이` 슬라이더가 그랬다).
+        //      그래도 판이 통째로 사라지지는 않게 `minimumContentHeight` 는 남긴다.
+        let floor = preset == .compact
+            ? minimumContentHeight
+            : max(content.floorHeight, minimumContentHeight)
 
         // ③ 그러나 화면을 통째로 먹지는 않는다. 가로에서 ② 를 그대로 쓰면 본문이 사라진다.
         let ceiling = maximumContentHeight(for: size)
@@ -98,6 +114,24 @@ enum KeyboardHeightBook {
 
     /// 우리 판이 이보다 낮아지지는 않는다. 카테고리 줄 + 키 한 줄이 겨우 들어가는 높이.
     static let minimumContentHeight: CGFloat = 150
+
+    // MARK: - 조작 키
+
+    /// 조작 키 한 칸의 기본 높이. 설정을 건드린 적 없는 사람이 보던 그 크기다.
+    static let defaultControlKeySize: CGFloat = 28
+    /// 조작 키를 이보다 작게는 못 만든다. 44pt 손가락 자리 안에서 눈에 보이는 하한.
+    static let minimumControlKeySize: CGFloat = 24
+    /// 이보다 크게도 못 만든다. 더 키우면 머리 줄이 격자보다 두꺼워진다.
+    static let maximumControlKeySize: CGFloat = 44
+
+    /// 저장된 값을 지금 규칙에 맞게 해석한다. **읽는 곳은 전부 이걸 거친다.**
+    ///
+    /// ⚠️ `UserDefaults` 는 키가 없으면 0 을 돌려준다. 그대로 쓰면 머리 줄이 10pt 가 되어
+    ///    윗줄이 통째로 사라진다.
+    static func resolvedControlKeySize(_ raw: Double) -> CGFloat {
+        guard raw > 0 else { return defaultControlKeySize }
+        return min(max(CGFloat(raw), minimumControlKeySize), maximumControlKeySize)
+    }
 
     /// 우리 판이 이보다 높아지지는 않는다.
     ///
@@ -120,8 +154,17 @@ enum KeyboardHeightBook {
     /// ⚠️ 여기 숫자들은 `KeyboardView` 의 실제 레이아웃에서 온 것이다. 저쪽을 고치면
     ///    여기도 고쳐야 한다. 어긋나면 판이 다시 짜부라지거나 빈 자리가 남는다.
     struct ContentMetrics {
-        /// 카테고리 줄. `categoryTabRow` 는 28pt 버튼에 위아래 5pt 여백이다.
-        var headerHeight: CGFloat = 38
+        /// 조작 키 한 칸의 높이. 설정 > 키보드 레이아웃에서 바꾼다.
+        ///
+        /// ⚠️ 머리 줄에 서는 것들(지우기 · 보내기 · 클립보드 · 지구본 · 갈래 · 전체삭제)이
+        ///    전부 이 높이다. 하나만 키우면 줄이 어긋나므로 한 값으로 묶어 둔다.
+        var controlKeySize: CGFloat = KeyboardHeightBook.defaultControlKeySize
+
+        /// 카테고리 줄. 조작 키에 위아래 5pt 여백이다.
+        ///
+        /// ⚠️ 고정값이었다가 계산으로 바뀌었다. 조작 키를 키울 수 있게 되었는데 이 값이
+        ///    38 에 박혀 있으면, 키운 만큼 머리 줄이 격자를 **덮어** 첫 줄이 잘린다.
+        var headerHeight: CGFloat { controlKeySize + 10 }
         /// 격자 위아래 여백. 키를 누를 때 번지는 물결이 잘리지 않을 자리다(`gridRippleReach` × 2).
         var gridPadding: CGFloat = 24
         /// 격자 줄 사이.
@@ -282,4 +325,99 @@ enum KeyboardHeightBook {
     }
 
     #endif
+}
+
+// MARK: - 사용자가 고르는 높이
+
+/// 키보드 판을 얼마나 높게 세울지. **앱 설정과 익스텐션이 같은 값을 본다.**
+///
+/// 왜 따로 필요한가: 설정에는 오래도록 `버튼 높이` 슬라이더뿐이었는데, 그것은 키 하나의
+/// 크기지 판의 높이가 아니다. 판 높이는 위 `height(for:content:preset:)` 이 시스템 키보드에서
+/// 따오고, 슬라이더는 **바닥 계산에만** 들어간다. 그래서 요즘 아이폰에서는 슬라이더를 끝까지
+/// 내려도 키보드 높이가 1pt 도 안 변했다(iPhone 15 기준 374pt 고정). 높이가 마음에 안 드는
+/// 사람은 설정을 다 뒤진 끝에 아무것도 못 바꾸고 나갔다. 실제로 그 리뷰를 받았다.
+///
+/// 고르는 것은 **머리 줄 한 칸을 어떻게 할 것인가**다. 우리 판에는 시스템 키보드에 없는 줄이
+/// 하나 있다(카테고리 · 지구본 · 클립보드 · 보내기). 그 줄 때문에 우리 키보드는 늘 시스템
+/// 키보드보다 38pt 높고, 두 키보드를 오갈 때 그 38pt 가 애니메이션으로 보인다.
+///
+/// | 고른 값 | 판 높이 | 시스템 키보드와 |
+/// | --- | --- | --- |
+/// | `.compact` | 키 자리만 | 같다. 오갈 때 움직임이 없다 |
+/// | `.standard` | 키 자리 + 머리 줄 | 머리 줄만큼 높다(기본값) |
+/// | `.roomy` | 거기서 한 줄 더 | 한 줄 더 높다 |
+///
+/// ⚠️ `.compact` 는 **머리 줄을 없애지 않는다.** 그 줄에는 지구본이 서 있고, 다른 키보드로
+///    건너갈 유일한 문이라 심사 요건이기도 하다. 없애는 대신 격자에서 그만큼 덜어낸다.
+///    키가 덜 보이는 것은 굴려서 채운다.
+///
+/// ⚠️ 기본값을 `.standard` 에 둔다. 5.0.6 에서 모두를 `.compact` 자리로 옮겼다가 판이
+///    짜부라져 되돌린 적이 있다(`height(for:content:preset:)` 머리말). 같은 일을 다시
+///    기본값으로 하지 않는다. 고른 사람에게만 준다.
+///
+/// ⚠️ 익스텐션 타겟에도 컴파일된다. `UserDefaults` 읽기 하나뿐이니 그대로 둘 것.
+enum KeyboardHeightPreset: String, CaseIterable, Identifiable {
+
+    /// 시스템 키보드와 **같은 높이**. 머리 줄 몫을 격자에서 덜어낸다.
+    case compact
+    /// **기본값.** 시스템 키보드 + 머리 줄 하나.
+    case standard
+    /// 거기서 키 한 줄만큼 더.
+    case roomy
+
+    var id: String { rawValue }
+
+    /// 값이 없거나 모르는 값일 때 쓰는 것.
+    static let fallback: KeyboardHeightPreset = .standard
+
+    // MARK: - 저장
+
+    /// 지금 정해져 있는 값. App Group 에 있어 익스텐션도 같은 것을 읽는다.
+    static var current: KeyboardHeightPreset {
+        let raw = AppGroup.defaults?.string(forKey: DefaultsKey.keyboardHeightPreset) ?? ""
+        return KeyboardHeightPreset(rawValue: raw) ?? fallback
+    }
+
+    // MARK: - 높이
+
+    /// 시스템 키보드의 키 자리 위에 **더 얹을** 높이.
+    ///
+    /// 키 높이를 인자로 받는 이유는 `.roomy` 의 "한 줄"이 그 사람이 쓰는 키 높이이기
+    /// 때문이다. 44pt 를 쓰는 사람과 80pt 를 쓰는 사람의 한 줄은 같은 한 줄이 아니다.
+    func extraHeight(content: KeyboardHeightBook.ContentMetrics) -> CGFloat {
+        switch self {
+        case .compact:
+            return 0
+        case .standard:
+            return content.headerHeight
+        case .roomy:
+            return content.headerHeight + content.buttonHeight + content.rowSpacing
+        }
+    }
+
+    // MARK: - 표시
+
+    var localizedName: String {
+        switch self {
+        case .compact:
+            return NSLocalizedString("시스템과 같게", comment: "Keyboard height preset name: match system keyboard")
+        // ⚠️ "기본" 이라고 쓰지 않는다. 그 글자는 이미 갈래 이름으로 쓰이고 있어
+        //    영어에서 General 로 나간다(문자열 카탈로그는 한국어 원문이 곧 열쇠다).
+        case .standard:
+            return NSLocalizedString("표준", comment: "Keyboard height preset name: standard")
+        case .roomy:
+            return NSLocalizedString("넉넉하게", comment: "Keyboard height preset name: roomy")
+        }
+    }
+
+    var localizedDescription: String {
+        switch self {
+        case .compact:
+            return NSLocalizedString("기본 키보드와 높이가 같아요. 키보드를 바꿔도 화면이 움직이지 않습니다. 단축어는 굴려서 봅니다.", comment: "Keyboard height preset description: compact")
+        case .standard:
+            return NSLocalizedString("기본 키보드보다 윗줄 하나만큼 높아요. 단축어가 더 보입니다.", comment: "Keyboard height preset description: standard")
+        case .roomy:
+            return NSLocalizedString("한 줄을 더 얹어요. 단축어를 굴리지 않고 보고 싶을 때.", comment: "Keyboard height preset description: roomy")
+        }
+    }
 }

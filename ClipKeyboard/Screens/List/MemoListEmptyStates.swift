@@ -77,7 +77,7 @@ enum AddCardCopy {
         case addMemo(category: String)
         case addFavorite
         case addTemplate
-        case addCombo
+        case addStack
     }
 
     static func label(for tab: CategoryTab) -> String {
@@ -118,7 +118,7 @@ enum AddCardCopy {
         case .builtIn(let b):
             switch b {
             case .templates: return .addTemplate
-            case .combos: return .addCombo
+            case .combos: return .addStack
             case .images: return .addMemo(category: "이미지")
             case .textMemos: return .addMemo(category: "")
             }
